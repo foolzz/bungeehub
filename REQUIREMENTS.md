@@ -171,19 +171,19 @@ Bungie Hub is a hybrid delivery network platform that combines the Airbnb hostin
 ### Backend System
 
 #### Core Components
-- [ ] User authentication & authorization
+- [ ] **Node.js** backend services (Express/Fastify/NestJS)
+- [ ] User authentication & authorization (JWT, Firebase Auth)
 - [ ] Package management service
 - [ ] Scanning/tracking service
-- [ ] Photo/media storage (S3, CloudStorage)
-- [ ] Notification service
+- [ ] Photo/media storage (Google Cloud Storage)
+- [ ] Notification service (Firebase Cloud Messaging)
 - [ ] Analytics engine
 - [ ] Ranking/gamification engine
 
 #### Data Storage
-- [ ] Relational database (PostgreSQL/MySQL) for transactional data
-- [ ] Document store (MongoDB) for package metadata
-- [ ] Object storage for photos/media
-- [ ] Cache layer (Redis) for real-time data
+- [ ] **Neon (Serverless PostgreSQL)** for transactional data and package metadata
+- [ ] **Google Cloud Storage** for photos/media
+- [ ] **Redis** (Cloud Memorystore) for cache layer and real-time data
 
 #### APIs
 - [ ] RESTful API for mobile apps
@@ -290,8 +290,8 @@ Out for Delivery (Scanned Out) → Delivered (POD Submitted) → Confirmed
 4. **Insurance**: Who covers lost or damaged packages?
 5. **Disputes**: How are customer complaints handled?
 6. **Hub Approval**: Automated or manual review process?
-7. **Technology Stack**: Mobile (Native vs. Cross-platform), Backend framework choice
-8. **Deployment**: Cloud provider (AWS, GCP, Azure), infrastructure approach
+7. **Technology Stack**: Mobile (Native vs. Cross-platform), Backend framework (Express/Fastify/NestJS)
+8. **Deployment**: GCP services configuration (Cloud Run, Cloud Functions, etc.)
 
 ---
 
