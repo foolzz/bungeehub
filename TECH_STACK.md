@@ -27,6 +27,130 @@
 
 ---
 
+## Technology Selection Context
+
+### Chosen Technologies
+
+Based on the project requirements and conversation with stakeholders, the following technology stack was selected:
+
+#### **Node.js for Backend**
+- **Rationale**:
+  - Excellent ecosystem for API development
+  - Strong support for real-time features (WebSockets)
+  - Large talent pool
+  - Great integration with GCP services
+  - Ideal for I/O-intensive operations (package tracking, photo uploads)
+
+#### **Neon for Database**
+- **Rationale**:
+  - Serverless PostgreSQL - scales automatically
+  - Branching feature perfect for dev/staging/production workflows
+  - Built-in connection pooling reduces overhead
+  - Pay-per-use pricing model ideal for startup phase
+  - Full PostgreSQL compatibility (ACID, relational integrity)
+  - Excellent for complex queries needed for ranking algorithms
+
+#### **Google Cloud Platform (GCP)**
+- **Rationale**:
+  - Unified cloud ecosystem
+  - Cloud Run provides serverless container deployment (Node.js services)
+  - Cloud Storage for scalable photo/media storage
+  - Firebase suite (Auth, Cloud Messaging) reduces development time
+  - Competitive pricing for startup/scale-up phases
+  - Strong integration between services
+  - Cloud Memorystore for Redis caching
+
+### Framework Options to Consider
+
+The Node.js framework should be selected based on team expertise and project needs:
+
+#### **Option 1: Express.js**
+**Pros**:
+- Most popular, mature ecosystem
+- Extensive middleware library
+- Simple, unopinionated
+- Great community support and documentation
+
+**Cons**:
+- Less built-in structure (requires more decisions)
+- Not TypeScript-native
+- Slower performance vs. Fastify
+
+**Best For**: Quick prototyping, teams familiar with Express
+
+#### **Option 2: Fastify**
+**Pros**:
+- ~2x faster than Express
+- Built-in schema validation (JSON Schema)
+- TypeScript support
+- Plugin architecture
+- Modern async/await patterns
+
+**Cons**:
+- Smaller ecosystem than Express
+- Steeper learning curve
+
+**Best For**: Performance-critical applications, teams wanting speed + structure
+
+#### **Option 3: NestJS**
+**Pros**:
+- TypeScript-first framework
+- Opinionated structure (similar to Angular)
+- Built-in dependency injection
+- Excellent for large teams and complex projects
+- Great CLI tooling
+- Microservices support
+
+**Cons**:
+- More complex, steeper learning curve
+- Heavier than Express/Fastify
+- May be overkill for smaller teams
+
+**Best For**: Enterprise applications, large teams, TypeScript lovers
+
+### Recommended Stack for Bungie Hub
+
+```
+Backend:    NestJS + TypeScript (or Fastify + TypeScript)
+Database:   Neon PostgreSQL
+ORM:        Prisma (type-safe, excellent DX)
+Cache:      Redis (Cloud Memorystore)
+Storage:    Google Cloud Storage
+Auth:       Firebase Authentication + JWT
+Hosting:    GCP Cloud Run
+CDN:        Cloud CDN
+Monitoring: Cloud Monitoring + Cloud Logging
+CI/CD:      Cloud Build
+```
+
+**Why TypeScript?**
+- Type safety prevents runtime errors
+- Better IDE support and autocomplete
+- Self-documenting code
+- Easier refactoring
+- Critical for team collaboration
+- Prisma ORM generates fully typed database client
+
+**Why Prisma ORM?**
+- Type-safe database queries
+- Auto-generated client based on schema
+- Great migration workflow
+- Excellent developer experience
+- Works perfectly with Neon PostgreSQL
+- IDE autocomplete for all queries
+
+### Architecture Principles
+
+1. **Serverless-First**: Use Cloud Run for automatic scaling
+2. **Microservices-Ready**: Services can be split later if needed
+3. **Event-Driven**: Cloud Pub/Sub for async operations
+4. **Cache-Heavy**: Redis for performance (hub rankings, package status)
+5. **API-First**: RESTful API design with OpenAPI documentation
+6. **Real-Time Capable**: WebSocket support for live tracking
+7. **Security-First**: JWT authentication, API keys for integrations
+
+---
+
 ## Architecture Diagram
 
 ```

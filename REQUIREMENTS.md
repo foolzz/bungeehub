@@ -6,6 +6,83 @@ Bungie Hub is a hybrid delivery network platform that combines the Airbnb hostin
 
 ---
 
+## Background & Context
+
+### Project Origin
+This project represents a strategic evolution of an existing B2B delivery system. The current system handles business-to-business deliveries, and we are now expanding into a new business model that democratizes the delivery network by leveraging individual homes and garages as micro-fulfillment centers.
+
+### The Vision: Airbnb Meets Uber for Deliveries
+
+The Bungie Hub concept was conceived as a hybrid platform that combines:
+
+1. **Airbnb's Host Model**: Individual users register their personal spaces (home, garage, or other locations) as package delivery sub-centers, similar to how Airbnb hosts list their properties. Each location becomes a "hub" in the delivery network.
+
+2. **Uber's Delivery Network**: Decentralized, community-driven delivery with real-time tracking, proof of delivery, and performance-based rankings.
+
+### How It Works
+
+#### The Hub Host Journey
+1. **Registration**: Users sign up and register their home or garage as a delivery hub, similar to becoming an Airbnb host
+2. **Batch Reception**: The system delivers batches of 50-100 packages to the hub host's location
+3. **Local Delivery Management**: Hub hosts take responsibility for delivering these packages to addresses within their local community
+4. **Performance Tracking**: Each delivery is tracked with:
+   - Package scanning before delivery
+   - Door-to-door delivery with photo proof
+   - GPS and timestamp verification
+   - Real-time status updates to backend
+
+#### The Ranking System
+Inspired by Airbnb's "Super Host" program, hub hosts are ranked and leveled up based on:
+- **Delivery Accuracy**: Successful delivery rate
+- **Delivery Speed**: Average time from hub receipt to customer delivery
+- **Customer Ratings**: Feedback from package recipients
+- **Task Completion**: Percentage of assigned packages successfully delivered
+
+Higher-ranked hosts receive:
+- More delivery tasks (higher batch volumes)
+- Better earnings potential
+- Priority status in the network
+- Recognition badges (similar to Super Host status)
+
+### Key Differentiators
+
+1. **Community-Centric**: Leverages existing residential locations instead of building dedicated fulfillment centers
+2. **Scalable**: Can rapidly expand network coverage by onboarding new hub hosts
+3. **Cost-Effective**: Reduces last-mile delivery costs through batch distribution to local hubs
+4. **Flexible**: Hub hosts set their own availability and capacity
+5. **Quality-Driven**: Gamification and ranking system ensures high service standards
+
+### Integration Strategy
+
+The platform is designed to integrate seamlessly with:
+- **Existing B2B System**: API hooks to import packages and sync delivery status
+- **Third-Party Systems**: RESTful API for external package management systems
+- **Interface Flexibility**: Webhook support for real-time status updates to any connected system
+
+This allows the Bungie Hub network to handle packages from multiple sources while maintaining centralized tracking and management in the backend.
+
+### Critical Success Factors
+
+Based on the project vision, the following capabilities are essential:
+
+1. **Robust Package Scanning System**: Must accurately track packages from batch receipt through final delivery
+2. **Reliable Proof of Delivery**: Photo capture, GPS coordinates, and timestamps are mandatory for each delivery
+3. **Real-Time Backend Synchronization**: All package statuses must update in real-time so the system knows the situation of every package at all times
+4. **Comprehensive Ranking Algorithm**: Must accurately assess hub host performance to drive quality and enable fair task distribution
+5. **Flexible Integration Layer**: API and webhook architecture must support various package sources (B2B system, third-party platforms, etc.)
+
+### Target Market
+
+**Initial Focus**: Communities and suburban areas where:
+- Last-mile delivery is expensive
+- Residents have suitable space (garage, storage area)
+- Community members know their neighborhoods well
+- Delivery density justifies batch distribution
+
+**Long-term Vision**: Build a nationwide (or global) network of micro-fulfillment hubs that can compete with traditional delivery networks while providing better economics and community engagement.
+
+---
+
 ## Business Model Overview
 
 ### Core Concept
