@@ -190,9 +190,10 @@ export default function DashboardPage() {
             <h2 className="text-xl font-bold mb-4 text-gray-900">My Hubs ({hubs.length})</h2>
             <div className="space-y-3">
               {hubs.map((hub: any) => (
-                <div
+                <a
                   key={hub.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:border-primary-300 transition"
+                  href={`/hubs/details?id=${hub.id}`}
+                  className="block border border-gray-200 rounded-lg p-4 hover:border-primary-300 hover:shadow-md transition cursor-pointer"
                 >
                   <div className="flex justify-between items-start">
                     <div>
@@ -219,7 +220,7 @@ export default function DashboardPage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </div>
