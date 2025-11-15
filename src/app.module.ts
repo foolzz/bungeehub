@@ -19,8 +19,8 @@ import { AdminModule } from './modules/admin/admin.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 
 // Conditionally include ServeStaticModule based on environment
-const getImports = () => {
-  const imports = [
+const getImports = (): any[] => {
+  const imports: any[] = [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -38,7 +38,8 @@ const getImports = () => {
     );
   }
 
-  imports.push(
+  return [
+    ...imports,
     PrismaModule,
     DatabaseModule,
     AuthModule,
@@ -52,9 +53,7 @@ const getImports = () => {
     MessagesModule,
     AdminModule,
     NotificationsModule,
-  );
-
-  return imports;
+  ];
 };
 
 @Module({
