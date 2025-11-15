@@ -33,7 +33,8 @@ const getImports = (): any[] => {
     imports.push(
       ServeStaticModule.forRoot({
         rootPath: join(__dirname, '..', 'public', 'web'),
-        exclude: ['/api*'],
+        exclude: ['/api/v1(.*)'],
+        serveRoot: '/',
       }),
     );
   }
