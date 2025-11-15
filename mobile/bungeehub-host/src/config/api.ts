@@ -33,4 +33,24 @@ export const API_ENDPOINTS = {
   // Hubs
   HUBS: '/hubs',
   MY_HUB: '/hubs/my-hub',
+  CREATE_HUB: '/hubs',
+
+  // Upload
+  UPLOAD_SINGLE: '/upload/single',
+  UPLOAD_MULTIPLE: '/upload/multiple',
+
+  // Messages
+  MESSAGES: '/messages',
+  INBOX: '/messages/inbox',
+  SENT_MESSAGES: '/messages/sent',
+  CONVERSATIONS: '/messages/conversations',
+  CONVERSATION: (userId: string) => `/messages/conversation/${userId}`,
+  UNREAD_COUNT: '/messages/unread-count',
+  MARK_READ: (messageId: string) => `/messages/${messageId}/read`,
+
+  // Notifications
+  NOTIFICATIONS: '/notifications',
+  UNREAD_NOTIFICATIONS: '/notifications/unread-count',
+  MARK_NOTIFICATION_READ: (notificationId: string) => `/notifications/${notificationId}/read`,
+  MARK_ALL_READ: '/notifications/mark-all-read',
 };

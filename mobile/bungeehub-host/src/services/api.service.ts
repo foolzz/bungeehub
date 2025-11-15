@@ -9,12 +9,18 @@ import { API_BASE_URL, API_ENDPOINTS } from '../config/api';
 import {
   LoginDto,
   LoginResponse,
+  RegisterDto,
   User,
   Package,
   Delivery,
   ScanPackageDto,
   ProofOfDeliveryDto,
   Hub,
+  CreateHubDto,
+  Message,
+  SendMessageDto,
+  Conversation,
+  Notification,
 } from '../types';
 
 const STORAGE_KEY_TOKEN = '@bungeehub_token';
@@ -77,6 +83,17 @@ class ApiService {
 
   async logout(): Promise<void> {
     await this.clearAuth();
+  }
+
+  async register(data: RegisterDto): Promise<LoginResponse> {
+    const response = await this.api.post<LoginResponse>(
+      API_ENDPOINTS.REGISTER,
+      data
+    );
+    const { access_token, user } = response.data;
+    await this.saveToken(access_token);
+    await this.saveUser(user);
+    return response.data;
   }
 
   // Storage methods
@@ -180,7 +197,82 @@ class ApiService {
     return response.data;
   }
 
-  // Upload image (for proof of delivery)
+  async createHub(data: CreateHubDto): Promise<Hub> {
+    const response = await this.api.post<Hub>(API_ENDPOINTS.CREATE_HUB, data);
+    return response.data;
+  }
+
+  // Message methods
+  async getInbox(): Promise<Message[]> {
+    const response = await this.api.get<Message[]>(API_ENDPOINTS.INBOX);
+    return response.data;
+  }
+
+  async getSentMessages(): Promise<Message[]> {
+    const response = await this.api.get<Message[]>(API_ENDPOINTS.SENT_MESSAGES);
+    return response.data;
+  }
+
+  async getConversations(): Promise<Conversation[]> {
+    const response = await this.api.get<Conversation[]>(
+      API_ENDPOINTS.CONVERSATIONS
+    );
+    return response.data;
+  }
+
+  async getConversation(userId: string): Promise<Message[]> {
+    const response = await this.api.get<Message[]>(
+      API_ENDPOINTS.CONVERSATION(userId)
+    );
+    return response.data;
+  }
+
+  async sendMessage(data: SendMessageDto): Promise<Message> {
+    const response = await this.api.post<Message>(API_ENDPOINTS.MESSAGES, data);
+    return response.data;
+  }
+
+  async getUnreadMessageCount(): Promise<number> {
+    const response = await this.api.get<{ count: number }>(
+      API_ENDPOINTS.UNREAD_COUNT
+    );
+    return response.data.count;
+  }
+
+  async markMessageAsRead(messageId: string): Promise<Message> {
+    const response = await this.api.patch<Message>(
+      API_ENDPOINTS.MARK_READ(messageId)
+    );
+    return response.data;
+  }
+
+  // Notification methods
+  async getNotifications(): Promise<Notification[]> {
+    const response = await this.api.get<Notification[]>(
+      API_ENDPOINTS.NOTIFICATIONS
+    );
+    return response.data;
+  }
+
+  async getUnreadNotificationCount(): Promise<number> {
+    const response = await this.api.get<{ count: number }>(
+      API_ENDPOINTS.UNREAD_NOTIFICATIONS
+    );
+    return response.data.count;
+  }
+
+  async markNotificationAsRead(notificationId: string): Promise<Notification> {
+    const response = await this.api.patch<Notification>(
+      API_ENDPOINTS.MARK_NOTIFICATION_READ(notificationId)
+    );
+    return response.data;
+  }
+
+  async markAllNotificationsAsRead(): Promise<void> {
+    await this.api.patch(API_ENDPOINTS.MARK_ALL_READ);
+  }
+
+  // Upload image (for proof of delivery and hub photos)
   async uploadImage(uri: string): Promise<string> {
     const formData = new FormData();
 
@@ -195,13 +287,37 @@ class ApiService {
       type,
     } as any);
 
-    const response = await this.api.post('/upload', formData, {
+    const response = await this.api.post(API_ENDPOINTS.UPLOAD_SINGLE, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
 
     return response.data.url;
+  }
+
+  async uploadMultipleImages(uris: string[]): Promise<string[]> {
+    const formData = new FormData();
+
+    uris.forEach((uri, index) => {
+      const filename = uri.split('/').pop() || `photo${index}.jpg`;
+      const match = /\.(\w+)$/.exec(filename);
+      const type = match ? `image/${match[1]}` : 'image/jpeg';
+
+      formData.append('files', {
+        uri,
+        name: filename,
+        type,
+      } as any);
+    });
+
+    const response = await this.api.post(API_ENDPOINTS.UPLOAD_MULTIPLE, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return response.data.urls;
   }
 }
 

@@ -35,6 +35,37 @@ export enum HubTier {
   SUPER_HUB = 'SUPER_HUB',
 }
 
+export enum HubStatus {
+  PENDING = 'PENDING',
+  UNDER_REVIEW = 'UNDER_REVIEW',
+  APPROVED = 'APPROVED',
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  REJECTED = 'REJECTED',
+}
+
+export enum MessageStatus {
+  SENT = 'SENT',
+  DELIVERED = 'DELIVERED',
+  READ = 'READ',
+}
+
+export enum NotificationType {
+  EMAIL = 'EMAIL',
+  SMS = 'SMS',
+  PUSH = 'PUSH',
+  IN_APP = 'IN_APP',
+}
+
+export enum NotificationCategory {
+  APPLICATION_STATUS = 'APPLICATION_STATUS',
+  PACKAGE_DELIVERY = 'PACKAGE_DELIVERY',
+  MESSAGE_RECEIVED = 'MESSAGE_RECEIVED',
+  ACCOUNT_UPDATE = 'ACCOUNT_UPDATE',
+  SYSTEM_ALERT = 'SYSTEM_ALERT',
+}
+
 export interface User {
   id: string;
   email: string;
@@ -43,6 +74,29 @@ export interface User {
   phoneNumber?: string;
   createdAt: string;
   updatedAt: string;
+  // Enhanced profile fields
+  dateOfBirth?: string;
+  profilePhotoUrl?: string;
+  streetAddress?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+  // Verification
+  isEmailVerified?: boolean;
+  isPhoneVerified?: boolean;
+  isIdVerified?: boolean;
+  idDocumentUrl?: string;
+  idDocumentType?: string;
+  // Payment
+  bankAccountLast4?: string;
+  bankAccountName?: string;
+  stripeAccountId?: string;
+  // Preferences
+  emailNotifications?: boolean;
+  smsNotifications?: boolean;
+  pushNotifications?: boolean;
+  lastLoginAt?: string;
 }
 
 export interface Hub {
@@ -54,10 +108,67 @@ export interface Hub {
   tier: HubTier;
   rating: number;
   totalDeliveries: number;
-  status: string;
+  status: HubStatus;
   ownerId: string;
   createdAt: string;
   updatedAt: string;
+  // Property details
+  propertyType?: string;
+  storageAreaSqFt?: number;
+  hasSecuredArea?: boolean;
+  hasCameraSystem?: boolean;
+  hasParkingSpace?: boolean;
+  operatingHours?: string;
+  availableDays?: string[];
+  preferredDeliveryTime?: string;
+  // Application & review
+  applicationNotes?: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  reviewNotes?: string;
+  rejectionReason?: string;
+  approvedAt?: string;
+  activatedAt?: string;
+  photos?: HubPhoto[];
+}
+
+export interface HubPhoto {
+  id: string;
+  hubId: string;
+  photoUrl: string;
+  description?: string;
+  photoType: string;
+  displayOrder: number;
+  isApproved: boolean;
+  createdAt: string;
+}
+
+export interface Message {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  hubId?: string;
+  subject?: string;
+  content: string;
+  status: MessageStatus;
+  readAt?: string;
+  createdAt: string;
+  sender?: User;
+  receiver?: User;
+  hub?: Hub;
+}
+
+export interface Notification {
+  id: string;
+  userId: string;
+  type: NotificationType;
+  category: NotificationCategory;
+  title: string;
+  message: string;
+  data?: any;
+  isRead: boolean;
+  sentAt: string;
+  readAt?: string;
 }
 
 export interface Package {
@@ -111,6 +222,51 @@ export interface ProofOfDeliveryDto {
 export interface LoginDto {
   email: string;
   password: string;
+}
+
+export interface RegisterDto {
+  email: string;
+  password: string;
+  fullName: string;
+  phoneNumber: string;
+  role: UserRole;
+  // Enhanced fields
+  dateOfBirth?: string;
+  streetAddress?: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+}
+
+export interface CreateHubDto {
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  // Property details
+  propertyType?: string;
+  storageAreaSqFt?: number;
+  hasSecuredArea?: boolean;
+  hasCameraSystem?: boolean;
+  hasParkingSpace?: boolean;
+  operatingHours?: string;
+  availableDays?: string[];
+  preferredDeliveryTime?: string;
+  applicationNotes?: string;
+}
+
+export interface SendMessageDto {
+  receiverId: string;
+  hubId?: string;
+  subject?: string;
+  content: string;
+}
+
+export interface Conversation {
+  otherUser: User;
+  lastMessage: Message;
+  unreadCount: number;
 }
 
 export interface LoginResponse {

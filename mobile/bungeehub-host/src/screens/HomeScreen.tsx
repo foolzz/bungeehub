@@ -15,7 +15,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import apiService from '../services/api.service';
-import { Delivery, DeliveryStatus, Hub, User } from '../types';
+import { Delivery, DeliveryStatus, Hub, HubStatus, User } from '../types';
 
 interface HomeScreenProps {
   navigation: any;
@@ -27,20 +27,22 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   const loadData = async () => {
     try {
       // Load user and hub info
       const [userData, hubData] = await Promise.all([
         apiService.getUser(),
-        apiService.getMyHub(),
+        apiService.getMyHub().catch(() => null), // Hub might not exist yet
       ]);
 
       setUser(userData);
       setHub(hubData);
 
-      // Load deliveries for this hub
-      if (hubData) {
+      // Load deliveries for this hub (only if hub exists and is active)
+      if (hubData && hubData.status === HubStatus.ACTIVE) {
         const deliveriesData = await apiService.getHubDeliveries(hubData.id);
         // Sort by status (pending first, then in progress, then others)
         const sorted = deliveriesData.sort((a, b) => {
@@ -56,11 +58,19 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         });
         setDeliveries(sorted);
       }
+
+      // Load unread counts
+      const [msgCount, notifCount] = await Promise.all([
+        apiService.getUnreadMessageCount().catch(() => 0),
+        apiService.getUnreadNotificationCount().catch(() => 0),
+      ]);
+      setUnreadMessages(msgCount);
+      setUnreadNotifications(notifCount);
     } catch (error: any) {
       console.error('Error loading data:', error);
       Alert.alert(
         'Error',
-        error.response?.data?.message || 'Failed to load deliveries'
+        error.response?.data?.message || 'Failed to load data'
       );
     } finally {
       setLoading(false);
@@ -88,6 +98,23 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         return '#4caf50';
       case DeliveryStatus.FAILED:
       case DeliveryStatus.RETURNED:
+        return '#f44336';
+      default:
+        return '#999';
+    }
+  };
+
+  const getHubStatusColor = (status: HubStatus) => {
+    switch (status) {
+      case HubStatus.PENDING:
+        return '#ff9800';
+      case HubStatus.UNDER_REVIEW:
+        return '#2196f3';
+      case HubStatus.APPROVED:
+      case HubStatus.ACTIVE:
+        return '#4caf50';
+      case HubStatus.REJECTED:
+      case HubStatus.SUSPENDED:
         return '#f44336';
       default:
         return '#999';
@@ -163,10 +190,50 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
           <Text style={styles.welcomeText}>Welcome, {user?.name}</Text>
           <Text style={styles.hubName}>{hub?.name || 'No Hub'}</Text>
         </View>
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Messages')}
+            style={styles.iconButton}
+          >
+            <Text style={styles.iconText}>💬</Text>
+            {unreadMessages > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{unreadMessages}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Notifications')}
+            style={styles.iconButton}
+          >
+            <Text style={styles.iconText}>🔔</Text>
+            {unreadNotifications > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{unreadNotifications}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
       </View>
+
+      {/* Hub Status Banner (if not active) */}
+      {hub && hub.status !== HubStatus.ACTIVE && (
+        <TouchableOpacity
+          style={[
+            styles.hubStatusBanner,
+            { backgroundColor: getHubStatusColor(hub.status) },
+          ]}
+          onPress={() => navigation.navigate('HubApplication')}
+        >
+          <Text style={styles.hubStatusText}>
+            Hub Status: {hub.status}
+          </Text>
+          <Text style={styles.hubStatusSubtext}>Tap for details →</Text>
+        </TouchableOpacity>
+      )}
 
       {/* Stats */}
       <View style={styles.statsContainer}>
@@ -202,36 +269,51 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
       {/* Quick Actions */}
       <View style={styles.actionsContainer}>
-        <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: '#1a73e8' }]}
-          onPress={() => navigation.navigate('Scanner')}
-        >
-          <Text style={styles.actionButtonText}>Scan Package</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: '#4caf50' }]}
-          onPress={() => navigation.navigate('RouteMap')}
-        >
-          <Text style={styles.actionButtonText}>View Routes</Text>
-        </TouchableOpacity>
+        {hub && hub.status === HubStatus.ACTIVE ? (
+          <>
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: '#1a73e8' }]}
+              onPress={() => navigation.navigate('Scanner')}
+            >
+              <Text style={styles.actionButtonText}>Scan Package</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: '#4caf50' }]}
+              onPress={() => navigation.navigate('RouteMap')}
+            >
+              <Text style={styles.actionButtonText}>View Routes</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <TouchableOpacity
+            style={[styles.actionButton, { backgroundColor: '#1a73e8', flex: 1 }]}
+            onPress={() => navigation.navigate('HubApplication')}
+          >
+            <Text style={styles.actionButtonText}>View Application Status</Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Deliveries List */}
-      <Text style={styles.sectionTitle}>Deliveries</Text>
-      <FlatList
-        data={deliveries}
-        renderItem={renderDeliveryItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContent}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No deliveries yet</Text>
-          </View>
-        }
-      />
+      {hub && hub.status === HubStatus.ACTIVE && (
+        <>
+          <Text style={styles.sectionTitle}>Deliveries</Text>
+          <FlatList
+            data={deliveries}
+            renderItem={renderDeliveryItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.listContent}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>No deliveries yet</Text>
+              </View>
+            }
+          />
+        </>
+      )}
     </View>
   );
 }
@@ -266,6 +348,35 @@ const styles = StyleSheet.create({
     color: '#333',
     marginTop: 4,
   },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  iconButton: {
+    position: 'relative',
+    padding: 5,
+  },
+  iconText: {
+    fontSize: 24,
+  },
+  badge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: '#f44336',
+    borderRadius: 10,
+    minWidth: 20,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 5,
+  },
+  badgeText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
   logoutButton: {
     padding: 8,
   },
@@ -273,6 +384,21 @@ const styles = StyleSheet.create({
     color: '#1a73e8',
     fontSize: 14,
     fontWeight: '600',
+  },
+  hubStatusBanner: {
+    padding: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  hubStatusText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  hubStatusSubtext: {
+    color: '#fff',
+    fontSize: 14,
   },
   statsContainer: {
     flexDirection: 'row',
