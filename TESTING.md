@@ -2,6 +2,32 @@
 
 This guide explains how to generate test packages and simulate routing for testing the Bungie Hub application.
 
+## 📋 Quick Reference
+
+```bash
+# Setup
+npm run prisma:seed                    # Initial seed (users, hubs, packages)
+npm run seed:packages 100              # Generate 100 test packages
+
+# Routing
+npm run seed:routes list               # List all packages
+npm run seed:routes progress 20        # Move 20 packages forward
+npm run seed:routes status DELIVERED 10  # Mark 10 as delivered
+npm run seed:routes reassign <hub-id> 15 # Reassign 15 packages to hub
+```
+
+**Test Users:**
+- Admin: `admin@bungiehub.com` / `Admin123!`
+- Hub Host: `john.doe@example.com` / `Password123!`
+- Customer: `customer1@example.com` / `Password123!`
+
+**URLs:**
+- Dashboard: http://localhost:8080/dashboard
+- Packages: http://localhost:8080/packages
+- Admin: http://localhost:8080/admin
+
+---
+
 ## Prerequisites
 
 Make sure you've run the main seed first:
