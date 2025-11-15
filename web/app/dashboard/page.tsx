@@ -41,7 +41,7 @@ export default function DashboardPage() {
             const totalDeliveries = userHubs.reduce((sum: number, hub: any) =>
               sum + (hub.totalDeliveries || 0), 0);
             const avgRating = userHubs.length > 0
-              ? userHubs.reduce((sum: number, hub: any) => sum + (hub.rating || 0), 0) / userHubs.length
+              ? userHubs.reduce((sum: number, hub: any) => sum + (parseFloat(hub.rating) || 0), 0) / userHubs.length
               : 0;
 
             setStats({
@@ -209,7 +209,7 @@ export default function DashboardPage() {
                     </div>
                     <div className="text-right">
                       <div className="text-sm text-gray-600">
-                        ★ {hub.rating?.toFixed(1) || '0.0'}
+                        ★ {hub.rating ? parseFloat(hub.rating).toFixed(1) : '0.0'}
                       </div>
                       <div className="text-sm text-gray-600">
                         {hub.totalDeliveries || 0} deliveries
