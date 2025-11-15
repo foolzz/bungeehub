@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
@@ -16,12 +18,28 @@ import { MessagesModule } from './modules/messages/messages.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 
-@Module({
-  imports: [
+// Conditionally include ServeStaticModule based on environment
+const getImports = (): any[] => {
+  const imports: any[] = [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
     }),
+  ];
+
+  // Only serve static files if SERVE_STATIC is true (default: true for combined mode)
+  const serveStatic = process.env.SERVE_STATIC !== 'false';
+  if (serveStatic) {
+    imports.push(
+      ServeStaticModule.forRoot({
+        rootPath: join(__dirname, '..', 'web', 'out'),
+        exclude: ['/api*'],
+      }),
+    );
+  }
+
+  return [
+    ...imports,
     PrismaModule,
     DatabaseModule,
     AuthModule,
@@ -35,7 +53,11 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     MessagesModule,
     AdminModule,
     NotificationsModule,
-  ],
+  ];
+};
+
+@Module({
+  imports: getImports(),
   controllers: [AppController],
   providers: [AppService],
 })
