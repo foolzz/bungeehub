@@ -32,7 +32,7 @@ const getImports = (): any[] => {
   if (serveStatic) {
     imports.push(
       ServeStaticModule.forRoot({
-        rootPath: join(__dirname, '..', 'web', 'out'),
+        rootPath: join(__dirname, '..', 'public', 'web'),
         exclude: ['/api*'],
       }),
     );
