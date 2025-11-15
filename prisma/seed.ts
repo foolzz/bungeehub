@@ -175,7 +175,7 @@ async function main() {
       status: PackageStatus.AT_HUB,
       assignedHubId: hub1.id,
       weight: 2.5,
-      dimensions: { length: 12, width: 8, height: 6 },
+      dimensions: '12x8x6',
       specialInstructions: 'Leave at front door',
     },
   });
@@ -194,7 +194,7 @@ async function main() {
       status: PackageStatus.DELIVERED,
       assignedHubId: hub1.id,
       weight: 1.2,
-      dimensions: { length: 10, width: 10, height: 4 },
+      dimensions: '10x10x4',
     },
   });
   console.log(`✅ Created package: ${package2.trackingNumber} (${package2.status})`);
@@ -245,13 +245,13 @@ async function main() {
     data: {
       packageId: package2.id,
       hubId: hub1.id,
-      hostId: hubHost1.id,
       status: 'DELIVERED',
-      photoUrl: 'https://storage.googleapis.com/bungeehub-media/deliveries/photo1.jpg',
+      proofOfDeliveryUrl: 'https://storage.googleapis.com/bungeehub-media/deliveries/photo1.jpg',
       deliveredAt: new Date('2025-11-15T10:30:00Z'),
-      latitude: 37.7897,
-      longitude: -122.3972,
-      deliveryNotes: 'Delivered to front desk',
+      deliveryLatitude: 37.7897,
+      deliveryLongitude: -122.3972,
+      recipientName: 'Charlie Brown',
+      notes: 'Delivered to front desk',
     },
   });
   console.log(`✅ Created delivery for package: ${package2.trackingNumber}`);
@@ -311,8 +311,12 @@ async function main() {
   await prisma.eventLog.create({
     data: {
       eventType: 'package_scanned',
-      entityType: 'package',
-      entityId: package1.id,
+      packageId: package1.id,
+      hubId: hub1.id,
+      performedBy: hubHost1.id,
+      latitude: hub1.latitude,
+      longitude: hub1.longitude,
+      message: `Package scanned at ${hub1.name}`,
       metadata: {
         scannedBy: hubHost1.id,
         location: hub1.name,
@@ -324,8 +328,13 @@ async function main() {
   await prisma.eventLog.create({
     data: {
       eventType: 'delivery_completed',
-      entityType: 'delivery',
-      entityId: delivery1.id,
+      deliveryId: delivery1.id,
+      packageId: package2.id,
+      hubId: hub1.id,
+      performedBy: hubHost1.id,
+      latitude: delivery1.deliveryLatitude,
+      longitude: delivery1.deliveryLongitude,
+      message: 'Delivery completed successfully',
       metadata: {
         packageId: package2.id,
         hubId: hub1.id,

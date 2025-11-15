@@ -228,7 +228,7 @@ export class ScanningService {
 
     const events = await this.prisma.eventLog.findMany({
       where: { packageId },
-      orderBy: { timestamp: 'desc' },
+      orderBy: { createdAt: 'desc' },
       include: {
         hub: {
           select: {
@@ -262,7 +262,7 @@ export class ScanningService {
 
     const events = await this.prisma.eventLog.findMany({
       where: { batchId },
-      orderBy: { timestamp: 'desc' },
+      orderBy: { createdAt: 'desc' },
       include: {
         hub: {
           select: {

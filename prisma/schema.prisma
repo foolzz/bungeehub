@@ -33,6 +33,7 @@ enum HubTier {
 }
 
 enum PackageStatus {
+  PENDING
   CREATED
   IN_TRANSIT
   AT_HUB
@@ -43,13 +44,18 @@ enum PackageStatus {
 }
 
 enum BatchStatus {
+  PENDING
   CREATED
   IN_TRANSIT
+  ARRIVED
   DELIVERED
   COMPLETED
 }
 
 enum DeliveryStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
   DELIVERED
   FAILED
   RETURNED
@@ -63,7 +69,7 @@ model User {
   phone     String?
   fullName  String   @map("full_name")
   role      UserRole
-  password  String   // Hashed password
+  password  String // Hashed password
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -75,27 +81,28 @@ model User {
 }
 
 model Hub {
-  id             String     @id @default(uuid())
-  hostId         String     @map("host_id")
-  name           String
-  address        String
-  latitude       Decimal?   @db.Decimal(10, 8)
-  longitude      Decimal?   @db.Decimal(11, 8)
-  capacity       Int        @default(100) // max packages per batch
-  status         HubStatus  @default(PENDING)
-  tier           HubTier    @default(NEW_HUB)
-  rating         Decimal    @default(0.00) @db.Decimal(3, 2)
+  id              String    @id @default(uuid())
+  hostId          String    @map("host_id")
+  name            String
+  address         String
+  latitude        Decimal?  @db.Decimal(10, 8)
+  longitude       Decimal?  @db.Decimal(11, 8)
+  capacity        Int       @default(100) // max packages per batch
+  status          HubStatus @default(PENDING)
+  tier            HubTier   @default(NEW_HUB)
+  rating          Decimal   @default(0.00) @db.Decimal(3, 2)
   totalDeliveries Int       @default(0) @map("total_deliveries")
-  createdAt      DateTime   @default(now()) @map("created_at")
-  updatedAt      DateTime   @updatedAt @map("updated_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 
   // Relations
-  host         User          @relation(fields: [hostId], references: [id], onDelete: Cascade)
-  packages     Package[]
-  batches      Batch[]
-  deliveries   Delivery[]
-  metrics      HubMetric[]
-  reviews      HubReview[]
+  host       User        @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  packages   Package[]
+  batches    Batch[]
+  deliveries Delivery[]
+  metrics    HubMetric[]
+  reviews    HubReview[]
+  eventLogs  EventLog[]
 
   @@index([hostId])
   @@index([status])
@@ -104,70 +111,85 @@ model Hub {
 }
 
 model Package {
-  id                 String        @id @default(uuid())
-  trackingNumber     String        @unique @map("tracking_number")
-  barcode            String?
-  senderName         String?       @map("sender_name")
-  recipientName      String        @map("recipient_name")
-  recipientPhone     String?       @map("recipient_phone")
-  deliveryAddress    String        @map("delivery_address")
-  deliveryLatitude   Decimal?      @map("delivery_latitude") @db.Decimal(10, 8)
-  deliveryLongitude  Decimal?      @map("delivery_longitude") @db.Decimal(11, 8)
-  status             PackageStatus @default(CREATED)
-  assignedHubId      String?       @map("assigned_hub_id")
-  weight             Decimal?      @db.Decimal(10, 2) // in kg
-  dimensions         Json?         // {length, width, height}
-  specialInstructions String?      @map("special_instructions") @db.Text
-  createdAt          DateTime      @default(now()) @map("created_at")
-  updatedAt          DateTime      @updatedAt @map("updated_at")
+  id                  String        @id @default(uuid())
+  trackingNumber      String        @unique @map("tracking_number")
+  barcode             String        @unique
+  batchId             String?       @map("batch_id")
+  senderName          String?       @map("sender_name")
+  recipientName       String?       @map("recipient_name")
+  recipientPhone      String?       @map("recipient_phone")
+  deliveryAddress     String?       @map("delivery_address")
+  deliveryLatitude    Decimal?      @map("delivery_latitude") @db.Decimal(10, 8)
+  deliveryLongitude   Decimal?      @map("delivery_longitude") @db.Decimal(11, 8)
+  status              PackageStatus @default(PENDING)
+  assignedHubId       String?       @map("assigned_hub_id")
+  weight              Decimal?      @db.Decimal(10, 2) // in kg
+  dimensions          String? // "LxWxH in cm"
+  notes               String?       @db.Text
+  specialInstructions String?       @map("special_instructions") @db.Text
+  createdAt           DateTime      @default(now()) @map("created_at")
+  updatedAt           DateTime      @updatedAt @map("updated_at")
 
   // Relations
   assignedHub Hub?       @relation(fields: [assignedHubId], references: [id])
-  deliveries  Delivery[]
+  batch       Batch?     @relation(fields: [batchId], references: [id])
+  delivery    Delivery?
+  eventLogs   EventLog[]
 
   @@index([trackingNumber])
+  @@index([barcode])
   @@index([status])
   @@index([assignedHubId])
+  @@index([batchId])
   @@map("packages")
 }
 
 model Batch {
-  id             String      @id @default(uuid())
-  hubId          String      @map("hub_id")
-  batchNumber    String      @unique @map("batch_number")
-  totalPackages  Int         @default(0) @map("total_packages")
-  status         BatchStatus @default(CREATED)
-  createdAt      DateTime    @default(now()) @map("created_at")
-  deliveredAt    DateTime?   @map("delivered_at")
-  updatedAt      DateTime    @updatedAt @map("updated_at")
+  id                   String      @id @default(uuid())
+  hubId                String      @map("hub_id")
+  batchNumber          String      @unique @map("batch_number")
+  totalPackages        Int         @default(0) @map("total_packages")
+  status               BatchStatus @default(PENDING)
+  expectedDeliveryDate DateTime?   @map("expected_delivery_date")
+  notes                String?     @db.Text
+  createdAt            DateTime    @default(now()) @map("created_at")
+  deliveredAt          DateTime?   @map("delivered_at")
+  updatedAt            DateTime    @updatedAt @map("updated_at")
 
   // Relations
-  hub Hub @relation(fields: [hubId], references: [id])
+  hub       Hub        @relation(fields: [hubId], references: [id])
+  packages  Package[]
+  eventLogs EventLog[]
 
+  @@index([hubId])
+  @@index([status])
   @@map("batches")
 }
 
 model Delivery {
-  id            String         @id @default(uuid())
-  packageId     String         @map("package_id")
-  hubId         String         @map("hub_id")
-  hostId        String         @map("host_id")
-  status        DeliveryStatus
-  photoUrl      String?        @map("photo_url")
-  signatureUrl  String?        @map("signature_url")
-  deliveredAt   DateTime?      @map("delivered_at")
-  latitude      Decimal?       @db.Decimal(10, 8)
-  longitude     Decimal?       @db.Decimal(11, 8)
-  deliveryNotes String?        @map("delivery_notes") @db.Text
-  failureReason String?        @map("failure_reason")
-  createdAt     DateTime       @default(now()) @map("created_at")
+  id                 String         @id @default(uuid())
+  packageId          String         @unique @map("package_id")
+  hubId              String         @map("hub_id")
+  status             DeliveryStatus @default(PENDING)
+  proofOfDeliveryUrl String?        @map("proof_of_delivery_url")
+  deliveryLatitude   Decimal?       @map("delivery_latitude") @db.Decimal(10, 8)
+  deliveryLongitude  Decimal?       @map("delivery_longitude") @db.Decimal(11, 8)
+  recipientName      String?        @map("recipient_name")
+  signatureUrl       String?        @map("signature_url")
+  deliveredAt        DateTime?      @map("delivered_at")
+  notes              String?        @db.Text
+  failureReason      String?        @map("failure_reason")
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
 
   // Relations
-  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
-  hub     Hub     @relation(fields: [hubId], references: [id])
+  package   Package    @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  hub       Hub        @relation(fields: [hubId], references: [id])
+  eventLogs EventLog[]
 
   @@index([packageId])
   @@index([hubId])
+  @@index([status])
   @@index([deliveredAt])
   @@map("deliveries")
 }
@@ -196,7 +218,7 @@ model HubReview {
   hubId      String   @map("hub_id")
   deliveryId String?  @map("delivery_id")
   customerId String   @map("customer_id")
-  rating     Int      // 1-5
+  rating     Int // 1-5
   comment    String?  @db.Text
   createdAt  DateTime @default(now()) @map("created_at")
 
@@ -204,19 +226,36 @@ model HubReview {
   hub      Hub  @relation(fields: [hubId], references: [id], onDelete: Cascade)
   customer User @relation(fields: [customerId], references: [id])
 
+  @@index([hubId])
+  @@index([customerId])
   @@map("hub_reviews")
 }
 
 model EventLog {
-  id         String   @id @default(uuid())
-  eventType  String   @map("event_type") // 'package_scanned', 'delivery_completed', etc.
-  entityType String?  @map("entity_type") // 'package', 'hub', 'user'
-  entityId   String?  @map("entity_id")
-  metadata   Json?
-  createdAt  DateTime @default(now()) @map("created_at")
+  id          String   @id @default(uuid())
+  eventType   String   @map("event_type") // 'package_scanned', 'delivery_completed', etc.
+  packageId   String?  @map("package_id")
+  batchId     String?  @map("batch_id")
+  deliveryId  String?  @map("delivery_id")
+  hubId       String?  @map("hub_id")
+  performedBy String?  @map("performed_by") // user ID who performed the action
+  latitude    Decimal? @db.Decimal(10, 8)
+  longitude   Decimal? @db.Decimal(11, 8)
+  message     String?
+  metadata    Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  package  Package?  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  batch    Batch?    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  delivery Delivery? @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  hub      Hub?      @relation(fields: [hubId], references: [id], onDelete: Cascade)
 
   @@index([eventType])
-  @@index([entityType, entityId])
+  @@index([packageId])
+  @@index([batchId])
+  @@index([deliveryId])
+  @@index([hubId])
   @@index([createdAt])
   @@map("event_logs")
 }
