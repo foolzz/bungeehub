@@ -137,3 +137,30 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# GCP & Cloud specific
+.gcloud/
+service-account-key.json
+*-credentials.json
+gcp-key.json
+
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.vscode/settings.json
+
+# Build outputs
+build/
+dist/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
