@@ -1,6 +1,8 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -9,15 +11,49 @@ export class AuthController {
 
   @Post('register')
   @ApiOperation({ summary: 'Register a new user' })
-  async register(@Body() registerDto: any) {
-    // TODO: Implement in Phase 1
-    return { message: 'Registration endpoint - Coming in Phase 1' };
+  @ApiResponse({
+    status: 201,
+    description: 'User successfully registered',
+    schema: {
+      example: {
+        user: {
+          id: '123e4567-e89b-12d3-a456-426614174000',
+          email: 'john.doe@example.com',
+          fullName: 'John Doe',
+          phone: '+1234567890',
+          role: 'HUB_HOST',
+          createdAt: '2025-11-15T02:30:00.000Z',
+        },
+        access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+      },
+    },
+  })
+  @ApiResponse({ status: 409, description: 'User with this email already exists' })
+  async register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
   }
 
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login user' })
-  async login(@Body() loginDto: any) {
-    // TODO: Implement in Phase 1
-    return { message: 'Login endpoint - Coming in Phase 1' };
+  @ApiResponse({
+    status: 200,
+    description: 'User successfully logged in',
+    schema: {
+      example: {
+        user: {
+          id: '123e4567-e89b-12d3-a456-426614174000',
+          email: 'john.doe@example.com',
+          fullName: 'John Doe',
+          phone: '+1234567890',
+          role: 'HUB_HOST',
+        },
+        access_token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  async login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
   }
 }
