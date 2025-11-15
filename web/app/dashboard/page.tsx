@@ -6,6 +6,7 @@ import { authApi, hubsApi, packagesApi } from '@/lib/api';
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>('');
   const [stats, setStats] = useState<any>({
     totalDeliveries: 0,
     earnings: 0,
@@ -13,6 +14,7 @@ export default function DashboardPage() {
     activePackages: 0,
   });
   const [hubs, setHubs] = useState<any[]>([]);
+  const [hubsLoaded, setHubsLoaded] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,12 +23,19 @@ export default function DashboardPage() {
         const userData = profileResponse.data;
         setUser(userData);
 
+        console.log('User data:', userData);
+
         // Fetch role-specific data
         if (userData.role === 'HUB_HOST') {
           try {
+            console.log('Fetching hubs for hub host...');
             const hubsResponse = await hubsApi.getMyHubs();
+            console.log('Hubs response:', hubsResponse.data);
+
             const userHubs = hubsResponse.data?.data || [];
+            console.log('User hubs:', userHubs);
             setHubs(userHubs);
+            setHubsLoaded(true);
 
             // Calculate stats from hubs
             const totalDeliveries = userHubs.reduce((sum: number, hub: any) =>
@@ -42,8 +51,10 @@ export default function DashboardPage() {
               activePackages: userHubs.reduce((sum: number, hub: any) =>
                 sum + (hub._count?.packages || 0), 0),
             });
-          } catch (error) {
+          } catch (error: any) {
             console.error('Error fetching hubs:', error);
+            setError(`Failed to load hubs: ${error.response?.data?.message || error.message}`);
+            setHubsLoaded(true);
           }
         } else if (userData.role === 'CUSTOMER') {
           // For customers, we could fetch their packages
@@ -63,6 +74,7 @@ export default function DashboardPage() {
           }
         }
       } catch (error) {
+        console.error('Error fetching profile:', error);
         // Redirect to login if not authenticated
         window.location.href = '/login';
       } finally {
@@ -152,9 +164,30 @@ export default function DashboardPage() {
           )}
         </div>
 
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+            <strong>Error:</strong> {error}
+          </div>
+        )}
+
+        {user?.role === 'HUB_HOST' && hubsLoaded && hubs.length === 0 && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+            <h3 className="text-lg font-semibold text-yellow-900 mb-2">No Hubs Registered Yet</h3>
+            <p className="text-yellow-800 mb-4">
+              You haven't registered any hubs yet. Click the "Register Your Hub" button below to get started and start earning!
+            </p>
+            <a
+              href="/hubs/register"
+              className="inline-block bg-primary-600 text-white px-6 py-2 rounded-md hover:bg-primary-700 font-medium"
+            >
+              Register Your First Hub
+            </a>
+          </div>
+        )}
+
         {user?.role === 'HUB_HOST' && hubs.length > 0 && (
           <div className="bg-white shadow rounded-lg p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4 text-gray-900">My Hubs</h2>
+            <h2 className="text-xl font-bold mb-4 text-gray-900">My Hubs ({hubs.length})</h2>
             <div className="space-y-3">
               {hubs.map((hub: any) => (
                 <div
