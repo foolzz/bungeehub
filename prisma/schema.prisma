@@ -19,10 +19,13 @@ enum UserRole {
 }
 
 enum HubStatus {
-  PENDING
-  ACTIVE
-  INACTIVE
-  SUSPENDED
+  PENDING // Initial application
+  UNDER_REVIEW // Admin is reviewing
+  APPROVED // Approved, ready to activate
+  ACTIVE // Currently active
+  INACTIVE // Temporarily inactive
+  SUSPENDED // Suspended by admin
+  REJECTED // Application rejected
 }
 
 enum HubTier {
@@ -61,21 +64,76 @@ enum DeliveryStatus {
   RETURNED
 }
 
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+}
+
+enum NotificationType {
+  EMAIL
+  SMS
+  PUSH
+  IN_APP
+}
+
+enum NotificationCategory {
+  APPLICATION_STATUS
+  PACKAGE_DELIVERY
+  MESSAGE_RECEIVED
+  ACCOUNT_UPDATE
+  SYSTEM_ALERT
+}
+
 // Models
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  phone     String?
-  fullName  String   @map("full_name")
-  role      UserRole
-  password  String // Hashed password
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id       String   @id @default(uuid())
+  email    String   @unique
+  phone    String?
+  fullName String   @map("full_name")
+  role     UserRole
+  password String // Hashed password
+
+  // Enhanced Profile Fields
+  dateOfBirth     DateTime? @map("date_of_birth") @db.Date
+  profilePhotoUrl String?   @map("profile_photo_url")
+
+  // Address Information
+  streetAddress String? @map("street_address")
+  city          String?
+  state         String?
+  postalCode    String? @map("postal_code")
+  country       String? @default("USA")
+
+  // Verification & Security
+  isEmailVerified Boolean @default(false) @map("is_email_verified")
+  isPhoneVerified Boolean @default(false) @map("is_phone_verified")
+  isIdVerified    Boolean @default(false) @map("is_id_verified")
+  idDocumentUrl   String? @map("id_document_url")
+  idDocumentType  String? @map("id_document_type") // "drivers_license", "passport", etc.
+
+  // Payment Information
+  bankAccountLast4 String? @map("bank_account_last4")
+  bankAccountName  String? @map("bank_account_name")
+  stripeAccountId  String? @map("stripe_account_id")
+
+  // Communication Preferences
+  emailNotifications Boolean @default(true) @map("email_notifications")
+  smsNotifications   Boolean @default(true) @map("sms_notifications")
+  pushNotifications  Boolean @default(true) @map("push_notifications")
+
+  // Timestamps
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  lastLoginAt DateTime? @map("last_login_at")
 
   // Relations
-  hubs    Hub[]
-  reviews HubReview[]
+  hubs             Hub[]
+  reviews          HubReview[]
+  sentMessages     Message[]      @relation("SentMessages")
+  receivedMessages Message[]      @relation("ReceivedMessages")
+  notifications    Notification[]
 
   @@map("users")
 }
@@ -92,8 +150,31 @@ model Hub {
   tier            HubTier   @default(NEW_HUB)
   rating          Decimal   @default(0.00) @db.Decimal(3, 2)
   totalDeliveries Int       @default(0) @map("total_deliveries")
-  createdAt       DateTime  @default(now()) @map("created_at")
-  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Property Details
+  propertyType    String? @map("property_type") // "house", "garage", "warehouse", etc.
+  storageAreaSqFt Int?    @map("storage_area_sqft")
+  hasSecuredArea  Boolean @default(false) @map("has_secured_area")
+  hasCameraSystem Boolean @default(false) @map("has_camera_system")
+  hasParkingSpace Boolean @default(false) @map("has_parking_space")
+
+  // Operating Information
+  operatingHours        String?  @map("operating_hours") // "9:00 AM - 6:00 PM"
+  availableDays         String[] @default([]) @map("available_days") // ["monday", "tuesday", ...]
+  preferredDeliveryTime String?  @map("preferred_delivery_time")
+
+  // Application & Review
+  applicationNotes String?   @map("application_notes") @db.Text
+  reviewedBy       String?   @map("reviewed_by") // admin user ID
+  reviewedAt       DateTime? @map("reviewed_at")
+  reviewNotes      String?   @map("review_notes") @db.Text
+  rejectionReason  String?   @map("rejection_reason") @db.Text
+  approvedAt       DateTime? @map("approved_at")
+  activatedAt      DateTime? @map("activated_at")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
   host       User        @relation(fields: [hostId], references: [id], onDelete: Cascade)
@@ -103,6 +184,8 @@ model Hub {
   metrics    HubMetric[]
   reviews    HubReview[]
   eventLogs  EventLog[]
+  photos     HubPhoto[]
+  messages   Message[]
 
   @@index([hostId])
   @@index([status])
@@ -282,4 +365,68 @@ model ApiKey {
   createdAt   DateTime  @default(now()) @map("created_at")
 
   @@map("api_keys")
+}
+
+model HubPhoto {
+  id           String   @id @default(uuid())
+  hubId        String   @map("hub_id")
+  photoUrl     String   @map("photo_url")
+  description  String?  @db.Text
+  photoType    String   @map("photo_type") // "exterior", "storage_area", "entrance", "other"
+  displayOrder Int      @default(0) @map("display_order")
+  isApproved   Boolean  @default(false) @map("is_approved")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  // Relations
+  hub Hub @relation(fields: [hubId], references: [id], onDelete: Cascade)
+
+  @@index([hubId])
+  @@index([isApproved])
+  @@map("hub_photos")
+}
+
+model Message {
+  id         String        @id @default(uuid())
+  senderId   String        @map("sender_id")
+  receiverId String        @map("receiver_id")
+  hubId      String?       @map("hub_id") // Related hub if applicable
+  subject    String?
+  content    String        @db.Text
+  status     MessageStatus @default(SENT)
+  readAt     DateTime?     @map("read_at")
+  createdAt  DateTime      @default(now()) @map("created_at")
+
+  // Relations
+  sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  hub      Hub? @relation(fields: [hubId], references: [id], onDelete: SetNull)
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([hubId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+model Notification {
+  id       String               @id @default(uuid())
+  userId   String               @map("user_id")
+  type     NotificationType
+  category NotificationCategory
+  title    String
+  message  String               @db.Text
+  data     Json? // Additional data for deep linking, etc.
+  isRead   Boolean              @default(false) @map("is_read")
+  sentAt   DateTime             @default(now()) @map("sent_at")
+  readAt   DateTime?            @map("read_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([category])
+  @@index([sentAt])
+  @@map("notifications")
 }
