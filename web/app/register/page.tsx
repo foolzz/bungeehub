@@ -42,7 +42,17 @@ export default function RegisterPage() {
       const { access_token } = loginResponse.data;
 
       localStorage.setItem('token', access_token);
-      window.location.href = '/dashboard';
+
+      // Fetch user profile to determine role
+      const profileResponse = await authApi.getProfile();
+      const userData = profileResponse.data;
+
+      // Redirect based on role
+      if (userData.role === 'ADMIN') {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = '/dashboard';
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {

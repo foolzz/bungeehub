@@ -21,8 +21,16 @@ export default function LoginPage() {
       // Store token
       localStorage.setItem('token', access_token);
 
-      // Redirect to dashboard
-      window.location.href = '/dashboard';
+      // Fetch user profile to determine role
+      const profileResponse = await authApi.getProfile();
+      const userData = profileResponse.data;
+
+      // Redirect based on role
+      if (userData.role === 'ADMIN') {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = '/dashboard';
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {
