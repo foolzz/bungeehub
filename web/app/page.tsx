@@ -1,10 +1,52 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { authApi } from '@/lib/api';
+
 export default function Home() {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const response = await authApi.getProfile();
+          setUser(response.data);
+        }
+      } catch (error) {
+        // User not logged in or token expired
+        localStorage.removeItem('token');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, []);
+
+  const getDashboardUrl = () => {
+    if (!user) return '/register';
+    return user.role === 'ADMIN' ? '/admin' : '/dashboard';
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.reload();
+  };
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary-600 to-primary-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
+            {!loading && user && (
+              <div className="mb-6">
+                <p className="text-xl text-primary-100">Welcome back, {user.fullName}!</p>
+              </div>
+            )}
             <h1 className="text-5xl font-bold mb-6">
               Turn Your Home Into a Delivery Hub
             </h1>
@@ -12,19 +54,41 @@ export default function Home() {
               Join the community delivery network. Earn money while helping neighbors get their packages safely.
             </p>
             <div className="flex justify-center gap-4">
-              <a
-                href="/register"
-                className="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
-              >
-                Become a Hub Host
-              </a>
-              <a
-                href="/api-docs"
-                target="_blank"
-                className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition"
-              >
-                API Documentation
-              </a>
+              {!loading && (
+                <>
+                  {user ? (
+                    <>
+                      <a
+                        href={getDashboardUrl()}
+                        className="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
+                      >
+                        Go to Dashboard
+                      </a>
+                      <button
+                        onClick={handleLogout}
+                        className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <a
+                        href="/register"
+                        className="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
+                      >
+                        Become a Hub Host
+                      </a>
+                      <a
+                        href="/login"
+                        className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition"
+                      >
+                        Login
+                      </a>
+                    </>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -99,20 +163,39 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Join hundreds of hub hosts earning extra income while building community.
-          </p>
-          <a
-            href="/register"
-            className="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition inline-block"
-          >
-            Sign Up Now
-          </a>
-        </div>
-      </section>
+      {!loading && (
+        <section className="py-20">
+          <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            {user ? (
+              <>
+                <h2 className="text-3xl font-bold mb-4">Manage Your Hub</h2>
+                <p className="text-xl text-gray-600 mb-8">
+                  Track your deliveries, manage packages, and grow your earnings.
+                </p>
+                <a
+                  href={getDashboardUrl()}
+                  className="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition inline-block"
+                >
+                  Go to Dashboard
+                </a>
+              </>
+            ) : (
+              <>
+                <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+                <p className="text-xl text-gray-600 mb-8">
+                  Join hundreds of hub hosts earning extra income while building community.
+                </p>
+                <a
+                  href="/register"
+                  className="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition inline-block"
+                >
+                  Sign Up Now
+                </a>
+              </>
+            )}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
