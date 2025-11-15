@@ -8,8 +8,21 @@ import compression from 'compression';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Security
-  app.use(helmet());
+  // Security - Configure helmet to allow Next.js inline scripts
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", 'data:', 'https:'],
+          fontSrc: ["'self'", 'data:'],
+          connectSrc: ["'self'"],
+        },
+      },
+    }),
+  );
   app.use(compression());
 
   // CORS
