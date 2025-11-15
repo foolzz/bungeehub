@@ -49,6 +49,9 @@ export const packagesApi = {
   getAll: (params?: any) => api.get('/packages', { params }),
   getById: (id: string) => api.get(`/packages/${id}`),
   track: (trackingNumber: string) => api.get(`/packages/tracking/${trackingNumber}`),
+  create: (data: any) => api.post('/packages', data),
+  update: (id: string, data: any) => api.put(`/packages/${id}`, data),
+  delete: (id: string) => api.delete(`/packages/${id}`),
 };
 
 // Admin API

@@ -26,7 +26,9 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "ts-node prisma/seed.ts"
+    "prisma:seed": "ts-node prisma/seed.ts",
+    "seed:packages": "ts-node prisma/seed-packages.ts",
+    "seed:routes": "ts-node prisma/update-package-routes.ts"
   },
   "dependencies": {
     "@google-cloud/storage": "^7.0.0",
