@@ -1,0 +1,246 @@
+// Bungie Hub Database Schema
+// Generator and Datasource Configuration
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+
+enum UserRole {
+  HUB_HOST
+  CUSTOMER
+  ADMIN
+}
+
+enum HubStatus {
+  PENDING
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum HubTier {
+  NEW_HUB
+  ACTIVE_HUB
+  TOP_HUB
+  SUPER_HUB
+}
+
+enum PackageStatus {
+  CREATED
+  IN_TRANSIT
+  AT_HUB
+  OUT_FOR_DELIVERY
+  DELIVERED
+  FAILED
+  RETURNED
+}
+
+enum BatchStatus {
+  CREATED
+  IN_TRANSIT
+  DELIVERED
+  COMPLETED
+}
+
+enum DeliveryStatus {
+  DELIVERED
+  FAILED
+  RETURNED
+}
+
+// Models
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  phone     String?
+  fullName  String   @map("full_name")
+  role      UserRole
+  password  String   // Hashed password
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  hubs    Hub[]
+  reviews HubReview[]
+
+  @@map("users")
+}
+
+model Hub {
+  id             String     @id @default(uuid())
+  hostId         String     @map("host_id")
+  name           String
+  address        String
+  latitude       Decimal?   @db.Decimal(10, 8)
+  longitude      Decimal?   @db.Decimal(11, 8)
+  capacity       Int        @default(100) // max packages per batch
+  status         HubStatus  @default(PENDING)
+  tier           HubTier    @default(NEW_HUB)
+  rating         Decimal    @default(0.00) @db.Decimal(3, 2)
+  totalDeliveries Int       @default(0) @map("total_deliveries")
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+
+  // Relations
+  host         User          @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  packages     Package[]
+  batches      Batch[]
+  deliveries   Delivery[]
+  metrics      HubMetric[]
+  reviews      HubReview[]
+
+  @@index([hostId])
+  @@index([status])
+  @@index([tier])
+  @@map("hubs")
+}
+
+model Package {
+  id                 String        @id @default(uuid())
+  trackingNumber     String        @unique @map("tracking_number")
+  barcode            String?
+  senderName         String?       @map("sender_name")
+  recipientName      String        @map("recipient_name")
+  recipientPhone     String?       @map("recipient_phone")
+  deliveryAddress    String        @map("delivery_address")
+  deliveryLatitude   Decimal?      @map("delivery_latitude") @db.Decimal(10, 8)
+  deliveryLongitude  Decimal?      @map("delivery_longitude") @db.Decimal(11, 8)
+  status             PackageStatus @default(CREATED)
+  assignedHubId      String?       @map("assigned_hub_id")
+  weight             Decimal?      @db.Decimal(10, 2) // in kg
+  dimensions         Json?         // {length, width, height}
+  specialInstructions String?      @map("special_instructions") @db.Text
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  assignedHub Hub?       @relation(fields: [assignedHubId], references: [id])
+  deliveries  Delivery[]
+
+  @@index([trackingNumber])
+  @@index([status])
+  @@index([assignedHubId])
+  @@map("packages")
+}
+
+model Batch {
+  id             String      @id @default(uuid())
+  hubId          String      @map("hub_id")
+  batchNumber    String      @unique @map("batch_number")
+  totalPackages  Int         @default(0) @map("total_packages")
+  status         BatchStatus @default(CREATED)
+  createdAt      DateTime    @default(now()) @map("created_at")
+  deliveredAt    DateTime?   @map("delivered_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  hub Hub @relation(fields: [hubId], references: [id])
+
+  @@map("batches")
+}
+
+model Delivery {
+  id            String         @id @default(uuid())
+  packageId     String         @map("package_id")
+  hubId         String         @map("hub_id")
+  hostId        String         @map("host_id")
+  status        DeliveryStatus
+  photoUrl      String?        @map("photo_url")
+  signatureUrl  String?        @map("signature_url")
+  deliveredAt   DateTime?      @map("delivered_at")
+  latitude      Decimal?       @db.Decimal(10, 8)
+  longitude     Decimal?       @db.Decimal(11, 8)
+  deliveryNotes String?        @map("delivery_notes") @db.Text
+  failureReason String?        @map("failure_reason")
+  createdAt     DateTime       @default(now()) @map("created_at")
+
+  // Relations
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  hub     Hub     @relation(fields: [hubId], references: [id])
+
+  @@index([packageId])
+  @@index([hubId])
+  @@index([deliveredAt])
+  @@map("deliveries")
+}
+
+model HubMetric {
+  id                String   @id @default(uuid())
+  hubId             String   @map("hub_id")
+  date              DateTime @db.Date
+  packagesReceived  Int      @default(0) @map("packages_received")
+  packagesDelivered Int      @default(0) @map("packages_delivered")
+  packagesFailed    Int      @default(0) @map("packages_failed")
+  avgDeliveryTime   Int?     @map("avg_delivery_time") // in minutes
+  customerRating    Decimal? @map("customer_rating") @db.Decimal(3, 2)
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  // Relations
+  hub Hub @relation(fields: [hubId], references: [id], onDelete: Cascade)
+
+  @@unique([hubId, date])
+  @@index([hubId, date])
+  @@map("hub_metrics")
+}
+
+model HubReview {
+  id         String   @id @default(uuid())
+  hubId      String   @map("hub_id")
+  deliveryId String?  @map("delivery_id")
+  customerId String   @map("customer_id")
+  rating     Int      // 1-5
+  comment    String?  @db.Text
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  hub      Hub  @relation(fields: [hubId], references: [id], onDelete: Cascade)
+  customer User @relation(fields: [customerId], references: [id])
+
+  @@map("hub_reviews")
+}
+
+model EventLog {
+  id         String   @id @default(uuid())
+  eventType  String   @map("event_type") // 'package_scanned', 'delivery_completed', etc.
+  entityType String?  @map("entity_type") // 'package', 'hub', 'user'
+  entityId   String?  @map("entity_id")
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([eventType])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("event_logs")
+}
+
+model WebhookConfig {
+  id        String   @id @default(uuid())
+  name      String
+  url       String
+  events    String[] // array of event types to subscribe to
+  secret    String? // for signature verification
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("webhook_configs")
+}
+
+model ApiKey {
+  id          String    @id @default(uuid())
+  keyHash     String    @unique @map("key_hash")
+  name        String
+  permissions String[] // array of allowed operations
+  expiresAt   DateTime? @map("expires_at")
+  active      Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@map("api_keys")
+}
