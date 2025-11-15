@@ -1,0 +1,58 @@
+{
+  "expo": {
+    "name": "BungeeHub Host",
+    "slug": "bungeehub-host",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1a73e8"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.bungeehub.host",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app requires camera access to scan package barcodes and capture delivery photos.",
+        "NSPhotoLibraryUsageDescription": "This app requires photo library access to select delivery proof photos.",
+        "NSLocationWhenInUseUsageDescription": "This app requires location access to record GPS coordinates for package scans and deliveries."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1a73e8"
+      },
+      "package": "com.bungeehub.host",
+      "permissions": [
+        "CAMERA",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow BungeeHub Host to access your camera to scan barcodes and capture delivery photos."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow BungeeHub Host to use your location to record GPS coordinates for deliveries."
+        }
+      ]
+    ]
+  }
+}

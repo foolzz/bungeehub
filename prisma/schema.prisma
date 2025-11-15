@@ -19,10 +19,13 @@ enum UserRole {
 }
 
 enum HubStatus {
-  PENDING
-  ACTIVE
-  INACTIVE
-  SUSPENDED
+  PENDING // Initial application
+  UNDER_REVIEW // Admin is reviewing
+  APPROVED // Approved, ready to activate
+  ACTIVE // Currently active
+  INACTIVE // Temporarily inactive
+  SUSPENDED // Suspended by admin
+  REJECTED // Application rejected
 }
 
 enum HubTier {
@@ -33,6 +36,7 @@ enum HubTier {
 }
 
 enum PackageStatus {
+  PENDING
   CREATED
   IN_TRANSIT
   AT_HUB
@@ -43,59 +47,145 @@ enum PackageStatus {
 }
 
 enum BatchStatus {
+  PENDING
   CREATED
   IN_TRANSIT
+  ARRIVED
   DELIVERED
   COMPLETED
 }
 
 enum DeliveryStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
   DELIVERED
   FAILED
   RETURNED
 }
 
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+}
+
+enum NotificationType {
+  EMAIL
+  SMS
+  PUSH
+  IN_APP
+}
+
+enum NotificationCategory {
+  APPLICATION_STATUS
+  PACKAGE_DELIVERY
+  MESSAGE_RECEIVED
+  ACCOUNT_UPDATE
+  SYSTEM_ALERT
+}
+
 // Models
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  phone     String?
-  fullName  String   @map("full_name")
-  role      UserRole
-  password  String   // Hashed password
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id       String   @id @default(uuid())
+  email    String   @unique
+  phone    String?
+  fullName String   @map("full_name")
+  role     UserRole
+  password String // Hashed password
+
+  // Enhanced Profile Fields
+  dateOfBirth     DateTime? @map("date_of_birth") @db.Date
+  profilePhotoUrl String?   @map("profile_photo_url")
+
+  // Address Information
+  streetAddress String? @map("street_address")
+  city          String?
+  state         String?
+  postalCode    String? @map("postal_code")
+  country       String? @default("USA")
+
+  // Verification & Security
+  isEmailVerified Boolean @default(false) @map("is_email_verified")
+  isPhoneVerified Boolean @default(false) @map("is_phone_verified")
+  isIdVerified    Boolean @default(false) @map("is_id_verified")
+  idDocumentUrl   String? @map("id_document_url")
+  idDocumentType  String? @map("id_document_type") // "drivers_license", "passport", etc.
+
+  // Payment Information
+  bankAccountLast4 String? @map("bank_account_last4")
+  bankAccountName  String? @map("bank_account_name")
+  stripeAccountId  String? @map("stripe_account_id")
+
+  // Communication Preferences
+  emailNotifications Boolean @default(true) @map("email_notifications")
+  smsNotifications   Boolean @default(true) @map("sms_notifications")
+  pushNotifications  Boolean @default(true) @map("push_notifications")
+
+  // Timestamps
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  lastLoginAt DateTime? @map("last_login_at")
 
   // Relations
-  hubs    Hub[]
-  reviews HubReview[]
+  hubs             Hub[]
+  reviews          HubReview[]
+  sentMessages     Message[]      @relation("SentMessages")
+  receivedMessages Message[]      @relation("ReceivedMessages")
+  notifications    Notification[]
 
   @@map("users")
 }
 
 model Hub {
-  id             String     @id @default(uuid())
-  hostId         String     @map("host_id")
-  name           String
-  address        String
-  latitude       Decimal?   @db.Decimal(10, 8)
-  longitude      Decimal?   @db.Decimal(11, 8)
-  capacity       Int        @default(100) // max packages per batch
-  status         HubStatus  @default(PENDING)
-  tier           HubTier    @default(NEW_HUB)
-  rating         Decimal    @default(0.00) @db.Decimal(3, 2)
+  id              String    @id @default(uuid())
+  hostId          String    @map("host_id")
+  name            String
+  address         String
+  latitude        Decimal?  @db.Decimal(10, 8)
+  longitude       Decimal?  @db.Decimal(11, 8)
+  capacity        Int       @default(100) // max packages per batch
+  status          HubStatus @default(PENDING)
+  tier            HubTier   @default(NEW_HUB)
+  rating          Decimal   @default(0.00) @db.Decimal(3, 2)
   totalDeliveries Int       @default(0) @map("total_deliveries")
-  createdAt      DateTime   @default(now()) @map("created_at")
-  updatedAt      DateTime   @updatedAt @map("updated_at")
+
+  // Property Details
+  propertyType    String? @map("property_type") // "house", "garage", "warehouse", etc.
+  storageAreaSqFt Int?    @map("storage_area_sqft")
+  hasSecuredArea  Boolean @default(false) @map("has_secured_area")
+  hasCameraSystem Boolean @default(false) @map("has_camera_system")
+  hasParkingSpace Boolean @default(false) @map("has_parking_space")
+
+  // Operating Information
+  operatingHours        String?  @map("operating_hours") // "9:00 AM - 6:00 PM"
+  availableDays         String[] @default([]) @map("available_days") // ["monday", "tuesday", ...]
+  preferredDeliveryTime String?  @map("preferred_delivery_time")
+
+  // Application & Review
+  applicationNotes String?   @map("application_notes") @db.Text
+  reviewedBy       String?   @map("reviewed_by") // admin user ID
+  reviewedAt       DateTime? @map("reviewed_at")
+  reviewNotes      String?   @map("review_notes") @db.Text
+  rejectionReason  String?   @map("rejection_reason") @db.Text
+  approvedAt       DateTime? @map("approved_at")
+  activatedAt      DateTime? @map("activated_at")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
-  host         User          @relation(fields: [hostId], references: [id], onDelete: Cascade)
-  packages     Package[]
-  batches      Batch[]
-  deliveries   Delivery[]
-  metrics      HubMetric[]
-  reviews      HubReview[]
+  host       User        @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  packages   Package[]
+  batches    Batch[]
+  deliveries Delivery[]
+  metrics    HubMetric[]
+  reviews    HubReview[]
+  eventLogs  EventLog[]
+  photos     HubPhoto[]
+  messages   Message[]
 
   @@index([hostId])
   @@index([status])
@@ -104,70 +194,85 @@ model Hub {
 }
 
 model Package {
-  id                 String        @id @default(uuid())
-  trackingNumber     String        @unique @map("tracking_number")
-  barcode            String?
-  senderName         String?       @map("sender_name")
-  recipientName      String        @map("recipient_name")
-  recipientPhone     String?       @map("recipient_phone")
-  deliveryAddress    String        @map("delivery_address")
-  deliveryLatitude   Decimal?      @map("delivery_latitude") @db.Decimal(10, 8)
-  deliveryLongitude  Decimal?      @map("delivery_longitude") @db.Decimal(11, 8)
-  status             PackageStatus @default(CREATED)
-  assignedHubId      String?       @map("assigned_hub_id")
-  weight             Decimal?      @db.Decimal(10, 2) // in kg
-  dimensions         Json?         // {length, width, height}
-  specialInstructions String?      @map("special_instructions") @db.Text
-  createdAt          DateTime      @default(now()) @map("created_at")
-  updatedAt          DateTime      @updatedAt @map("updated_at")
+  id                  String        @id @default(uuid())
+  trackingNumber      String        @unique @map("tracking_number")
+  barcode             String        @unique
+  batchId             String?       @map("batch_id")
+  senderName          String?       @map("sender_name")
+  recipientName       String?       @map("recipient_name")
+  recipientPhone      String?       @map("recipient_phone")
+  deliveryAddress     String?       @map("delivery_address")
+  deliveryLatitude    Decimal?      @map("delivery_latitude") @db.Decimal(10, 8)
+  deliveryLongitude   Decimal?      @map("delivery_longitude") @db.Decimal(11, 8)
+  status              PackageStatus @default(PENDING)
+  assignedHubId       String?       @map("assigned_hub_id")
+  weight              Decimal?      @db.Decimal(10, 2) // in kg
+  dimensions          String? // "LxWxH in cm"
+  notes               String?       @db.Text
+  specialInstructions String?       @map("special_instructions") @db.Text
+  createdAt           DateTime      @default(now()) @map("created_at")
+  updatedAt           DateTime      @updatedAt @map("updated_at")
 
   // Relations
   assignedHub Hub?       @relation(fields: [assignedHubId], references: [id])
-  deliveries  Delivery[]
+  batch       Batch?     @relation(fields: [batchId], references: [id])
+  delivery    Delivery?
+  eventLogs   EventLog[]
 
   @@index([trackingNumber])
+  @@index([barcode])
   @@index([status])
   @@index([assignedHubId])
+  @@index([batchId])
   @@map("packages")
 }
 
 model Batch {
-  id             String      @id @default(uuid())
-  hubId          String      @map("hub_id")
-  batchNumber    String      @unique @map("batch_number")
-  totalPackages  Int         @default(0) @map("total_packages")
-  status         BatchStatus @default(CREATED)
-  createdAt      DateTime    @default(now()) @map("created_at")
-  deliveredAt    DateTime?   @map("delivered_at")
-  updatedAt      DateTime    @updatedAt @map("updated_at")
+  id                   String      @id @default(uuid())
+  hubId                String      @map("hub_id")
+  batchNumber          String      @unique @map("batch_number")
+  totalPackages        Int         @default(0) @map("total_packages")
+  status               BatchStatus @default(PENDING)
+  expectedDeliveryDate DateTime?   @map("expected_delivery_date")
+  notes                String?     @db.Text
+  createdAt            DateTime    @default(now()) @map("created_at")
+  deliveredAt          DateTime?   @map("delivered_at")
+  updatedAt            DateTime    @updatedAt @map("updated_at")
 
   // Relations
-  hub Hub @relation(fields: [hubId], references: [id])
+  hub       Hub        @relation(fields: [hubId], references: [id])
+  packages  Package[]
+  eventLogs EventLog[]
 
+  @@index([hubId])
+  @@index([status])
   @@map("batches")
 }
 
 model Delivery {
-  id            String         @id @default(uuid())
-  packageId     String         @map("package_id")
-  hubId         String         @map("hub_id")
-  hostId        String         @map("host_id")
-  status        DeliveryStatus
-  photoUrl      String?        @map("photo_url")
-  signatureUrl  String?        @map("signature_url")
-  deliveredAt   DateTime?      @map("delivered_at")
-  latitude      Decimal?       @db.Decimal(10, 8)
-  longitude     Decimal?       @db.Decimal(11, 8)
-  deliveryNotes String?        @map("delivery_notes") @db.Text
-  failureReason String?        @map("failure_reason")
-  createdAt     DateTime       @default(now()) @map("created_at")
+  id                 String         @id @default(uuid())
+  packageId          String         @unique @map("package_id")
+  hubId              String         @map("hub_id")
+  status             DeliveryStatus @default(PENDING)
+  proofOfDeliveryUrl String?        @map("proof_of_delivery_url")
+  deliveryLatitude   Decimal?       @map("delivery_latitude") @db.Decimal(10, 8)
+  deliveryLongitude  Decimal?       @map("delivery_longitude") @db.Decimal(11, 8)
+  recipientName      String?        @map("recipient_name")
+  signatureUrl       String?        @map("signature_url")
+  deliveredAt        DateTime?      @map("delivered_at")
+  notes              String?        @db.Text
+  failureReason      String?        @map("failure_reason")
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
 
   // Relations
-  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
-  hub     Hub     @relation(fields: [hubId], references: [id])
+  package   Package    @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  hub       Hub        @relation(fields: [hubId], references: [id])
+  eventLogs EventLog[]
 
   @@index([packageId])
   @@index([hubId])
+  @@index([status])
   @@index([deliveredAt])
   @@map("deliveries")
 }
@@ -196,7 +301,7 @@ model HubReview {
   hubId      String   @map("hub_id")
   deliveryId String?  @map("delivery_id")
   customerId String   @map("customer_id")
-  rating     Int      // 1-5
+  rating     Int // 1-5
   comment    String?  @db.Text
   createdAt  DateTime @default(now()) @map("created_at")
 
@@ -204,19 +309,36 @@ model HubReview {
   hub      Hub  @relation(fields: [hubId], references: [id], onDelete: Cascade)
   customer User @relation(fields: [customerId], references: [id])
 
+  @@index([hubId])
+  @@index([customerId])
   @@map("hub_reviews")
 }
 
 model EventLog {
-  id         String   @id @default(uuid())
-  eventType  String   @map("event_type") // 'package_scanned', 'delivery_completed', etc.
-  entityType String?  @map("entity_type") // 'package', 'hub', 'user'
-  entityId   String?  @map("entity_id")
-  metadata   Json?
-  createdAt  DateTime @default(now()) @map("created_at")
+  id          String   @id @default(uuid())
+  eventType   String   @map("event_type") // 'package_scanned', 'delivery_completed', etc.
+  packageId   String?  @map("package_id")
+  batchId     String?  @map("batch_id")
+  deliveryId  String?  @map("delivery_id")
+  hubId       String?  @map("hub_id")
+  performedBy String?  @map("performed_by") // user ID who performed the action
+  latitude    Decimal? @db.Decimal(10, 8)
+  longitude   Decimal? @db.Decimal(11, 8)
+  message     String?
+  metadata    Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  package  Package?  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  batch    Batch?    @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  delivery Delivery? @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  hub      Hub?      @relation(fields: [hubId], references: [id], onDelete: Cascade)
 
   @@index([eventType])
-  @@index([entityType, entityId])
+  @@index([packageId])
+  @@index([batchId])
+  @@index([deliveryId])
+  @@index([hubId])
   @@index([createdAt])
   @@map("event_logs")
 }
@@ -243,4 +365,68 @@ model ApiKey {
   createdAt   DateTime  @default(now()) @map("created_at")
 
   @@map("api_keys")
+}
+
+model HubPhoto {
+  id           String   @id @default(uuid())
+  hubId        String   @map("hub_id")
+  photoUrl     String   @map("photo_url")
+  description  String?  @db.Text
+  photoType    String   @map("photo_type") // "exterior", "storage_area", "entrance", "other"
+  displayOrder Int      @default(0) @map("display_order")
+  isApproved   Boolean  @default(false) @map("is_approved")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  // Relations
+  hub Hub @relation(fields: [hubId], references: [id], onDelete: Cascade)
+
+  @@index([hubId])
+  @@index([isApproved])
+  @@map("hub_photos")
+}
+
+model Message {
+  id         String        @id @default(uuid())
+  senderId   String        @map("sender_id")
+  receiverId String        @map("receiver_id")
+  hubId      String?       @map("hub_id") // Related hub if applicable
+  subject    String?
+  content    String        @db.Text
+  status     MessageStatus @default(SENT)
+  readAt     DateTime?     @map("read_at")
+  createdAt  DateTime      @default(now()) @map("created_at")
+
+  // Relations
+  sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  hub      Hub? @relation(fields: [hubId], references: [id], onDelete: SetNull)
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([hubId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+model Notification {
+  id       String               @id @default(uuid())
+  userId   String               @map("user_id")
+  type     NotificationType
+  category NotificationCategory
+  title    String
+  message  String               @db.Text
+  data     Json? // Additional data for deep linking, etc.
+  isRead   Boolean              @default(false) @map("is_read")
+  sentAt   DateTime             @default(now()) @map("sent_at")
+  readAt   DateTime?            @map("read_at")
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([category])
+  @@index([sentAt])
+  @@map("notifications")
 }
