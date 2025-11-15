@@ -122,7 +122,9 @@ async function main() {
       deliveryLatitude: addressData.lat,
       deliveryLongitude: addressData.lng,
       status,
-      assignedHubId: hub.id,
+      assignedHub: {
+        connect: { id: hub.id }
+      },
       weight: randomWeight(),
       dimensions: randomDimensions(),
       expectedDeliveryDate,
