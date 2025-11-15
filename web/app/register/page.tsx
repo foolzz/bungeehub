@@ -126,7 +126,7 @@ export default function RegisterPage() {
               <select
                 id="role"
                 name="role"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                 value={formData.role}
                 onChange={handleChange}
               >
