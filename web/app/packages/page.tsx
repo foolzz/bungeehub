@@ -9,18 +9,36 @@ export default function PackagesPage() {
   const [error, setError] = useState('');
   const [filters, setFilters] = useState({
     status: '',
+    hubId: '',
     page: 1,
     limit: 20,
   });
 
   useEffect(() => {
-    fetchPackages();
+    // Check for hubId in URL params
+    const params = new URLSearchParams(window.location.search);
+    const hubId = params.get('hubId');
+    if (hubId) {
+      setFilters(prev => ({ ...prev, hubId }));
+    } else {
+      fetchPackages();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (filters.hubId || filters.status) {
+      fetchPackages();
+    }
   }, [filters]);
 
   const fetchPackages = async () => {
     try {
       setLoading(true);
-      const response = await packagesApi.getAll(filters);
+      // Remove empty string values from filters
+      const cleanFilters = Object.fromEntries(
+        Object.entries(filters).filter(([_, value]) => value !== '')
+      );
+      const response = await packagesApi.getAll(cleanFilters);
       setPackages(response.data?.data || []);
     } catch (error: any) {
       console.error('Error fetching packages:', error);
@@ -67,6 +85,11 @@ export default function PackagesPage() {
         {/* Filters */}
         <div className="bg-white shadow rounded-lg p-6 mb-6">
           <h2 className="text-lg font-semibold mb-4">Filters</h2>
+          {filters.hubId && (
+            <div className="mb-4 text-sm text-gray-600">
+              Filtering by specific hub
+            </div>
+          )}
           <div className="grid md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
