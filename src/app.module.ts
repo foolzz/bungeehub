@@ -18,16 +18,27 @@ import { MessagesModule } from './modules/messages/messages.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 
-@Module({
-  imports: [
+// Conditionally include ServeStaticModule based on environment
+const getImports = () => {
+  const imports = [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'web', 'out'),
-      exclude: ['/api*'],
-    }),
+  ];
+
+  // Only serve static files if SERVE_STATIC is true (default: true for combined mode)
+  const serveStatic = process.env.SERVE_STATIC !== 'false';
+  if (serveStatic) {
+    imports.push(
+      ServeStaticModule.forRoot({
+        rootPath: join(__dirname, '..', 'web', 'out'),
+        exclude: ['/api*'],
+      }),
+    );
+  }
+
+  imports.push(
     PrismaModule,
     DatabaseModule,
     AuthModule,
@@ -41,7 +52,13 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     MessagesModule,
     AdminModule,
     NotificationsModule,
-  ],
+  );
+
+  return imports;
+};
+
+@Module({
+  imports: getImports(),
   controllers: [AppController],
   providers: [AppService],
 })

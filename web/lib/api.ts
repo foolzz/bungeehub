@@ -1,5 +1,9 @@
 import axios from 'axios';
 
+// API URL configuration:
+// - Combined mode (default): http://localhost:8080/api/v1 (same server)
+// - Separated mode: Set NEXT_PUBLIC_API_URL in .env.local to point to API server
+// - Production: Set to your actual API URL (e.g., https://api.bungeehub.com/api/v1)
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
 
 export const api = axios.create({
