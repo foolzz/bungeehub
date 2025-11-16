@@ -39,36 +39,53 @@ This document summarizes all features implemented in the BungeeHub delivery hub 
 
 ---
 
-### 2. Route Optimization with Time Estimations
+### 2. Route Optimization with Time Estimations & Driving Routes
 **Location:** `/web/app/hubs/route/page.tsx`
 
 **Features:**
 - **Nearest-Neighbor Algorithm**: Optimizes delivery sequence
+- **Real Driving Routes**: Integration with OpenStreetMap Routing Machine (OSRM)
+  - Fetches actual road-based routes for each delivery segment
+  - Displays routes following real streets (not straight lines)
+  - Updates distances based on actual road network
+  - Calculates accurate driving times from OSRM API
+
 - **Time Calculations**:
-  - Average urban speed: 35 km/h
+  - Actual driving time from OSRM routing engine
   - Delivery time per stop: 4 minutes
   - Cumulative time calculation for each stop
   - Estimated arrival time for each delivery
 
 - **Enhanced Display**:
   - 4 stat cards: Total Stops, Total Distance, Estimated Time, Est. Finish Time
-  - Map markers show time estimates in popups
+  - Map shows blue polylines following actual roads
+  - Loading indicator while fetching routes
+  - Fallback to straight lines if OSRM unavailable
   - Delivery sequence list shows:
-    - Distance and drive time from previous stop
+    - Actual road distance and drive time
     - Delivery time allocation
-    - Estimated arrival time
+    - Precise estimated arrival time
 
 - **Visual Enhancements**:
   - Numbered markers (1, 2, 3...) on map
-  - Blue route line connecting all stops
+  - Blue route lines (#2563eb) with 70% opacity
+  - Routes follow actual street paths
   - Hover tooltips with detailed information
   - Colored badges for drive time and delivery time
+
+**Technical Implementation:**
+- Uses OSRM public API: `router.project-osrm.org`
+- Fetches routes sequentially for each segment
+- Converts GeoJSON coordinates to Leaflet format
+- Updates all metrics with actual road data
+- Handles API failures gracefully with fallback
 
 **Usage:**
 1. Navigate to hub details page
 2. Click "Optimize Route" button
-3. View optimized route with time estimates
-4. Use for planning daily delivery runs
+3. Wait for driving routes to load (shows indicator)
+4. View optimized route with real road paths
+5. Use for planning daily delivery runs with accurate times
 
 ---
 
