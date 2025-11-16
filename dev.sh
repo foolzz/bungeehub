@@ -41,6 +41,8 @@ echo ""
 
 # Build web frontend
 echo "🌐 Building web frontend..."
+echo "   Cleaning Next.js cache..."
+rm -rf web/.next/cache
 npm run build:web
 echo "✅ Web frontend built"
 echo ""
