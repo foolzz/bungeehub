@@ -74,12 +74,20 @@ export default function PackagesPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-900">Packages</h1>
-          <a
-            href="/dashboard"
-            className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
-          >
-            Back to Dashboard
-          </a>
+          <div className="flex gap-2">
+            <a
+              href="/packages/map"
+              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            >
+              📍 Map View
+            </a>
+            <a
+              href="/dashboard"
+              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
+            >
+              Back to Dashboard
+            </a>
+          </div>
         </div>
 
         {/* Filters */}
