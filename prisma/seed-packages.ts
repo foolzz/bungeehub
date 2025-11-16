@@ -2,19 +2,49 @@ import { PrismaClient, PackageStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Realistic SF addresses for delivery
-const SFAddresses = [
-  { address: '100 Market St, San Francisco, CA 94102', lat: 37.7942, lng: -122.3986 },
-  { address: '200 Mission St, San Francisco, CA 94105', lat: 37.7897, lng: -122.3972 },
-  { address: '300 Montgomery St, San Francisco, CA 94104', lat: 37.7930, lng: -122.4023 },
-  { address: '400 California St, San Francisco, CA 94104', lat: 37.7933, lng: -122.4045 },
-  { address: '500 Pine St, San Francisco, CA 94108', lat: 37.7918, lng: -122.4073 },
-  { address: '600 Geary St, San Francisco, CA 94102', lat: 37.7868, lng: -122.4139 },
-  { address: '700 Post St, San Francisco, CA 94109', lat: 37.7876, lng: -122.4158 },
-  { address: '800 Sutter St, San Francisco, CA 94109', lat: 37.7886, lng: -122.4175 },
-  { address: '900 Bush St, San Francisco, CA 94109', lat: 37.7899, lng: -122.4154 },
-  { address: '1000 Van Ness Ave, San Francisco, CA 94109', lat: 37.7886, lng: -122.4215 },
+// Street names for generating realistic addresses
+const streetNames = [
+  'Main St', 'Oak Ave', 'Maple Dr', 'Cedar Ln', 'Pine St', 'Elm Ave',
+  'Washington Blvd', 'Lincoln Way', 'Market St', 'Mission St', 'Valencia St',
+  'Folsom St', 'Howard St', 'Harrison St', 'Bryant St', 'Brannan St',
+  'King St', 'Berry St', 'Townsend St', 'Division St', 'Alameda St'
 ];
+
+// Calculate distance between two coordinates using Haversine formula (in km)
+function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // Earth's radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// Generate random coordinates within radius (km) of a center point
+function generateRandomLocation(centerLat: number, centerLng: number, maxRadiusKm: number) {
+  // Convert radius from km to degrees (approximate)
+  const radiusInDegrees = maxRadiusKm / 111.32; // 1 degree ≈ 111.32 km at equator
+
+  // Generate random distance and angle
+  const randomDistance = Math.random() * radiusInDegrees;
+  const randomAngle = Math.random() * 2 * Math.PI;
+
+  // Calculate new coordinates
+  const lat = centerLat + (randomDistance * Math.cos(randomAngle));
+  const lng = centerLng + (randomDistance * Math.sin(randomAngle) / Math.cos(centerLat * Math.PI / 180));
+
+  return { lat, lng };
+}
+
+// Generate a realistic street address
+function generateAddress(lat: number, lng: number): string {
+  const streetNumber = Math.floor(Math.random() * 9000) + 1000;
+  const street = streetNames[Math.floor(Math.random() * streetNames.length)];
+  return `${streetNumber} ${street}, San Francisco, CA 9410${Math.floor(Math.random() * 9)}`;
+}
 
 const recipientNames = [
   'Alice Johnson',
@@ -101,11 +131,31 @@ async function main() {
   const packages = [];
 
   for (let i = 0; i < packageCount; i++) {
-    const addressData = SFAddresses[i % SFAddresses.length];
     const recipientName = recipientNames[i % recipientNames.length];
     const senderName = senders[i % senders.length];
     const status = packageStatuses[Math.floor(Math.random() * packageStatuses.length)];
     const hub = hubs[i % hubs.length]; // Distribute packages across hubs
+
+    // Generate delivery location within 10km of the hub
+    let deliveryLat: number;
+    let deliveryLng: number;
+    let deliveryAddress: string;
+
+    if (hub.latitude && hub.longitude) {
+      // Hub has coordinates - generate nearby delivery address
+      const hubLat = parseFloat(hub.latitude.toString());
+      const hubLng = parseFloat(hub.longitude.toString());
+      const location = generateRandomLocation(hubLat, hubLng, 10); // 10km radius
+      deliveryLat = location.lat;
+      deliveryLng = location.lng;
+      deliveryAddress = generateAddress(deliveryLat, deliveryLng);
+    } else {
+      // Hub doesn't have coordinates - use default SF location
+      const location = generateRandomLocation(37.7749, -122.4194, 10); // SF center
+      deliveryLat = location.lat;
+      deliveryLng = location.lng;
+      deliveryAddress = generateAddress(deliveryLat, deliveryLng);
+    }
 
     const packageData = {
       trackingNumber: generateTrackingNumber(1000 + i),
@@ -113,9 +163,9 @@ async function main() {
       senderName,
       recipientName,
       recipientPhone: `+1555555${String(i).padStart(4, '0')}`,
-      deliveryAddress: addressData.address,
-      deliveryLatitude: addressData.lat,
-      deliveryLongitude: addressData.lng,
+      deliveryAddress,
+      deliveryLatitude: deliveryLat,
+      deliveryLongitude: deliveryLng,
       status,
       assignedHub: {
         connect: { id: hub.id }
@@ -144,8 +194,25 @@ async function main() {
 
   console.log('\n📊 Packages per Hub:');
   for (const hub of hubs) {
-    const count = packages.filter(p => p.assignedHubId === hub.id).length;
-    console.log(`  ${hub.name}: ${count} packages`);
+    const hubPackages = packages.filter(p => p.assignedHubId === hub.id);
+    const count = hubPackages.length;
+
+    // Calculate average distance if hub has coordinates
+    if (hub.latitude && hub.longitude && count > 0) {
+      const hubLat = parseFloat(hub.latitude.toString());
+      const hubLng = parseFloat(hub.longitude.toString());
+      const avgDistance = hubPackages.reduce((sum, pkg) => {
+        if (pkg.deliveryLatitude && pkg.deliveryLongitude) {
+          const pkgLat = parseFloat(pkg.deliveryLatitude.toString());
+          const pkgLng = parseFloat(pkg.deliveryLongitude.toString());
+          return sum + calculateDistance(hubLat, hubLng, pkgLat, pkgLng);
+        }
+        return sum;
+      }, 0) / count;
+      console.log(`  ${hub.name}: ${count} packages (avg distance: ${avgDistance.toFixed(2)} km)`);
+    } else {
+      console.log(`  ${hub.name}: ${count} packages`);
+    }
   }
 
   console.log('\n✨ Done!\n');
