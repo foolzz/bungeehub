@@ -146,15 +146,15 @@ export default function HubDetailsPage() {
                 See all packages assigned to this hub
               </p>
             </a>
-            <button
-              className="block p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition text-left"
-              onClick={() => alert('Edit functionality coming soon!')}
+            <a
+              href={`/hubs/edit?id=${hub.id}`}
+              className="block p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition"
             >
               <h3 className="font-semibold mb-1 text-gray-900">Edit Hub</h3>
               <p className="text-sm text-gray-600">
                 Update hub information and settings
               </p>
-            </button>
+            </a>
           </div>
         </div>
       </div>

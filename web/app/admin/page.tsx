@@ -149,23 +149,21 @@ export default function AdminDashboard() {
           <h2 className="text-xl font-bold mb-4 text-gray-900">Admin Actions</h2>
           <div className="grid md:grid-cols-3 gap-4">
             <a
-              href="http://localhost:8080/api-docs#/admin"
-              target="_blank"
+              href="/admin/hubs"
               className="block p-4 border-2 border-primary-600 rounded-lg hover:bg-primary-50 transition"
             >
-              <h3 className="font-semibold text-primary-600 mb-1">Review Hub Applications</h3>
+              <h3 className="font-semibold text-primary-600 mb-1">Manage Hubs</h3>
               <p className="text-sm text-gray-600">
-                Approve or reject pending hub registrations
+                View, edit, approve, and manage all delivery hubs
               </p>
             </a>
             <a
-              href="http://localhost:8080/api-docs#/admin/AdminController_getAllHubs"
-              target="_blank"
+              href="/packages"
               className="block p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition"
             >
-              <h3 className="font-semibold mb-1 text-gray-900">Manage Hubs</h3>
+              <h3 className="font-semibold mb-1 text-gray-900">View Packages</h3>
               <p className="text-sm text-gray-600">
-                View and manage all delivery hubs
+                Monitor all packages in the system
               </p>
             </a>
             <a
@@ -179,16 +177,6 @@ export default function AdminDashboard() {
               </p>
             </a>
           </div>
-        </div>
-
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-blue-800">
-            <strong>Admin Note:</strong> Currently, hub review actions must be performed via the{' '}
-            <a href="http://localhost:8080/api-docs" target="_blank" className="underline">
-              API documentation
-            </a>
-            . A full admin UI is under development.
-          </p>
         </div>
       </div>
     </div>
