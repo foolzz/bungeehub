@@ -27,6 +27,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:seed": "ts-node prisma/seed.ts",
+    "cleanup:packages": "ts-node prisma/cleanup-packages.ts",
     "seed:packages": "ts-node prisma/seed-packages.ts",
     "seed:routes": "ts-node prisma/update-package-routes.ts"
   },
