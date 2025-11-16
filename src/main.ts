@@ -8,17 +8,17 @@ import compression from 'compression';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Security - Configure helmet to allow Next.js inline scripts
+  // Security - Configure helmet to allow Next.js inline scripts and external resources
   app.use(
     helmet({
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
           scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-          styleSrc: ["'self'", "'unsafe-inline'"],
-          imgSrc: ["'self'", 'data:', 'https:'],
-          fontSrc: ["'self'", 'data:'],
-          connectSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'", 'https://unpkg.com'],
+          imgSrc: ["'self'", 'data:', 'https:', 'https://unpkg.com', 'https://*.tile.openstreetmap.org'],
+          fontSrc: ["'self'", 'data:', 'https://unpkg.com'],
+          connectSrc: ["'self'", 'https://*.tile.openstreetmap.org'],
         },
       },
     }),
