@@ -201,14 +201,18 @@ export default function RouteOptimizationPage() {
       setHub(hubData);
 
       // Fetch packages that need delivery
-      const packagesResponse = await packagesApi.getAll({
-        assignedHubId: id,
-        status: 'OUT_FOR_DELIVERY',
-        limit: 100,
-      });
+      // Fetch all packages and filter client-side to avoid API parameter issues
+      const packagesResponse = await packagesApi.getAll({ limit: 1000 });
 
-      const pkgs = (packagesResponse.data?.data || []).filter(
-        (pkg: any) => pkg.deliveryLatitude && pkg.deliveryLongitude
+      const allPackages = packagesResponse.data?.data || [];
+
+      // Filter for this hub and deliverable statuses
+      const pkgs = allPackages.filter(
+        (pkg: any) =>
+          pkg.assignedHub?.id === id &&
+          (pkg.status === 'OUT_FOR_DELIVERY' || pkg.status === 'AT_HUB') &&
+          pkg.deliveryLatitude &&
+          pkg.deliveryLongitude
       );
 
       setPackages(pkgs);
@@ -330,7 +334,9 @@ export default function RouteOptimizationPage() {
           <div className="text-center bg-white shadow rounded-lg p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">No Deliveries to Optimize</h2>
             <p className="text-gray-600 mb-6">
-              There are no packages marked as "OUT FOR DELIVERY" for this hub.
+              There are currently no packages ready for delivery at this hub.
+              <br />
+              (Looking for packages with status "OUT_FOR_DELIVERY" or "AT_HUB")
             </p>
             <a
               href={`/hubs/details?id=${hubId}`}
