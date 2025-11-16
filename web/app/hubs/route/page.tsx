@@ -110,6 +110,8 @@ export default function RouteOptimizationPage() {
   const [totalDistance, setTotalDistance] = useState(0);
   const [totalTime, setTotalTime] = useState(0);
   const [estimatedFinishTime, setEstimatedFinishTime] = useState<Date | null>(null);
+  const [drivingRoutes, setDrivingRoutes] = useState<any[]>([]);
+  const [routesLoading, setRoutesLoading] = useState(false);
 
   useEffect(() => {
     // Load Leaflet CSS
@@ -148,6 +150,34 @@ export default function RouteOptimizationPage() {
 
     init();
   }, []);
+
+  // Fetch actual driving route from OSRM (OpenStreetMap Routing Machine)
+  const fetchDrivingRoute = async (waypoints: Array<{lat: number, lng: number}>) => {
+    try {
+      // Build coordinates string for OSRM: lng,lat;lng,lat;...
+      const coords = waypoints.map(w => `${w.lng},${w.lat}`).join(';');
+
+      // OSRM API endpoint (free public instance)
+      const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson&steps=true`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
+        const route = data.routes[0];
+        return {
+          coordinates: route.geometry.coordinates.map((coord: number[]) => [coord[1], coord[0]]), // Convert [lng, lat] to [lat, lng]
+          distance: route.distance / 1000, // meters to km
+          duration: route.duration / 60, // seconds to minutes
+          steps: route.legs || []
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error fetching driving route:', error);
+      return null;
+    }
+  };
 
   const fetchDataAndOptimize = async (id: string) => {
     try {
@@ -195,6 +225,59 @@ export default function RouteOptimizationPage() {
         setTotalDistance(totalDist);
         setTotalTime(totalTimeMin);
         setEstimatedFinishTime(route.length > 0 ? route[route.length - 1].estimatedArrival : null);
+
+        // Fetch actual driving routes for each segment
+        setRoutesLoading(true);
+        const routes = [];
+
+        // Start from hub
+        let prevPoint = {
+          lat: parseFloat(hubData.latitude),
+          lng: parseFloat(hubData.longitude)
+        };
+
+        for (const pkg of route) {
+          const currentPoint = {
+            lat: parseFloat(pkg.deliveryLatitude),
+            lng: parseFloat(pkg.deliveryLongitude)
+          };
+
+          const drivingRoute = await fetchDrivingRoute([prevPoint, currentPoint]);
+          if (drivingRoute) {
+            routes.push({
+              ...drivingRoute,
+              packageId: pkg.id,
+              from: prevPoint,
+              to: currentPoint
+            });
+          }
+
+          prevPoint = currentPoint;
+        }
+
+        setDrivingRoutes(routes);
+        setRoutesLoading(false);
+
+        // Update with actual driving distances and times
+        if (routes.length > 0) {
+          const actualTotalDistance = routes.reduce((sum, r) => sum + r.distance, 0);
+          const actualTotalDuration = routes.reduce((sum, r) => sum + r.duration, 0);
+          const deliveryTime = route.length * 4; // 4 minutes per stop
+
+          setTotalDistance(actualTotalDistance);
+          setTotalTime(actualTotalDuration + deliveryTime);
+          setEstimatedFinishTime(new Date(Date.now() + (actualTotalDuration + deliveryTime) * 60 * 1000));
+
+          // Update route with actual distances
+          const updatedRoute = route.map((pkg, index) => ({
+            ...pkg,
+            distance: routes[index]?.distance || pkg.distance,
+            drivingTime: routes[index]?.duration || pkg.drivingTime,
+            cumulativeTime: routes.slice(0, index + 1).reduce((sum, r) => sum + r.duration, 0) + (index + 1) * 4,
+            estimatedArrival: new Date(Date.now() + (routes.slice(0, index + 1).reduce((sum, r) => sum + r.duration, 0) + (index + 1) * 4) * 60 * 1000)
+          }));
+          setOptimizedRoute(updatedRoute);
+        }
       }
     } catch (error: any) {
       console.error('Error:', error);
@@ -331,8 +414,28 @@ export default function RouteOptimizationPage() {
                 </Popup>
               </Marker>
 
-              {/* Route Line */}
-              <Polyline positions={routeCoordinates as any} color="blue" weight={3} />
+              {/* Driving Route Lines */}
+              {drivingRoutes.length > 0 ? (
+                // Show actual driving routes
+                drivingRoutes.map((route, index) => (
+                  <Polyline
+                    key={index}
+                    positions={route.coordinates}
+                    color="#2563eb"
+                    weight={4}
+                    opacity={0.7}
+                  />
+                ))
+              ) : (
+                // Fallback to straight lines if driving routes not loaded
+                <Polyline positions={routeCoordinates as any} color="#3b82f6" weight={3} opacity={0.5} />
+              )}
+
+              {routesLoading && (
+                <div className="absolute top-4 right-4 bg-white px-4 py-2 rounded shadow-lg z-[1000]">
+                  <p className="text-sm text-gray-600">Loading driving routes...</p>
+                </div>
+              )}
 
               {/* Package Markers */}
               {optimizedRoute.map((pkg, index) => {
@@ -416,8 +519,11 @@ export default function RouteOptimizationPage() {
           <p className="text-blue-800 text-sm">
             <strong>Route Optimization:</strong> This route is optimized using the nearest-neighbor algorithm.
             Starting from your hub, each delivery stop is chosen as the nearest unvisited package location.
-            Time estimates assume an average urban driving speed of 35 km/h and 4 minutes per delivery stop.
-            This provides a good balance between route efficiency and computational speed.
+            {drivingRoutes.length > 0 ? (
+              <><br /><strong>Driving Routes:</strong> Actual driving routes are fetched from OpenStreetMap Routing Machine (OSRM), showing real road paths instead of straight lines. Distances and times are calculated based on actual road networks.</>
+            ) : (
+              <><br /><strong>Note:</strong> Routes are shown as straight lines. Actual driving distances and times assume an average urban speed of 35 km/h plus 4 minutes per delivery stop.</>
+            )}
           </p>
         </div>
       </div>
