@@ -228,7 +228,7 @@ export default function RouteOptimizationPage() {
 
         // Fetch actual driving routes for each segment
         setRoutesLoading(true);
-        const routes = [];
+        const routes: any[] = [];
 
         // Start from hub
         let prevPoint = {
