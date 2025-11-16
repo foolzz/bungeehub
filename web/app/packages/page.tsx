@@ -143,13 +143,13 @@ export default function PackagesPage() {
                       Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Hub
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Recipient
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Expected Delivery
+                      Delivery Address
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Hub
                     </th>
                   </tr>
                 </thead>
@@ -171,17 +171,19 @@ export default function PackagesPage() {
                           {pkg.status.replace('_', ' ')}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {pkg.hub?.name || 'Not assigned'}
-                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{pkg.recipientName}</div>
-                        <div className="text-xs text-gray-500">{pkg.recipientPhone}</div>
+                        <div className="text-sm text-gray-900">{pkg.recipientName || 'N/A'}</div>
+                        {pkg.recipientPhone && (
+                          <div className="text-xs text-gray-500">{pkg.recipientPhone}</div>
+                        )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {pkg.expectedDeliveryDate
-                          ? new Date(pkg.expectedDeliveryDate).toLocaleDateString()
-                          : 'N/A'}
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900 max-w-xs">
+                          {pkg.deliveryAddress || 'No address specified'}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {pkg.assignedHub?.name || pkg.hub?.name || 'Not assigned'}
                       </td>
                     </tr>
                   ))}
