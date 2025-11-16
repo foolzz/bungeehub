@@ -213,13 +213,14 @@ npm run seed:packages 500
 **Package data includes:**
 - Unique tracking numbers: `TRK-20251115-000001`
 - Random barcodes: `BC0001234567`
-- Realistic SF addresses with coordinates
+- Realistic SF addresses **within 10km of assigned hub** (proximity-based routing)
+- Coordinates calculated using Haversine formula
 - Random senders (Amazon, eBay, Walmart, etc.)
 - Random recipients
 - Random statuses distributed across delivery pipeline
 - Automatic hub assignment (distributed evenly)
 - Random weights (0.5-10 kg) and dimensions
-- Expected delivery dates (1-5 days out)
+- Shows average delivery distance per hub in output
 
 ### Simulate Package Routing & Delivery
 

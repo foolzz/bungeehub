@@ -62,9 +62,9 @@ npm run seed:packages 200
 This will:
 - Create packages with random statuses (PENDING, IN_TRANSIT, AT_HUB, OUT_FOR_DELIVERY, DELIVERED)
 - Distribute packages across all active hubs
-- Assign realistic San Francisco delivery addresses
+- Assign realistic delivery addresses **within 10km of each hub** (proximity-based)
 - Generate unique tracking numbers and barcodes
-- Set expected delivery dates
+- Calculate coordinates using Haversine distance formula
 
 ## Package Routing Management
 
@@ -201,11 +201,11 @@ Each generated package includes:
 - **Barcode**: BCXXXXXXXXXX
 - **Sender**: Random from (Amazon, eBay, Walmart, etc.)
 - **Recipient**: Random from test names
-- **Delivery Address**: Realistic SF addresses with lat/lng
+- **Delivery Address**: Generated within **10km radius** of assigned hub (proximity-based routing)
+- **Coordinates**: Calculated using Haversine formula for realistic distances
 - **Status**: Random initial status
 - **Weight**: 0.5 - 10 kg
 - **Dimensions**: Random (LxWxH in cm)
-- **Expected Delivery**: 1-5 days from creation
 - **Hub Assignment**: Distributed across active hubs
 
 ## Tips
