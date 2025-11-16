@@ -105,10 +105,10 @@ export default function PackagesMapPage() {
     return true;
   });
 
-  // Calculate map center from hubs or default to SF
+  // Calculate map center from hubs or default to Richmond Hill, ON
   const mapCenter: [number, number] = hubs.length > 0 && hubs[0].latitude && hubs[0].longitude
     ? [parseFloat(hubs[0].latitude), parseFloat(hubs[0].longitude)]
-    : [37.7749, -122.4194]; // SF default
+    : [43.8828, -79.4403]; // Richmond Hill, ON default
 
   if (loading) {
     return (

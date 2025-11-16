@@ -2,13 +2,17 @@ import { PrismaClient, PackageStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Street names for generating realistic addresses
-const streetNames = [
-  'Main St', 'Oak Ave', 'Maple Dr', 'Cedar Ln', 'Pine St', 'Elm Ave',
-  'Washington Blvd', 'Lincoln Way', 'Market St', 'Mission St', 'Valencia St',
-  'Folsom St', 'Howard St', 'Harrison St', 'Bryant St', 'Brannan St',
-  'King St', 'Berry St', 'Townsend St', 'Division St', 'Alameda St'
+// Real street names in Richmond Hill, ON
+const richmondHillStreets = [
+  'Yonge St', 'Bayview Ave', 'Leslie St', 'Bathurst St', 'Highway 7',
+  'Major Mackenzie Dr', 'Elgin Mills Rd', 'Carrville Rd', 'Stouffville Rd',
+  'King Rd', 'Gamble Rd', 'Observatory Ln', 'Bantry Ave', 'Crosby Ave',
+  'Bernard Ave', 'Castle Rock Dr', 'Mill St', 'Arnold Cres', 'Doncaster Ave',
+  'Headdon Gate', 'Redstone Rd', 'Newkirk Rd', 'Bond Cres', 'Garden Ave'
 ];
+
+// Richmond Hill postal code prefixes (L4B, L4C, L4E, L4S)
+const postalPrefixes = ['L4B', 'L4C', 'L4E', 'L4S'];
 
 // Calculate distance between two coordinates using Haversine formula (in km)
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -24,26 +28,28 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 }
 
 // Generate random coordinates within radius (km) of a center point
+// Uses more accurate distribution for better geographic spread
 function generateRandomLocation(centerLat: number, centerLng: number, maxRadiusKm: number) {
-  // Convert radius from km to degrees (approximate)
-  const radiusInDegrees = maxRadiusKm / 111.32; // 1 degree ≈ 111.32 km at equator
+  const radiusInDegrees = maxRadiusKm / 111.32;
 
-  // Generate random distance and angle
-  const randomDistance = Math.random() * radiusInDegrees;
+  // Use square root for uniform distribution in circle
+  const randomDistance = Math.sqrt(Math.random()) * radiusInDegrees;
   const randomAngle = Math.random() * 2 * Math.PI;
 
-  // Calculate new coordinates
   const lat = centerLat + (randomDistance * Math.cos(randomAngle));
   const lng = centerLng + (randomDistance * Math.sin(randomAngle) / Math.cos(centerLat * Math.PI / 180));
 
   return { lat, lng };
 }
 
-// Generate a realistic street address
-function generateAddress(lat: number, lng: number): string {
-  const streetNumber = Math.floor(Math.random() * 9000) + 1000;
-  const street = streetNames[Math.floor(Math.random() * streetNames.length)];
-  return `${streetNumber} ${street}, San Francisco, CA 9410${Math.floor(Math.random() * 9)}`;
+// Generate a realistic Richmond Hill address
+function generateAddress(): string {
+  const streetNumber = Math.floor(Math.random() * 500) + 1; // 1-500 range
+  const street = richmondHillStreets[Math.floor(Math.random() * richmondHillStreets.length)];
+  const postalPrefix = postalPrefixes[Math.floor(Math.random() * postalPrefixes.length)];
+  const postalSuffix = String(Math.floor(Math.random() * 10)) + String.fromCharCode(65 + Math.floor(Math.random() * 26)) + String(Math.floor(Math.random() * 10));
+
+  return `${streetNumber} ${street}, Richmond Hill, ON ${postalPrefix} ${postalSuffix}`;
 }
 
 const recipientNames = [
@@ -150,13 +156,13 @@ async function main() {
       const location = generateRandomLocation(hubLat, hubLng, 10); // 10km radius
       deliveryLat = location.lat;
       deliveryLng = location.lng;
-      deliveryAddress = generateAddress(deliveryLat, deliveryLng);
+      deliveryAddress = generateAddress();
     } else {
-      // Hub doesn't have coordinates - use default SF location
-      const location = generateRandomLocation(37.7749, -122.4194, 10); // SF center
+      // Hub doesn't have coordinates - use default Richmond Hill center
+      const location = generateRandomLocation(43.8828, -79.4403, 10); // Richmond Hill, ON
       deliveryLat = location.lat;
       deliveryLng = location.lng;
-      deliveryAddress = generateAddress(deliveryLat, deliveryLng);
+      deliveryAddress = generateAddress();
     }
 
     const packageData = {

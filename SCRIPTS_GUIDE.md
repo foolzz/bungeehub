@@ -213,8 +213,10 @@ npm run seed:packages 500
 **Package data includes:**
 - Unique tracking numbers: `TRK-20251115-000001`
 - Random barcodes: `BC0001234567`
-- Realistic SF addresses **within 10km of assigned hub** (proximity-based routing)
-- Coordinates calculated using Haversine formula
+- Realistic Richmond Hill, ON addresses **within 10km of assigned hub** (proximity-based routing)
+- Real street names (Yonge St, Bayview Ave, Leslie St, Major Mackenzie Dr, etc.)
+- Valid Canadian postal codes (L4B, L4C, L4E, L4S)
+- Coordinates calculated using Haversine formula for accurate distances
 - Random senders (Amazon, eBay, Walmart, etc.)
 - Random recipients
 - Random statuses distributed across delivery pipeline

@@ -62,7 +62,9 @@ npm run seed:packages 200
 This will:
 - Create packages with random statuses (PENDING, IN_TRANSIT, AT_HUB, OUT_FOR_DELIVERY, DELIVERED)
 - Distribute packages across all active hubs
-- Assign realistic delivery addresses **within 10km of each hub** (proximity-based)
+- Assign realistic Richmond Hill, ON delivery addresses **within 10km of each hub** (proximity-based)
+- Use real street names (Yonge St, Bayview Ave, Leslie St, etc.)
+- Generate valid Canadian postal codes (L4B, L4C, L4E, L4S)
 - Generate unique tracking numbers and barcodes
 - Calculate coordinates using Haversine distance formula
 
@@ -201,7 +203,9 @@ Each generated package includes:
 - **Barcode**: BCXXXXXXXXXX
 - **Sender**: Random from (Amazon, eBay, Walmart, etc.)
 - **Recipient**: Random from test names
-- **Delivery Address**: Generated within **10km radius** of assigned hub (proximity-based routing)
+- **Delivery Address**: Richmond Hill, ON addresses within **10km radius** of assigned hub
+- **Street Names**: Real streets (Yonge St, Bayview Ave, Leslie St, Major Mackenzie Dr, etc.)
+- **Postal Codes**: Valid Canadian formats (L4B, L4C, L4E, L4S)
 - **Coordinates**: Calculated using Haversine formula for realistic distances
 - **Status**: Random initial status
 - **Weight**: 0.5 - 10 kg
