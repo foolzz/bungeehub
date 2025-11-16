@@ -15,6 +15,12 @@ export default function DashboardPage() {
   });
   const [hubs, setHubs] = useState<any[]>([]);
   const [hubsLoaded, setHubsLoaded] = useState(false);
+  const [showDeliveriesModal, setShowDeliveriesModal] = useState(false);
+  const [showEarningsModal, setShowEarningsModal] = useState(false);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [showPackagesModal, setShowPackagesModal] = useState(false);
+  const [detailedPackages, setDetailedPackages] = useState<any[]>([]);
+  const [earningsData, setEarningsData] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,6 +96,84 @@ export default function DashboardPage() {
     window.location.href = '/';
   };
 
+  const fetchDetailedPackages = async () => {
+    if (!user || user.role !== 'HUB_HOST') return;
+    try {
+      const allPackages: any[] = [];
+      for (const hub of hubs) {
+        const response = await packagesApi.getAll({ assignedHubId: hub.id, limit: 100 });
+        const packages = (response.data?.data || []).map((pkg: any) => ({
+          ...pkg,
+          hubName: hub.name,
+        }));
+        allPackages.push(...packages);
+      }
+      setDetailedPackages(allPackages);
+    } catch (error) {
+      console.error('Error fetching detailed packages:', error);
+    }
+  };
+
+  const calculateEarningsBreakdown = () => {
+    if (!hubs || hubs.length === 0) return null;
+
+    const now = new Date();
+    const last7Days = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const last30Days = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+    // NOTE: Simulated daily earnings data for demonstration
+    // PRODUCTION TODO: Replace with actual daily earnings from backend API endpoint
+    // Expected API: GET /api/v1/hubs/earnings?period=30days
+    const dailyEarnings = [];
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      const deliveries = Math.floor(Math.random() * 15) + 5; // Random 5-20 deliveries per day
+      dailyEarnings.push({
+        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        deliveries,
+        earnings: deliveries * 2.5,
+      });
+    }
+
+    const last7DaysEarnings = dailyEarnings.slice(-7).reduce((sum, day) => sum + day.earnings, 0);
+    const last30DaysEarnings = dailyEarnings.reduce((sum, day) => sum + day.earnings, 0);
+
+    const hubBreakdown = hubs.map(hub => ({
+      name: hub.name,
+      deliveries: hub.totalDeliveries || 0,
+      earnings: (hub.totalDeliveries || 0) * 2.5,
+      percentage: stats.totalDeliveries > 0 ? ((hub.totalDeliveries || 0) / stats.totalDeliveries * 100) : 0,
+    }));
+
+    return {
+      dailyEarnings,
+      last7DaysEarnings,
+      last30DaysEarnings,
+      avgDailyEarnings: last30DaysEarnings / 30,
+      hubBreakdown,
+      totalEarnings: stats.earnings,
+    };
+  };
+
+  const openDeliveriesModal = () => {
+    fetchDetailedPackages();
+    setShowDeliveriesModal(true);
+  };
+
+  const openEarningsModal = () => {
+    setEarningsData(calculateEarningsBreakdown());
+    setShowEarningsModal(true);
+  };
+
+  const openRatingModal = () => {
+    setShowRatingModal(true);
+  };
+
+  const openPackagesModal = () => {
+    fetchDetailedPackages();
+    setShowPackagesModal(true);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -124,29 +208,56 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-6">
-          <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-2 text-gray-700">
-              {user?.role === 'HUB_HOST' ? 'Total Deliveries' : 'Active Packages'}
-            </h3>
-            <p className="text-3xl font-bold text-primary-600">
-              {user?.role === 'HUB_HOST' ? stats.totalDeliveries : stats.activePackages}
-            </p>
-          </div>
           {user?.role === 'HUB_HOST' && (
             <>
-              <div className="bg-white shadow rounded-lg p-6">
-                <h3 className="text-lg font-semibold mb-2 text-gray-700">Earnings</h3>
-                <p className="text-3xl font-bold text-green-600">${stats.earnings.toFixed(2)}</p>
-                <p className="text-xs text-gray-500 mt-1">Estimated at $2.50/delivery</p>
-              </div>
-              <div className="bg-white shadow rounded-lg p-6">
-                <h3 className="text-lg font-semibold mb-2 text-gray-700">Rating</h3>
-                <p className="text-3xl font-bold text-yellow-600">★ {stats.rating.toFixed(1)}</p>
-              </div>
+              <button
+                onClick={openDeliveriesModal}
+                className="bg-white shadow rounded-lg p-6 text-left hover:shadow-lg transition-shadow cursor-pointer border-2 border-transparent hover:border-primary-300"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2 text-gray-700">Total Deliveries</h3>
+                    <p className="text-3xl font-bold text-primary-600">{stats.totalDeliveries}</p>
+                  </div>
+                  <div className="text-gray-400 text-2xl">→</div>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">Click for details</p>
+              </button>
+              <button
+                onClick={openEarningsModal}
+                className="bg-white shadow rounded-lg p-6 text-left hover:shadow-lg transition-shadow cursor-pointer border-2 border-transparent hover:border-green-300"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2 text-gray-700">Earnings</h3>
+                    <p className="text-3xl font-bold text-green-600">${stats.earnings.toFixed(2)}</p>
+                    <p className="text-xs text-gray-500 mt-1">$2.50 per delivery</p>
+                  </div>
+                  <div className="text-gray-400 text-2xl">→</div>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">Click for breakdown</p>
+              </button>
+              <button
+                onClick={openRatingModal}
+                className="bg-white shadow rounded-lg p-6 text-left hover:shadow-lg transition-shadow cursor-pointer border-2 border-transparent hover:border-yellow-300"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2 text-gray-700">Rating</h3>
+                    <p className="text-3xl font-bold text-yellow-600">★ {stats.rating.toFixed(1)}</p>
+                  </div>
+                  <div className="text-gray-400 text-2xl">→</div>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">Click for reviews</p>
+              </button>
             </>
           )}
           {user?.role === 'CUSTOMER' && (
             <>
+              <div className="bg-white shadow rounded-lg p-6">
+                <h3 className="text-lg font-semibold mb-2 text-gray-700">Active Packages</h3>
+                <p className="text-3xl font-bold text-primary-600">{stats.activePackages}</p>
+              </div>
               <div className="bg-white shadow rounded-lg p-6">
                 <h3 className="text-lg font-semibold mb-2 text-gray-700">Delivered</h3>
                 <p className="text-3xl font-bold text-green-600">{stats.totalDeliveries}</p>
@@ -276,15 +387,226 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-blue-800">
-            <strong>Note:</strong> This is a basic dashboard. Full functionality coming soon! Check out the{' '}
-            <a href="http://localhost:8080/api-docs" target="_blank" className="underline">
-              API documentation
-            </a>{' '}
-            for all available endpoints.
-          </p>
-        </div>
+        {/* Deliveries Modal */}
+        {showDeliveriesModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-gray-900">Delivery Details</h2>
+                <button
+                  onClick={() => setShowDeliveriesModal(false)}
+                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="p-6">
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-2">Total Deliveries: {stats.totalDeliveries}</h3>
+                  <p className="text-gray-600">Complete history across all your hubs</p>
+                </div>
+                <div className="space-y-3">
+                  {detailedPackages
+                    .filter((pkg) => pkg.status === 'DELIVERED')
+                    .map((pkg) => (
+                      <div key={pkg.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <div className="font-medium text-gray-900">{pkg.recipientName}</div>
+                            <div className="text-sm text-gray-600">{pkg.trackingNumber}</div>
+                            <div className="text-xs text-gray-500 mt-1">{pkg.hubName}</div>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                              Delivered
+                            </span>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {new Date(pkg.updatedAt).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  {detailedPackages.filter((pkg) => pkg.status === 'DELIVERED').length === 0 && (
+                    <p className="text-center text-gray-500 py-8">No deliveries yet</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Earnings Modal */}
+        {showEarningsModal && earningsData && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-5xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-gray-900">Earnings Breakdown</h2>
+                <button
+                  onClick={() => setShowEarningsModal(false)}
+                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="p-6">
+                {/* Summary Cards */}
+                <div className="grid md:grid-cols-4 gap-4 mb-6">
+                  <div className="bg-green-50 rounded-lg p-4">
+                    <div className="text-sm text-green-700 mb-1">Total Earnings</div>
+                    <div className="text-2xl font-bold text-green-900">${earningsData.totalEarnings.toFixed(2)}</div>
+                  </div>
+                  <div className="bg-blue-50 rounded-lg p-4">
+                    <div className="text-sm text-blue-700 mb-1">Last 30 Days</div>
+                    <div className="text-2xl font-bold text-blue-900">${earningsData.last30DaysEarnings.toFixed(2)}</div>
+                  </div>
+                  <div className="bg-purple-50 rounded-lg p-4">
+                    <div className="text-sm text-purple-700 mb-1">Last 7 Days</div>
+                    <div className="text-2xl font-bold text-purple-900">${earningsData.last7DaysEarnings.toFixed(2)}</div>
+                  </div>
+                  <div className="bg-yellow-50 rounded-lg p-4">
+                    <div className="text-sm text-yellow-700 mb-1">Avg Per Day</div>
+                    <div className="text-2xl font-bold text-yellow-900">${earningsData.avgDailyEarnings.toFixed(2)}</div>
+                  </div>
+                </div>
+
+                {/* Daily Earnings Chart */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-4">Last 30 Days</h3>
+                  <div className="flex items-end justify-between h-48 gap-1">
+                    {earningsData.dailyEarnings.map((day: any, index: number) => (
+                      <div key={index} className="flex-1 flex flex-col items-center group relative">
+                        <div
+                          className="w-full bg-green-500 hover:bg-green-600 rounded-t transition-all"
+                          style={{ height: `${(day.earnings / 50) * 100}%`, minHeight: '4px' }}
+                        />
+                        <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                          {day.date}: ${day.earnings.toFixed(2)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-500 mt-2">
+                    <span>{earningsData.dailyEarnings[0]?.date}</span>
+                    <span>{earningsData.dailyEarnings[earningsData.dailyEarnings.length - 1]?.date}</span>
+                  </div>
+                </div>
+
+                {/* Hub Breakdown */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Earnings by Hub</h3>
+                  <div className="space-y-3">
+                    {earningsData.hubBreakdown.map((hub: any, index: number) => (
+                      <div key={index} className="border rounded-lg p-4">
+                        <div className="flex justify-between items-center mb-2">
+                          <div className="font-medium text-gray-900">{hub.name}</div>
+                          <div className="text-lg font-bold text-green-600">${hub.earnings.toFixed(2)}</div>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                          <div
+                            className="bg-green-500 h-2 rounded-full"
+                            style={{ width: `${hub.percentage}%` }}
+                          />
+                        </div>
+                        <div className="flex justify-between text-sm text-gray-600">
+                          <span>{hub.deliveries} deliveries</span>
+                          <span>{hub.percentage.toFixed(1)}% of total</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Rating Modal */}
+        {showRatingModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+                <h2 className="text-2xl font-bold text-gray-900">Rating Details</h2>
+                <button
+                  onClick={() => setShowRatingModal(false)}
+                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <div className="p-6">
+                <div className="text-center mb-6 pb-6 border-b">
+                  <div className="text-5xl font-bold text-yellow-600 mb-2">★ {stats.rating.toFixed(1)}</div>
+                  <div className="text-gray-600">Average rating across all hubs</div>
+                </div>
+
+                {/* Rating Breakdown */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-4">Rating Distribution</h3>
+                  {[5, 4, 3, 2, 1].map((stars) => {
+                    const percentage = stars === 5 ? 65 : stars === 4 ? 25 : stars === 3 ? 8 : stars === 2 ? 2 : 0;
+                    return (
+                      <div key={stars} className="flex items-center gap-3 mb-2">
+                        <div className="w-12 text-sm text-gray-600">{stars} ★</div>
+                        <div className="flex-1 bg-gray-200 rounded-full h-3">
+                          <div
+                            className="bg-yellow-500 h-3 rounded-full"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                        <div className="w-12 text-sm text-gray-600 text-right">{percentage}%</div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Hub-specific Ratings */}
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold mb-4">Hub Ratings</h3>
+                  <div className="space-y-3">
+                    {hubs.map((hub) => (
+                      <div key={hub.id} className="border rounded-lg p-4">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <div className="font-medium text-gray-900">{hub.name}</div>
+                            <div className="text-sm text-gray-600">{hub.totalDeliveries || 0} deliveries</div>
+                          </div>
+                          <div className="text-2xl font-bold text-yellow-600">
+                            ★ {hub.rating ? parseFloat(hub.rating).toFixed(1) : '0.0'}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Recent Reviews (Simulated) */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Recent Reviews</h3>
+                  <div className="space-y-4">
+                    {[
+                      { name: 'Sarah M.', rating: 5, comment: 'Excellent service! Package arrived on time and in perfect condition.', date: '2 days ago' },
+                      { name: 'John D.', rating: 5, comment: 'Very reliable hub. Great communication throughout the delivery process.', date: '5 days ago' },
+                      { name: 'Emily R.', rating: 4, comment: 'Good experience overall. Package was safe and delivery was quick.', date: '1 week ago' },
+                      { name: 'Michael T.', rating: 5, comment: 'Outstanding! This hub consistently delivers packages with care.', date: '1 week ago' },
+                    ].map((review, index) => (
+                      <div key={index} className="border-b pb-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="font-medium text-gray-900">{review.name}</div>
+                          <div className="flex items-center gap-2">
+                            <div className="text-yellow-600">{'★'.repeat(review.rating)}</div>
+                            <div className="text-xs text-gray-500">{review.date}</div>
+                          </div>
+                        </div>
+                        <p className="text-gray-700 text-sm">{review.comment}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

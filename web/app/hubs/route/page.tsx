@@ -39,7 +39,7 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
   return R * c;
 }
 
-// Nearest neighbor algorithm for route optimization
+// Nearest neighbor algorithm for route optimization with time estimates
 function optimizeRoute(hub: any, packages: any[]): any[] {
   if (packages.length === 0) return [];
 
@@ -47,6 +47,10 @@ function optimizeRoute(hub: any, packages: any[]): any[] {
   const route = [];
   let currentLat = parseFloat(hub.latitude);
   let currentLng = parseFloat(hub.longitude);
+  let cumulativeTime = 0; // in minutes
+
+  const AVERAGE_SPEED_KMH = 35; // Urban driving speed
+  const DELIVERY_TIME_MINUTES = 4; // Average time per delivery stop
 
   while (unvisited.length > 0) {
     let nearestIndex = 0;
@@ -64,14 +68,35 @@ function optimizeRoute(hub: any, packages: any[]): any[] {
       }
     });
 
+    // Calculate time for this segment
+    const drivingTimeMinutes = (minDistance / AVERAGE_SPEED_KMH) * 60;
+    cumulativeTime += drivingTimeMinutes + DELIVERY_TIME_MINUTES;
+
     // Add nearest to route and remove from unvisited
     const nearest = unvisited.splice(nearestIndex, 1)[0];
-    route.push({...nearest, distance: minDistance});
+    route.push({
+      ...nearest,
+      distance: minDistance,
+      drivingTime: drivingTimeMinutes,
+      deliveryTime: DELIVERY_TIME_MINUTES,
+      cumulativeTime: cumulativeTime,
+      estimatedArrival: new Date(Date.now() + cumulativeTime * 60 * 1000),
+    });
     currentLat = parseFloat(nearest.deliveryLatitude);
     currentLng = parseFloat(nearest.deliveryLongitude);
   }
 
   return route;
+}
+
+// Format time in hours and minutes
+function formatTime(minutes: number): string {
+  const hours = Math.floor(minutes / 60);
+  const mins = Math.floor(minutes % 60);
+  if (hours > 0) {
+    return `${hours}h ${mins}m`;
+  }
+  return `${mins}m`;
 }
 
 export default function RouteOptimizationPage() {
@@ -83,6 +108,8 @@ export default function RouteOptimizationPage() {
   const [hubId, setHubId] = useState<string>('');
   const [leaflet, setLeaflet] = useState<any>(null);
   const [totalDistance, setTotalDistance] = useState(0);
+  const [totalTime, setTotalTime] = useState(0);
+  const [estimatedFinishTime, setEstimatedFinishTime] = useState<Date | null>(null);
 
   useEffect(() => {
     // Load Leaflet CSS
@@ -161,9 +188,13 @@ export default function RouteOptimizationPage() {
         const route = optimizeRoute(hubData, pkgs);
         setOptimizedRoute(route);
 
-        // Calculate total distance
-        const total = route.reduce((sum, pkg) => sum + (pkg.distance || 0), 0);
-        setTotalDistance(total);
+        // Calculate total distance and time
+        const totalDist = route.reduce((sum, pkg) => sum + (pkg.distance || 0), 0);
+        const totalTimeMin = route.length > 0 ? route[route.length - 1].cumulativeTime : 0;
+
+        setTotalDistance(totalDist);
+        setTotalTime(totalTimeMin);
+        setEstimatedFinishTime(route.length > 0 ? route[route.length - 1].estimatedArrival : null);
       }
     } catch (error: any) {
       console.error('Error:', error);
@@ -254,7 +285,7 @@ export default function RouteOptimizationPage() {
         </div>
 
         {/* Route Stats */}
-        <div className="grid md:grid-cols-3 gap-6 mb-6">
+        <div className="grid md:grid-cols-4 gap-6 mb-6">
           <div className="bg-white shadow rounded-lg p-6">
             <h3 className="text-lg font-semibold mb-2 text-gray-700">Total Stops</h3>
             <p className="text-3xl font-bold text-primary-600">{optimizedRoute.length}</p>
@@ -264,10 +295,16 @@ export default function RouteOptimizationPage() {
             <p className="text-3xl font-bold text-blue-600">{totalDistance.toFixed(2)} km</p>
           </div>
           <div className="bg-white shadow rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-2 text-gray-700">Avg Distance/Stop</h3>
-            <p className="text-3xl font-bold text-green-600">
-              {(totalDistance / optimizedRoute.length).toFixed(2)} km
+            <h3 className="text-lg font-semibold mb-2 text-gray-700">Estimated Time</h3>
+            <p className="text-3xl font-bold text-green-600">{formatTime(totalTime)}</p>
+            <p className="text-xs text-gray-500 mt-1">Including delivery stops</p>
+          </div>
+          <div className="bg-white shadow rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-2 text-gray-700">Est. Finish</h3>
+            <p className="text-2xl font-bold text-purple-600">
+              {estimatedFinishTime ? estimatedFinishTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '--:--'}
             </p>
+            <p className="text-xs text-gray-500 mt-1">Starting now</p>
           </div>
         </div>
 
@@ -319,7 +356,10 @@ export default function RouteOptimizationPage() {
                         <p className="text-sm">{pkg.recipientName}</p>
                         <p className="text-xs text-gray-600">{pkg.deliveryAddress}</p>
                         <p className="text-xs text-blue-600 mt-1">
-                          {pkg.distance?.toFixed(2)} km from previous
+                          {pkg.distance?.toFixed(2)} km from previous ({formatTime(pkg.drivingTime)})
+                        </p>
+                        <p className="text-xs text-purple-600">
+                          Est. arrival: {pkg.estimatedArrival?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>
                     </Popup>
@@ -353,8 +393,16 @@ export default function RouteOptimizationPage() {
                           📝 {pkg.specialInstructions}
                         </div>
                       )}
-                      <div className="text-xs text-gray-500 mt-1">
-                        {pkg.distance?.toFixed(2)} km from previous stop
+                      <div className="flex gap-3 mt-2">
+                        <div className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">
+                          🚗 {pkg.distance?.toFixed(2)} km ({formatTime(pkg.drivingTime)})
+                        </div>
+                        <div className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded">
+                          ⏱ {formatTime(pkg.deliveryTime)} delivery
+                        </div>
+                      </div>
+                      <div className="text-xs text-purple-600 mt-1">
+                        Est. arrival: {pkg.estimatedArrival?.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                       </div>
                     </div>
                   </div>
@@ -368,6 +416,7 @@ export default function RouteOptimizationPage() {
           <p className="text-blue-800 text-sm">
             <strong>Route Optimization:</strong> This route is optimized using the nearest-neighbor algorithm.
             Starting from your hub, each delivery stop is chosen as the nearest unvisited package location.
+            Time estimates assume an average urban driving speed of 35 km/h and 4 minutes per delivery stop.
             This provides a good balance between route efficiency and computational speed.
           </p>
         </div>

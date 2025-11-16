@@ -149,6 +149,15 @@ export default function AdminDashboard() {
           <h2 className="text-xl font-bold mb-4 text-gray-900">Admin Actions</h2>
           <div className="grid md:grid-cols-3 gap-4">
             <a
+              href="/admin/users"
+              className="block p-4 border-2 border-green-600 rounded-lg hover:bg-green-50 transition"
+            >
+              <h3 className="font-semibold text-green-600 mb-1">User Management</h3>
+              <p className="text-sm text-gray-600">
+                Approve, reject, and manage user registrations
+              </p>
+            </a>
+            <a
               href="/admin/hubs"
               className="block p-4 border-2 border-primary-600 rounded-lg hover:bg-primary-50 transition"
             >
@@ -158,12 +167,30 @@ export default function AdminDashboard() {
               </p>
             </a>
             <a
+              href="/admin/analytics"
+              className="block p-4 border-2 border-purple-600 rounded-lg hover:bg-purple-50 transition"
+            >
+              <h3 className="font-semibold text-purple-600 mb-1">Analytics & Rankings</h3>
+              <p className="text-sm text-gray-600">
+                View hub performance, rankings, and earnings
+              </p>
+            </a>
+            <a
               href="/packages"
               className="block p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition"
             >
               <h3 className="font-semibold mb-1 text-gray-900">View Packages</h3>
               <p className="text-sm text-gray-600">
                 Monitor all packages in the system
+              </p>
+            </a>
+            <a
+              href="/packages/map"
+              className="block p-4 border-2 border-gray-300 rounded-lg hover:bg-gray-50 transition"
+            >
+              <h3 className="font-semibold mb-1 text-gray-900">Package Map</h3>
+              <p className="text-sm text-gray-600">
+                View all packages and hubs on map
               </p>
             </a>
             <a
