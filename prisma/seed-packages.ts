@@ -80,18 +80,20 @@ const packageStatuses: PackageStatus[] = [
   PackageStatus.DELIVERED,
 ];
 
-// Generate random tracking number
+// Generate unique tracking number with timestamp
 function generateTrackingNumber(index: number): string {
   const prefix = 'TRK';
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-  const num = String(index).padStart(6, '0');
-  return `${prefix}-${date}-${num}`;
+  const timestamp = Date.now().toString().slice(-6); // Last 6 digits of timestamp
+  const num = String(index).padStart(4, '0');
+  return `${prefix}-${date}-${timestamp}-${num}`;
 }
 
-// Generate random barcode
+// Generate unique barcode with timestamp
 function generateBarcode(index: number): string {
-  const num = String(index).padStart(10, '0');
-  return `BC${num}`;
+  const timestamp = Date.now().toString().slice(-6);
+  const num = String(index).padStart(4, '0');
+  return `BC${timestamp}${num}`;
 }
 
 // Generate random weight between 0.5 and 10 kg
