@@ -136,7 +136,7 @@ export default function HubDetailsPage() {
         {/* Quick Actions */}
         <div className="bg-white shadow rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4 text-gray-900">Quick Actions</h2>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-3 gap-4">
             <a
               href={`/packages?hubId=${hub.id}`}
               className="block p-4 border-2 border-primary-600 rounded-lg hover:bg-primary-50 transition"
@@ -144,6 +144,15 @@ export default function HubDetailsPage() {
               <h3 className="font-semibold text-primary-600 mb-1">View Packages</h3>
               <p className="text-sm text-gray-600">
                 See all packages assigned to this hub
+              </p>
+            </a>
+            <a
+              href={`/hubs/route?id=${hub.id}`}
+              className="block p-4 border-2 border-blue-600 rounded-lg hover:bg-blue-50 transition"
+            >
+              <h3 className="font-semibold text-blue-600 mb-1">🚗 Optimize Route</h3>
+              <p className="text-sm text-gray-600">
+                Plan efficient delivery route for your packages
               </p>
             </a>
             <a
