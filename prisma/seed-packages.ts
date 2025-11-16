@@ -107,11 +107,6 @@ async function main() {
     const status = packageStatuses[Math.floor(Math.random() * packageStatuses.length)];
     const hub = hubs[i % hubs.length]; // Distribute packages across hubs
 
-    // Generate expected delivery date (1-5 days from now)
-    const daysUntilDelivery = Math.floor(Math.random() * 5) + 1;
-    const expectedDeliveryDate = new Date();
-    expectedDeliveryDate.setDate(expectedDeliveryDate.getDate() + daysUntilDelivery);
-
     const packageData = {
       trackingNumber: generateTrackingNumber(1000 + i),
       barcode: generateBarcode(1000 + i),
@@ -127,7 +122,6 @@ async function main() {
       },
       weight: randomWeight(),
       dimensions: randomDimensions(),
-      expectedDeliveryDate,
       specialInstructions: Math.random() > 0.7 ? 'Leave at front door' : null,
     };
 
