@@ -26,67 +26,102 @@ const Polyline = dynamic(
   { ssr: false }
 );
 
-// Calculate distance between two points (Haversine formula)
-function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371; // Earth's radius in km
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-}
+// Optimize route using OSRM Trip API (solves Traveling Salesman Problem)
+async function optimizeRouteWithOSRM(hub: any, packages: any[]): Promise<{
+  route: any[];
+  drivingRoutes: any[];
+  totalDistance: number;
+  totalDuration: number;
+} | null> {
+  if (packages.length === 0) return null;
 
-// Nearest neighbor algorithm for route optimization with time estimates
-function optimizeRoute(hub: any, packages: any[]): any[] {
-  if (packages.length === 0) return [];
+  try {
+    const DELIVERY_TIME_MINUTES = 4; // Average time per delivery stop
 
-  const unvisited = [...packages];
-  const route = [];
-  let currentLat = parseFloat(hub.latitude);
-  let currentLng = parseFloat(hub.longitude);
-  let cumulativeTime = 0; // in minutes
+    // Build waypoints: hub as first/last, all packages in between
+    const waypoints = [
+      { lat: parseFloat(hub.latitude), lng: parseFloat(hub.longitude), isHub: true },
+      ...packages.map(pkg => ({
+        lat: parseFloat(pkg.deliveryLatitude),
+        lng: parseFloat(pkg.deliveryLongitude),
+        package: pkg,
+      })),
+    ];
 
-  const AVERAGE_SPEED_KMH = 35; // Urban driving speed
-  const DELIVERY_TIME_MINUTES = 4; // Average time per delivery stop
+    // Build coordinates string for OSRM Trip API: lng,lat;lng,lat;...
+    const coords = waypoints.map(w => `${w.lng},${w.lat}`).join(';');
 
-  while (unvisited.length > 0) {
-    let nearestIndex = 0;
-    let minDistance = Infinity;
+    // OSRM Trip API - solves TSP and returns optimal route
+    const url = `https://router.project-osrm.org/trip/v1/driving/${coords}?source=first&destination=first&roundtrip=false&overview=full&geometries=geojson&steps=true`;
 
-    // Find nearest unvisited package
-    unvisited.forEach((pkg, index) => {
-      const pkgLat = parseFloat(pkg.deliveryLatitude);
-      const pkgLng = parseFloat(pkg.deliveryLongitude);
-      const distance = calculateDistance(currentLat, currentLng, pkgLat, pkgLng);
+    const response = await fetch(url);
+    const data = await response.json();
 
-      if (distance < minDistance) {
-        minDistance = distance;
-        nearestIndex = index;
-      }
+    if (data.code !== 'Ok' || !data.trips || data.trips.length === 0) {
+      console.error('OSRM Trip API error:', data);
+      return null;
+    }
+
+    const trip = data.trips[0];
+
+    // Get the optimized waypoint order from OSRM
+    const waypointOrder = trip.waypoints.map((wp: any) => wp.waypoint_index);
+
+    // Reorder packages based on OSRM's optimal route (skip first index which is the hub)
+    const orderedPackages = waypointOrder.slice(1).map((idx: number) => packages[idx - 1]);
+
+    // Extract individual legs (segments) from the trip
+    const legs = trip.legs || [];
+    const drivingRoutes: any[] = [];
+    const route: any[] = [];
+
+    let cumulativeTime = 0;
+
+    // Process each leg and build the optimized route
+    orderedPackages.forEach((pkg: any, index: number) => {
+      const leg = legs[index];
+      if (!leg) return;
+
+      const segmentDistance = leg.distance / 1000; // meters to km
+      const segmentDuration = leg.duration / 60; // seconds to minutes
+
+      cumulativeTime += segmentDuration + DELIVERY_TIME_MINUTES;
+
+      // Store route segment for display
+      drivingRoutes.push({
+        coordinates: leg.steps?.flatMap((step: any) =>
+          step.geometry?.coordinates?.map((coord: number[]) => [coord[1], coord[0]]) || []
+        ) || [],
+        distance: segmentDistance,
+        duration: segmentDuration,
+        packageId: pkg.id,
+      });
+
+      // Add package to route with calculated metrics
+      route.push({
+        ...pkg,
+        distance: segmentDistance,
+        drivingTime: segmentDuration,
+        deliveryTime: DELIVERY_TIME_MINUTES,
+        cumulativeTime: cumulativeTime,
+        estimatedArrival: new Date(Date.now() + cumulativeTime * 60 * 1000),
+      });
     });
 
-    // Calculate time for this segment
-    const drivingTimeMinutes = (minDistance / AVERAGE_SPEED_KMH) * 60;
-    cumulativeTime += drivingTimeMinutes + DELIVERY_TIME_MINUTES;
+    const totalDistance = trip.distance / 1000; // meters to km
+    const totalDuration = trip.duration / 60; // seconds to minutes
+    const totalTimeWithStops = totalDuration + (orderedPackages.length * DELIVERY_TIME_MINUTES);
 
-    // Add nearest to route and remove from unvisited
-    const nearest = unvisited.splice(nearestIndex, 1)[0];
-    route.push({
-      ...nearest,
-      distance: minDistance,
-      drivingTime: drivingTimeMinutes,
-      deliveryTime: DELIVERY_TIME_MINUTES,
-      cumulativeTime: cumulativeTime,
-      estimatedArrival: new Date(Date.now() + cumulativeTime * 60 * 1000),
-    });
-    currentLat = parseFloat(nearest.deliveryLatitude);
-    currentLng = parseFloat(nearest.deliveryLongitude);
+    return {
+      route,
+      drivingRoutes,
+      totalDistance,
+      totalDuration: totalTimeWithStops,
+    };
+  } catch (error) {
+    console.error('Error optimizing route with OSRM:', error);
+    return null;
   }
-
-  return route;
 }
 
 // Format time in hours and minutes
@@ -151,34 +186,6 @@ export default function RouteOptimizationPage() {
     init();
   }, []);
 
-  // Fetch actual driving route from OSRM (OpenStreetMap Routing Machine)
-  const fetchDrivingRoute = async (waypoints: Array<{lat: number, lng: number}>) => {
-    try {
-      // Build coordinates string for OSRM: lng,lat;lng,lat;...
-      const coords = waypoints.map(w => `${w.lng},${w.lat}`).join(';');
-
-      // OSRM API endpoint (free public instance)
-      const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson&steps=true`;
-
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
-        const route = data.routes[0];
-        return {
-          coordinates: route.geometry.coordinates.map((coord: number[]) => [coord[1], coord[0]]), // Convert [lng, lat] to [lat, lng]
-          distance: route.distance / 1000, // meters to km
-          duration: route.duration / 60, // seconds to minutes
-          steps: route.legs || []
-        };
-      }
-      return null;
-    } catch (error) {
-      console.error('Error fetching driving route:', error);
-      return null;
-    }
-  };
-
   const fetchDataAndOptimize = async (id: string) => {
     try {
       setLoading(true);
@@ -217,71 +224,23 @@ export default function RouteOptimizationPage() {
 
       setPackages(pkgs);
 
-      // Optimize route
+      // Optimize route using OSRM Trip API (single API call, optimal TSP solution)
       if (pkgs.length > 0 && hubData.latitude && hubData.longitude) {
-        const route = optimizeRoute(hubData, pkgs);
-        setOptimizedRoute(route);
-
-        // Calculate total distance and time
-        const totalDist = route.reduce((sum, pkg) => sum + (pkg.distance || 0), 0);
-        const totalTimeMin = route.length > 0 ? route[route.length - 1].cumulativeTime : 0;
-
-        setTotalDistance(totalDist);
-        setTotalTime(totalTimeMin);
-        setEstimatedFinishTime(route.length > 0 ? route[route.length - 1].estimatedArrival : null);
-
-        // Fetch actual driving routes for each segment
         setRoutesLoading(true);
-        const routes: any[] = [];
 
-        // Start from hub
-        let prevPoint = {
-          lat: parseFloat(hubData.latitude),
-          lng: parseFloat(hubData.longitude)
-        };
+        const result = await optimizeRouteWithOSRM(hubData, pkgs);
 
-        for (const pkg of route) {
-          const currentPoint = {
-            lat: parseFloat(pkg.deliveryLatitude),
-            lng: parseFloat(pkg.deliveryLongitude)
-          };
-
-          const drivingRoute = await fetchDrivingRoute([prevPoint, currentPoint]);
-          if (drivingRoute) {
-            routes.push({
-              ...drivingRoute,
-              packageId: pkg.id,
-              from: prevPoint,
-              to: currentPoint
-            });
-          }
-
-          prevPoint = currentPoint;
+        if (result) {
+          setOptimizedRoute(result.route);
+          setDrivingRoutes(result.drivingRoutes);
+          setTotalDistance(result.totalDistance);
+          setTotalTime(result.totalDuration);
+          setEstimatedFinishTime(new Date(Date.now() + result.totalDuration * 60 * 1000));
+        } else {
+          setError('Failed to optimize route. Please try again.');
         }
 
-        setDrivingRoutes(routes);
         setRoutesLoading(false);
-
-        // Update with actual driving distances and times
-        if (routes.length > 0) {
-          const actualTotalDistance = routes.reduce((sum, r) => sum + r.distance, 0);
-          const actualTotalDuration = routes.reduce((sum, r) => sum + r.duration, 0);
-          const deliveryTime = route.length * 4; // 4 minutes per stop
-
-          setTotalDistance(actualTotalDistance);
-          setTotalTime(actualTotalDuration + deliveryTime);
-          setEstimatedFinishTime(new Date(Date.now() + (actualTotalDuration + deliveryTime) * 60 * 1000));
-
-          // Update route with actual distances
-          const updatedRoute = route.map((pkg, index) => ({
-            ...pkg,
-            distance: routes[index]?.distance || pkg.distance,
-            drivingTime: routes[index]?.duration || pkg.drivingTime,
-            cumulativeTime: routes.slice(0, index + 1).reduce((sum, r) => sum + r.duration, 0) + (index + 1) * 4,
-            estimatedArrival: new Date(Date.now() + (routes.slice(0, index + 1).reduce((sum, r) => sum + r.duration, 0) + (index + 1) * 4) * 60 * 1000)
-          }));
-          setOptimizedRoute(updatedRoute);
-        }
       }
     } catch (error: any) {
       console.error('Error:', error);
@@ -523,13 +482,11 @@ export default function RouteOptimizationPage() {
 
         <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
           <p className="text-blue-800 text-sm">
-            <strong>Route Optimization:</strong> This route is optimized using the nearest-neighbor algorithm.
-            Starting from your hub, each delivery stop is chosen as the nearest unvisited package location.
-            {drivingRoutes.length > 0 ? (
-              <><br /><strong>Driving Routes:</strong> Actual driving routes are fetched from OpenStreetMap Routing Machine (OSRM), showing real road paths instead of straight lines. Distances and times are calculated based on actual road networks.</>
-            ) : (
-              <><br /><strong>Note:</strong> Routes are shown as straight lines. Actual driving distances and times assume an average urban speed of 35 km/h plus 4 minutes per delivery stop.</>
-            )}
+            <strong>Route Optimization:</strong> This route is optimized using OpenStreetMap Routing Machine (OSRM) Trip API,
+            which solves the Traveling Salesman Problem to find the most efficient delivery order.
+            The algorithm calculates the optimal sequence to minimize total driving distance and time.
+            <br /><strong>Real Driving Routes:</strong> All routes use actual road networks with turn-by-turn directions,
+            providing accurate distances and time estimates including 4 minutes per delivery stop.
           </p>
         </div>
       </div>
