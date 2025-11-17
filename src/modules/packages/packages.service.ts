@@ -12,12 +12,16 @@ import { QueryPackageDto } from './dto/query-package.dto';
 import { CreateBatchDto } from './dto/create-batch.dto';
 import { UpdateBatchDto } from './dto/update-batch.dto';
 import { PackageStatus, BatchStatus, HubStatus } from '@prisma/client';
+import { WebhooksService } from '../webhooks/webhooks.service';
 
 @Injectable()
 export class PackagesService {
   private readonly logger = new Logger(PackagesService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly webhooksService: WebhooksService,
+  ) {}
 
   // ==================== Package Operations ====================
 
@@ -324,6 +328,16 @@ export class PackagesService {
 
     this.logger.log(`Package updated: ${updatedPackage.trackingNumber} (ID: ${id})`);
 
+    // Fire webhook if status changed
+    if (updatePackageDto.status && updatePackageDto.status !== existingPackage.status) {
+      await this.webhooksService.firePackageStatusUpdated(
+        updatedPackage.id,
+        updatedPackage.trackingNumber,
+        updatedPackage.status,
+        existingPackage.status,
+      );
+    }
+
     return updatedPackage;
   }
 
@@ -513,6 +527,16 @@ export class PackagesService {
     });
 
     this.logger.log(`Batch updated: ${updatedBatch.batchNumber} (ID: ${id})`);
+
+    // Fire webhook if status changed
+    if (updateBatchDto.status && updateBatchDto.status !== existingBatch.status) {
+      await this.webhooksService.fireBatchStatusUpdated(
+        updatedBatch.id,
+        updatedBatch.batchNumber,
+        updatedBatch.status,
+        existingBatch.status,
+      );
+    }
 
     return updatedBatch;
   }

@@ -4,12 +4,16 @@ import { CreateDeliveryDto } from './dto/create-delivery.dto';
 import { UpdateDeliveryDto } from './dto/update-delivery.dto';
 import { ProofOfDeliveryDto } from './dto/proof-of-delivery.dto';
 import { PackageStatus, DeliveryStatus } from '@prisma/client';
+import { WebhooksService } from '../webhooks/webhooks.service';
 
 @Injectable()
 export class DeliveriesService {
   private readonly logger = new Logger(DeliveriesService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly webhooksService: WebhooksService,
+  ) {}
 
   async createDelivery(createDeliveryDto: CreateDeliveryDto, userId: string) {
     // Validate package exists
@@ -160,6 +164,16 @@ export class DeliveriesService {
 
     this.logger.log(`Delivery updated: ${deliveryId} - Status: ${updateDeliveryDto.status}`);
 
+    // Fire webhook if status changed
+    if (updateDeliveryDto.status && updateDeliveryDto.status !== delivery.status) {
+      await this.webhooksService.fireDeliveryStatusUpdated(
+        deliveryId,
+        delivery.packageId,
+        updateDeliveryDto.status,
+        delivery.status,
+      );
+    }
+
     return updatedDelivery;
   }
 
@@ -256,6 +270,14 @@ export class DeliveriesService {
       `Proof of delivery submitted for package: ${delivery.package.trackingNumber} (Delivery ID: ${deliveryId})`,
     );
 
+    // Fire webhook for delivery completed
+    await this.webhooksService.fireDeliveryCompleted(
+      deliveryId,
+      delivery.packageId,
+      delivery.package.trackingNumber,
+      delivery.hubId,
+    );
+
     return updatedDelivery;
   }
 
@@ -322,6 +344,15 @@ export class DeliveriesService {
 
     this.logger.log(
       `Delivery marked as failed: ${deliveryId} - Reason: ${reason}`,
+    );
+
+    // Fire webhook for delivery failed
+    await this.webhooksService.fireDeliveryFailed(
+      deliveryId,
+      delivery.packageId,
+      delivery.package.trackingNumber,
+      delivery.hubId,
+      reason,
     );
 
     return updatedDelivery;

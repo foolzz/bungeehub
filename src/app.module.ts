@@ -17,6 +17,7 @@ import { UploadModule } from './modules/upload/upload.module';
 import { MessagesModule } from './modules/messages/messages.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { WebhooksModule } from './modules/webhooks/webhooks.module';
 
 // Conditionally include ServeStaticModule based on environment
 const getImports = (): any[] => {
@@ -54,6 +55,7 @@ const getImports = (): any[] => {
     MessagesModule,
     AdminModule,
     NotificationsModule,
+    WebhooksModule,
   ];
 };
 
