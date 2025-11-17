@@ -16,6 +16,20 @@ const nextConfig = {
     // Use timestamp to ensure cache busting on every build
     return `build-${Date.now()}`
   },
+  // Add headers to prevent aggressive browser caching
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+          },
+        ],
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
