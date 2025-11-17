@@ -37,16 +37,30 @@ export const authApi = {
 // Hubs API
 export const hubsApi = {
   getAll: () => api.get('/hubs'),
+  getMyHubs: () => api.get('/hubs/my-hubs'),
   getById: (id: string) => api.get(`/hubs/${id}`),
+  getMetrics: (id: string, days?: number) => api.get(`/hubs/${id}/metrics`, { params: { days } }),
   create: (data: any) => api.post('/hubs', data),
   update: (id: string, data: any) => api.put(`/hubs/${id}`, data),
 };
 
 // Packages API
 export const packagesApi = {
-  getAll: () => api.get('/packages'),
+  getAll: (params?: any) => api.get('/packages', { params }),
   getById: (id: string) => api.get(`/packages/${id}`),
-  track: (trackingNumber: string) => api.get(`/packages/track/${trackingNumber}`),
+  track: (trackingNumber: string) => api.get(`/packages/tracking/${trackingNumber}`),
+  create: (data: any) => api.post('/packages', data),
+  update: (id: string, data: any) => api.put(`/packages/${id}`, data),
+  delete: (id: string) => api.delete(`/packages/${id}`),
+};
+
+// Admin API
+export const adminApi = {
+  getDashboard: () => api.get('/admin/dashboard'),
+  getPendingApplications: (page?: number, limit?: number) =>
+    api.get('/admin/applications/pending', { params: { page, limit } }),
+  getApplicationDetails: (hubId: string) => api.get(`/admin/applications/${hubId}`),
+  reviewApplication: (hubId: string, data: any) => api.post(`/admin/applications/${hubId}/review`, data),
 };
 
 export default api;

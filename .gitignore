@@ -164,3 +164,4 @@ dist/
 tmp/
 temp/
 *.tmp
+check_seed.sql

@@ -1,12 +1,13 @@
 #!/bin/bash
 
-# BungeeHub Development Script
-# Quick start for development
+# BungeeHub Development Script (NEW - Dev Mode with Hot Reload)
+# Runs frontend on port 3000 and backend on port 8080
+# NO MORE BROWSER CACHE ISSUES!
 
 set -e
 
-echo "🚀 BungeeHub Development Startup"
-echo "=================================="
+echo "🚀 BungeeHub Development Startup (Dev Mode)"
+echo "==========================================="
 echo ""
 
 # Check if .env exists
@@ -39,19 +40,19 @@ npx prisma generate
 echo "✅ Prisma client generated"
 echo ""
 
-# Build web frontend
-echo "🌐 Building web frontend..."
-npm run build:web
-echo "✅ Web frontend built"
+# Start both servers with hot reload
+echo "🎯 Starting development servers..."
+echo ""
+echo "   📱 Frontend (Next.js Dev): http://localhost:3000"
+echo "   🔧 Backend API:            http://localhost:8080/api/v1"
+echo "   📚 API Docs:               http://localhost:8080/api-docs"
+echo ""
+echo "⚡ Hot reload enabled - changes update automatically!"
+echo "✨ No more cache issues - always using latest code!"
+echo ""
+echo "💡 TIP: Keep DevTools open with 'Disable cache' checked for best experience"
+echo ""
+echo "Press Ctrl+C to stop both servers"
 echo ""
 
-# Start the development server
-echo "🎯 Starting combined server on port 8080..."
-echo "   - Web UI: http://localhost:8080/"
-echo "   - API: http://localhost:8080/api/v1/*"
-echo "   - API Docs: http://localhost:8080/api-docs"
-echo ""
-echo "Press Ctrl+C to stop the server"
-echo ""
-
-npm run start:dev
+npm run dev
