@@ -10,8 +10,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       await this.$connect();
       this.logger.log('✅ Connected to Neon PostgreSQL database');
     } catch (error) {
-      this.logger.error('❌ Failed to connect to database', error);
-      throw error;
+      this.logger.error('❌ Failed to connect to database');
+      this.logger.warn('⚠️ Continuing without database connection - API endpoints will not work');
+      // Don't throw error to allow the app to start and serve static files
     }
   }
 

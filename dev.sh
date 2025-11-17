@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# BungeeHub Development Script (NEW - Dev Mode with Hot Reload)
-# Runs frontend on port 3000 and backend on port 8080
-# NO MORE BROWSER CACHE ISSUES!
+# BungeeHub Development Script
+# Serves both frontend and backend on http://localhost:8080
+# Watches for frontend changes and rebuilds automatically!
 
 set -e
 
-echo "🚀 BungeeHub Development Startup (Dev Mode)"
-echo "==========================================="
+echo "🚀 BungeeHub Development Startup (Single Port Mode)"
+echo "===================================================="
 echo ""
 
 # Check if .env exists
@@ -40,19 +40,26 @@ npx prisma generate
 echo "✅ Prisma client generated"
 echo ""
 
+# Initial web build
+echo "🔨 Building frontend (initial build)..."
+npm run build:web
+echo "✅ Frontend built"
+echo ""
+
 # Start both servers with hot reload
 echo "🎯 Starting development servers..."
 echo ""
-echo "   📱 Frontend (Next.js Dev): http://localhost:3000"
-echo "   🔧 Backend API:            http://localhost:8080/api/v1"
-echo "   📚 API Docs:               http://localhost:8080/api-docs"
+echo "   🌐 Application:  http://localhost:8080"
+echo "   🔧 Backend API:  http://localhost:8080/api/v1"
+echo "   📚 API Docs:     http://localhost:8080/api-docs"
 echo ""
-echo "⚡ Hot reload enabled - changes update automatically!"
-echo "✨ No more cache issues - always using latest code!"
+echo "⚡ Hot reload enabled:"
+echo "   • Backend changes: Auto-restart"
+echo "   • Frontend changes: Auto-rebuild (may take a few seconds)"
 echo ""
-echo "💡 TIP: Keep DevTools open with 'Disable cache' checked for best experience"
+echo "💡 TIP: Frontend changes require a browser refresh after rebuild completes"
 echo ""
 echo "Press Ctrl+C to stop both servers"
 echo ""
 
-npm run dev
+npm run dev:single-port
