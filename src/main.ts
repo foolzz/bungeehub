@@ -18,7 +18,7 @@ async function bootstrap() {
           styleSrc: ["'self'", "'unsafe-inline'", 'https://unpkg.com'],
           imgSrc: ["'self'", 'data:', 'https:', 'https://unpkg.com', 'https://*.tile.openstreetmap.org'],
           fontSrc: ["'self'", 'data:', 'https://unpkg.com'],
-          connectSrc: ["'self'", 'https://*.tile.openstreetmap.org'],
+          connectSrc: ["'self'", 'https://*.tile.openstreetmap.org', 'https://router.project-osrm.org'],
         },
       },
     }),
