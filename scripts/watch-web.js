@@ -10,7 +10,7 @@ const { watch } = require('fs');
 const path = require('path');
 
 const webDir = path.join(__dirname, '..', 'web');
-const watchDirs = ['src', 'app', 'pages', 'components', 'lib', 'styles'].map(dir =>
+const watchDirs = ['app', 'components', 'lib', 'public', 'styles'].map(dir =>
   path.join(webDir, dir)
 );
 
