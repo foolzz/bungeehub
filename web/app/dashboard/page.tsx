@@ -99,13 +99,19 @@ export default function DashboardPage() {
   const fetchDetailedPackages = async () => {
     if (!user || user.role !== 'HUB_HOST') return;
     try {
+      // Fetch all packages and filter client-side to avoid API parameter issues
+      const response = await packagesApi.getAll({ limit: 1000 });
+      const allPackagesData = response.data?.data || [];
+
+      // Filter and map packages for each hub
       const allPackages: any[] = [];
       for (const hub of hubs) {
-        const response = await packagesApi.getAll({ assignedHubId: hub.id, limit: 100 });
-        const packages = (response.data?.data || []).map((pkg: any) => ({
-          ...pkg,
-          hubName: hub.name,
-        }));
+        const packages = allPackagesData
+          .filter((pkg: any) => pkg.assignedHub?.id === hub.id)
+          .map((pkg: any) => ({
+            ...pkg,
+            hubName: hub.name,
+          }));
         allPackages.push(...packages);
       }
       setDetailedPackages(allPackages);
