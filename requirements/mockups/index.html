@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - BungeeHub</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">🎮</div>
+        <div class="brand-name">BungeeHub</div>
+      </div>
+
+      <nav class="nav-section">
+        <div class="nav-section-title">Main Navigation</div>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link active">
+              <span class="nav-icon">📊</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="servers.html" class="nav-link">
+              <span class="nav-icon">⚡</span>
+              <span>Servers</span>
+              <span class="nav-badge">12</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="players.html" class="nav-link">
+              <span class="nav-icon">👥</span>
+              <span>Players</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="network.html" class="nav-link">
+              <span class="nav-icon">🌐</span>
+              <span>Network</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <nav class="nav-section">
+        <div class="nav-section-title">Management</div>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">💬</span>
+              <span>Messaging</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">💰</span>
+              <span>Economy</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">🔒</span>
+              <span>Permissions</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">📈</span>
+              <span>Monitoring</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">🔌</span>
+              <span>API</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <nav class="nav-section">
+        <div class="nav-section-title">System</div>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">⚙️</span>
+              <span>Settings</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">📋</span>
+              <span>Audit Logs</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <span class="nav-icon">❓</span>
+              <span>Help</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-status">
+        <h4>Network Status</h4>
+        <div class="status-item">
+          <span>
+            <span class="status-indicator online"></span>
+            Online
+          </span>
+          <span>🟢</span>
+        </div>
+        <div class="status-item">
+          <span>Players</span>
+          <span><strong id="live-players">247</strong>/500</span>
+        </div>
+        <div class="status-item">
+          <span>Servers</span>
+          <span><strong>12</strong>/15</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-separator">/</span>
+          <span>Dashboard</span>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" placeholder="Search servers, players..." onkeyup="handleSearch(event)">
+          </div>
+
+          <button class="topbar-icon-btn" onclick="showNotification('No new notifications', 'info')">
+            <span>🔔</span>
+            <span class="notification-badge">3</span>
+          </button>
+
+          <button class="topbar-icon-btn" onclick="toggleTheme()">
+            <span>🌙</span>
+          </button>
+
+          <div class="user-menu">
+            <div class="user-avatar">A</div>
+            <div class="user-info">
+              <div class="user-name">Admin</div>
+              <div class="user-role">Owner</div>
+            </div>
+            <span>▼</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Content -->
+      <div class="page-content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Network Dashboard</h1>
+            <p class="page-subtitle">Overview of your BungeeCord network performance</p>
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <button class="btn btn-secondary">
+              <span>📊</span>
+              <span>Export Report</span>
+            </button>
+            <button class="btn btn-primary" onclick="showNotification('Broadcast sent!', 'success')">
+              <span>📢</span>
+              <span>Send Broadcast</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <div>
+                <div class="stat-label">Network Status</div>
+                <div class="stat-value">Online</div>
+                <div class="stat-change positive">
+                  ✓ All systems operational
+                </div>
+              </div>
+              <div class="stat-icon success">
+                ✓
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <div>
+                <div class="stat-label">Players Online</div>
+                <div class="stat-value">247<span style="font-size: 18px; color: var(--text-secondary);">/500</span></div>
+                <div class="stat-change positive">
+                  ↑ +12 (5 min)
+                </div>
+              </div>
+              <div class="stat-icon primary">
+                👥
+              </div>
+            </div>
+            <div class="stat-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 49.4%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <div>
+                <div class="stat-label">Active Servers</div>
+                <div class="stat-value">12<span style="font-size: 18px; color: var(--text-secondary);">/15</span></div>
+                <div class="stat-change">
+                  3 offline
+                </div>
+              </div>
+              <div class="stat-icon warning">
+                ⚡
+              </div>
+            </div>
+            <div class="stat-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 80%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-header">
+              <div>
+                <div class="stat-label">Memory Usage</div>
+                <div class="stat-value">24.3<span style="font-size: 18px; color: var(--text-secondary);">GB</span></div>
+                <div class="stat-change">
+                  38% of 64GB
+                </div>
+              </div>
+              <div class="stat-icon info">
+                💾
+              </div>
+            </div>
+            <div class="stat-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 38%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Server Grid -->
+        <div class="card mb-3">
+          <div class="card-header">
+            <h2 class="card-title">Server Status</h2>
+            <a href="servers.html" class="btn btn-secondary btn-sm">View All →</a>
+          </div>
+        </div>
+
+        <div class="server-grid">
+          <!-- Hub-1 Server -->
+          <div class="server-card" onclick="viewServerDetails('Hub-1')">
+            <div class="server-card-header">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <span class="status-dot online"></span>
+                  <h3 class="server-name">Hub-1</h3>
+                </div>
+                <p class="server-description">Main Lobby</p>
+              </div>
+              <div class="status-badge online">
+                <span class="status-dot online"></span>
+                Online
+              </div>
+            </div>
+            <div class="server-stats">
+              <div class="server-stat">
+                <span class="server-stat-icon">👥</span>
+                <span><span class="server-stat-value">89</span>/100</span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">💾</span>
+                <span class="server-stat-value">4.2GB</span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">📊</span>
+                <span>CPU: <span class="server-stat-value">23%</span></span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">⚡</span>
+                <span>TPS: <span class="server-stat-value">20</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hub-2 Server -->
+          <div class="server-card" onclick="viewServerDetails('Hub-2')">
+            <div class="server-card-header">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <span class="status-dot online"></span>
+                  <h3 class="server-name">Hub-2</h3>
+                </div>
+                <p class="server-description">Backup Lobby</p>
+              </div>
+              <div class="status-badge online">
+                <span class="status-dot online"></span>
+                Online
+              </div>
+            </div>
+            <div class="server-stats">
+              <div class="server-stat">
+                <span class="server-stat-icon">👥</span>
+                <span><span class="server-stat-value">67</span>/100</span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">💾</span>
+                <span class="server-stat-value">3.8GB</span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">📊</span>
+                <span>CPU: <span class="server-stat-value">19%</span></span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">⚡</span>
+                <span>TPS: <span class="server-stat-value">20</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Survival Server -->
+          <div class="server-card" onclick="viewServerDetails('Survival')">
+            <div class="server-card-header">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <span class="status-dot online"></span>
+                  <h3 class="server-name">Survival</h3>
+                </div>
+                <p class="server-description">Main SMP</p>
+              </div>
+              <div class="status-badge online">
+                <span class="status-dot online"></span>
+                Online
+              </div>
+            </div>
+            <div class="server-stats">
+              <div class="server-stat">
+                <span class="server-stat-icon">👥</span>
+                <span><span class="server-stat-value">45</span>/80</span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">💾</span>
+                <span class="server-stat-value">8.1GB</span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">📊</span>
+                <span>CPU: <span class="server-stat-value">56%</span></span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">⚡</span>
+                <span>TPS: <span class="server-stat-value">19</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Minigames Server -->
+          <div class="server-card" onclick="viewServerDetails('Minigames')">
+            <div class="server-card-header">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <span class="status-dot warning"></span>
+                  <h3 class="server-name">Minigames</h3>
+                </div>
+                <p class="server-description">Party Games</p>
+              </div>
+              <div class="status-badge warning">
+                <span class="status-dot warning"></span>
+                Low TPS
+              </div>
+            </div>
+            <div class="server-stats">
+              <div class="server-stat">
+                <span class="server-stat-icon">👥</span>
+                <span><span class="server-stat-value">31</span>/60</span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">💾</span>
+                <span class="server-stat-value">5.2GB</span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">📊</span>
+                <span>CPU: <span class="server-stat-value">67%</span></span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">⚡</span>
+                <span>TPS: <span class="server-stat-value" style="color: var(--warning)">17</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Creative Server -->
+          <div class="server-card" onclick="viewServerDetails('Creative')">
+            <div class="server-card-header">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <span class="status-dot online"></span>
+                  <h3 class="server-name">Creative</h3>
+                </div>
+                <p class="server-description">Build World</p>
+              </div>
+              <div class="status-badge online">
+                <span class="status-dot online"></span>
+                Online
+              </div>
+            </div>
+            <div class="server-stats">
+              <div class="server-stat">
+                <span class="server-stat-icon">👥</span>
+                <span><span class="server-stat-value">12</span>/40</span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">💾</span>
+                <span class="server-stat-value">2.1GB</span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">📊</span>
+                <span>CPU: <span class="server-stat-value">12%</span></span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">⚡</span>
+                <span>TPS: <span class="server-stat-value">20</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skyblock Server (Offline) -->
+          <div class="server-card" onclick="viewServerDetails('Skyblock')">
+            <div class="server-card-header">
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <span class="status-dot offline"></span>
+                  <h3 class="server-name" style="opacity: 0.6;">Skyblock</h3>
+                </div>
+                <p class="server-description">Island Adventures</p>
+              </div>
+              <div class="status-badge offline">
+                <span class="status-dot offline"></span>
+                Offline
+              </div>
+            </div>
+            <div class="server-stats" style="opacity: 0.5;">
+              <div class="server-stat">
+                <span class="server-stat-icon">👥</span>
+                <span><span class="server-stat-value">0</span>/60</span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">💾</span>
+                <span class="server-stat-value">0.0GB</span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">📊</span>
+                <span>CPU: <span class="server-stat-value">--</span></span>
+              </div>
+              <div class="server-stat">
+                <span class="server-stat-icon">⚡</span>
+                <span>TPS: <span class="server-stat-value">--</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity and Chart Section -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: var(--spacing-lg); margin-top: var(--spacing-xl);">
+          <!-- Player Activity Chart -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Network Activity (Last 24 Hours)</h2>
+              <select class="filter-input" style="width: auto;">
+                <option>Last 24 Hours</option>
+                <option>Last 7 Days</option>
+                <option>Last 30 Days</option>
+              </select>
+            </div>
+            <div class="card-body">
+              <div class="chart-container">
+                <div class="chart-bar" style="height: 45%;"></div>
+                <div class="chart-bar" style="height: 60%;"></div>
+                <div class="chart-bar" style="height: 75%;"></div>
+                <div class="chart-bar" style="height: 90%;"></div>
+                <div class="chart-bar" style="height: 85%;"></div>
+                <div class="chart-bar" style="height: 95%;"></div>
+                <div class="chart-bar" style="height: 100%;"></div>
+                <div class="chart-bar" style="height: 85%;"></div>
+                <div class="chart-bar" style="height: 70%;"></div>
+                <div class="chart-bar" style="height: 65%;"></div>
+                <div class="chart-bar" style="height: 80%;"></div>
+                <div class="chart-bar" style="height: 55%;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: var(--spacing-md); font-size: 12px; color: var(--text-secondary);">
+                <span>12AM</span>
+                <span>6AM</span>
+                <span>12PM</span>
+                <span>6PM</span>
+                <span>12AM</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Events -->
+          <div class="activity-feed">
+            <div style="padding: var(--spacing-lg); border-bottom: 1px solid var(--border-color);">
+              <h2 class="card-title">Recent Events</h2>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon error">🔴</div>
+              <div class="activity-content">
+                <div class="activity-title">Skyblock went offline</div>
+                <div class="activity-time">2 minutes ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon info">👤</div>
+              <div class="activity-content">
+                <div class="activity-title">PlayerOne joined Hub-1</div>
+                <div class="activity-time">5 minutes ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon success">🟢</div>
+              <div class="activity-content">
+                <div class="activity-title">Hub-2 started</div>
+                <div class="activity-time">12 minutes ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon info">💰</div>
+              <div class="activity-content">
+                <div class="activity-title">Economy sync complete</div>
+                <div class="activity-time">15 minutes ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon error">⚠️</div>
+              <div class="activity-content">
+                <div class="activity-title">Minigames low TPS</div>
+                <div class="activity-time">18 minutes ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
