@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proof of Delivery - BungeeHub</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .signature-pad {
+      width: 100%;
+      height: 200px;
+      border: 2px solid var(--neutral-300);
+      border-radius: 8px;
+      background-color: white;
+      cursor: crosshair;
+      position: relative;
+    }
+    .signature-pad canvas {
+      width: 100%;
+      height: 100%;
+    }
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    .photo-slot {
+      aspect-ratio: 4/3;
+      border: 2px dashed var(--neutral-300);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background-color: var(--neutral-50);
+      position: relative;
+      overflow: hidden;
+    }
+    .photo-slot:hover {
+      border-color: var(--primary-blue);
+      background-color: rgba(37, 99, 235, 0.05);
+    }
+    .photo-slot.has-photo {
+      border-style: solid;
+      border-color: var(--success-green);
+    }
+    .photo-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .photo-badge {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+    .location-display {
+      background: var(--neutral-50);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--neutral-200);
+    }
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--neutral-200);
+      color: var(--neutral-500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .step.active .step-number {
+      background: var(--primary-blue);
+      color: white;
+    }
+    .step.completed .step-number {
+      background: var(--success-green);
+      color: white;
+    }
+    .step-label {
+      font-size: 0.85rem;
+      color: var(--neutral-600);
+      text-align: center;
+    }
+    .step.active .step-label {
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+    .step-line {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      right: -50%;
+      height: 3px;
+      background: var(--neutral-200);
+      z-index: 0;
+    }
+    .step.completed .step-line {
+      background: var(--success-green);
+    }
+    .step:last-child .step-line {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <div class="logo-icon">📦</div>
+        <span>BungeeHub</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="01-hub-dashboard.html">Dashboard</a></li>
+        <li><a href="02-package-management.html">Packages</a></li>
+        <li><a href="03-delivery-routing.html">Deliveries</a></li>
+        <li><a href="05-performance-ranking.html">Performance</a></li>
+      </ul>
+
+      <div class="user-menu">
+        <div class="notification-icon">
+          🔔
+          <span class="notification-badge">3</span>
+        </div>
+        <div class="user-profile">
+          <div class="user-avatar">JD</div>
+          <div class="user-info">
+            <div class="user-name">John Doe</div>
+            <div class="user-tier">⭐ Gold Hub</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">Proof of Delivery</h1>
+        <p class="page-subtitle">Complete delivery verification for Package #PKG-7835</p>
+      </div>
+
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        <div class="step completed">
+          <div class="step-number">✓</div>
+          <div class="step-label">Package Info</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step active">
+          <div class="step-number">2</div>
+          <div class="step-label">Capture Proof</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-label">Verify & Submit</div>
+        </div>
+      </div>
+
+      <!-- Main Form -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+        <!-- Left Column: Form -->
+        <div>
+          <!-- Package Info Card -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">📦 Package Information</h2>
+              <span class="badge badge-primary">Out for Delivery</span>
+            </div>
+            <div class="card-body">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Package ID</div>
+                  <div style="font-weight: 600; color: var(--neutral-900);">#PKG-7835</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Priority</div>
+                  <span class="badge badge-warning">Medium</span>
+                </div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Recipient</div>
+                  <div style="font-weight: 600; color: var(--neutral-900);">Michael Chen</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Contact</div>
+                  <div style="color: var(--neutral-700);">(555) 123-4567</div>
+                </div>
+                <div style="grid-column: 1 / -1;">
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Delivery Address</div>
+                  <div style="font-weight: 600; color: var(--neutral-900);">567 Maple Ave, Springfield, CA 94102</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Photo Capture -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">📸 Delivery Photos (Required)</h2>
+              <span style="font-size: 0.85rem; color: var(--neutral-500);">2 of 2 photos taken</span>
+            </div>
+            <div class="card-body">
+              <div class="photo-grid">
+                <!-- Photo 1 - Taken -->
+                <div class="photo-slot has-photo">
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%2310b981' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='white' text-anchor='middle' dy='.3em'%3EPackage at Door%3C/text%3E%3C/svg%3E" alt="Package at door">
+                  <div class="photo-badge">
+                    <span style="color: var(--success-green);">✓ Primary</span>
+                  </div>
+                </div>
+
+                <!-- Photo 2 - Taken -->
+                <div class="photo-slot has-photo">
+                  <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%232563eb' width='400' height='300'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='white' text-anchor='middle' dy='.3em'%3EAddress View%3C/text%3E%3C/svg%3E" alt="Address view">
+                  <div class="photo-badge">
+                    <span style="color: var(--primary-blue);">📍 Location</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: 1rem; display: flex; gap: 0.75rem;">
+                <button class="btn btn-primary" style="flex: 1;">
+                  📷 Retake Photo 1
+                </button>
+                <button class="btn btn-primary" style="flex: 1;">
+                  📷 Retake Photo 2
+                </button>
+              </div>
+
+              <div style="margin-top: 1rem; padding: 0.75rem; background-color: rgba(16, 185, 129, 0.1); border-radius: 8px; border-left: 4px solid var(--success-green);">
+                <div style="display: flex; gap: 0.5rem; align-items: start;">
+                  <span style="color: var(--success-green); font-size: 1.25rem;">✓</span>
+                  <div>
+                    <div style="font-weight: 600; color: var(--success-green); margin-bottom: 0.25rem;">Photos Captured Successfully</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-700);">
+                      Both required photos have been taken with GPS coordinates and timestamps.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Location Verification -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">📍 Location Verification</h2>
+              <span class="badge badge-success">Verified</span>
+            </div>
+            <div class="card-body">
+              <div class="location-display">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                  <div>
+                    <div style="font-size: 0.75rem; color: var(--neutral-500); margin-bottom: 0.25rem;">GPS Coordinates</div>
+                    <div style="font-weight: 600; color: var(--neutral-900); font-family: monospace;">37.7749° N, 122.4194° W</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.75rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Accuracy</div>
+                    <div style="font-weight: 600; color: var(--success-green);">± 5 meters</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.75rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Timestamp</div>
+                    <div style="font-weight: 600; color: var(--neutral-900);">Nov 19, 2024 • 2:45 PM</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.75rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Distance from Address</div>
+                    <div style="font-weight: 600; color: var(--success-green);">12 meters ✓</div>
+                  </div>
+                </div>
+
+                <div style="margin-top: 1rem; padding: 0.75rem; background-color: rgba(37, 99, 235, 0.1); border-radius: 6px;">
+                  <div style="font-size: 0.85rem; color: var(--neutral-700);">
+                    ✓ Location verified within acceptable range of delivery address
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn btn-outline mt-2" style="width: 100%;">
+                🔄 Refresh Location
+              </button>
+            </div>
+          </div>
+
+          <!-- Signature (Optional) -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">✍️ Signature (Optional)</h2>
+              <button class="btn btn-sm btn-outline" onclick="clearSignature()">Clear</button>
+            </div>
+            <div class="card-body">
+              <div class="signature-pad">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--neutral-400); font-size: 0.9rem; pointer-events: none; text-align: center;">
+                  Sign here
+                  <div style="font-size: 0.75rem; margin-top: 0.5rem;">Customer signature (optional)</div>
+                </div>
+              </div>
+              <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--neutral-600);">
+                💡 Tip: Request customer signature for high-value packages
+              </div>
+            </div>
+          </div>
+
+          <!-- Delivery Notes -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">📝 Delivery Notes</h2>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Delivery Status</label>
+                <select class="form-select">
+                  <option selected>✅ Successfully Delivered</option>
+                  <option>🚪 Left at Door</option>
+                  <option>👤 Handed to Recipient</option>
+                  <option>🏢 Left with Receptionist</option>
+                  <option>👨‍👩‍👧 Left with Neighbor</option>
+                  <option>❌ Delivery Failed</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Additional Notes (Optional)</label>
+                <textarea class="form-textarea" placeholder="Add any special delivery notes or instructions...">Package delivered to front door as requested. Customer was not home.</textarea>
+              </div>
+
+              <div style="background-color: var(--neutral-50); padding: 1rem; border-radius: 8px; border: 1px solid var(--neutral-200);">
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                  <input type="checkbox" id="notifyCustomer" checked>
+                  <label for="notifyCustomer" style="font-weight: 500; cursor: pointer;">Notify customer of delivery</label>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--neutral-600);">
+                  Customer will receive SMS and email confirmation with delivery photo
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Actions -->
+          <div class="card">
+            <div class="card-body">
+              <div style="display: flex; gap: 1rem;">
+                <button class="btn btn-outline" style="flex: 1;">
+                  ⬅️ Back
+                </button>
+                <button class="btn btn-success btn-lg" style="flex: 2;">
+                  ✅ Complete Delivery
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Summary & Checklist -->
+        <div>
+          <!-- Delivery Checklist -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">✓ Delivery Checklist</h2>
+            </div>
+            <div class="card-body">
+              <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <!-- Checklist Item - Completed -->
+                <div style="display: flex; align-items: start; gap: 0.75rem;">
+                  <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--success-green); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;">
+                    ✓
+                  </div>
+                  <div>
+                    <div style="font-weight: 600; color: var(--neutral-900);">Package Scanned</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">QR code verified</div>
+                  </div>
+                </div>
+
+                <!-- Checklist Item - Completed -->
+                <div style="display: flex; align-items: start; gap: 0.75rem;">
+                  <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--success-green); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;">
+                    ✓
+                  </div>
+                  <div>
+                    <div style="font-weight: 600; color: var(--neutral-900);">Photos Captured</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">2 photos with metadata</div>
+                  </div>
+                </div>
+
+                <!-- Checklist Item - Completed -->
+                <div style="display: flex; align-items: start; gap: 0.75rem;">
+                  <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--success-green); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;">
+                    ✓
+                  </div>
+                  <div>
+                    <div style="font-weight: 600; color: var(--neutral-900);">GPS Location</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">Verified within range</div>
+                  </div>
+                </div>
+
+                <!-- Checklist Item - Completed -->
+                <div style="display: flex; align-items: start; gap: 0.75rem;">
+                  <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--success-green); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;">
+                    ✓
+                  </div>
+                  <div>
+                    <div style="font-weight: 600; color: var(--neutral-900);">Timestamp Recorded</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">2:45 PM</div>
+                  </div>
+                </div>
+
+                <!-- Checklist Item - Optional/Pending -->
+                <div style="display: flex; align-items: start; gap: 0.75rem;">
+                  <div style="width: 24px; height: 24px; border-radius: 50%; background: var(--neutral-300); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;">
+                    ○
+                  </div>
+                  <div>
+                    <div style="font-weight: 600; color: var(--neutral-600);">Signature Captured</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">Optional</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: 1.5rem; padding: 1rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05)); border-radius: 8px; border-left: 4px solid var(--success-green);">
+                <div style="font-weight: 600; color: var(--success-green); margin-bottom: 0.5rem;">✓ All Required Steps Complete</div>
+                <div style="font-size: 0.85rem; color: var(--neutral-700);">
+                  Ready to submit proof of delivery
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Time Tracking -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">⏱️ Time Tracking</h2>
+            </div>
+            <div class="card-body">
+              <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Departed Hub</div>
+                  <div style="font-weight: 600; color: var(--neutral-900);">2:30 PM</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Arrived at Location</div>
+                  <div style="font-weight: 600; color: var(--neutral-900);">2:42 PM</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Delivery Duration</div>
+                  <div style="font-weight: 600; color: var(--success-green);">15 minutes</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Tips -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">💡 Tips</h2>
+            </div>
+            <div class="card-body">
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.85rem; color: var(--neutral-700);">
+                <div style="display: flex; gap: 0.5rem;">
+                  <span>📸</span>
+                  <span>Take clear photos showing package and address</span>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                  <span>📍</span>
+                  <span>Ensure GPS is enabled for location accuracy</span>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                  <span>✍️</span>
+                  <span>Get signature for packages over $100</span>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                  <span>📝</span>
+                  <span>Add notes about delivery location for future reference</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function clearSignature() {
+      // Signature clearing logic would go here
+      alert('Signature cleared');
+    }
+  </script>
+</body>
+</html>

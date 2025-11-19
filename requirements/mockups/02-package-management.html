@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Package Management - BungeeHub</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <div class="logo-icon">📦</div>
+        <span>BungeeHub</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="01-hub-dashboard.html">Dashboard</a></li>
+        <li><a href="02-package-management.html" class="active">Packages</a></li>
+        <li><a href="03-delivery-routing.html">Deliveries</a></li>
+        <li><a href="05-performance-ranking.html">Performance</a></li>
+      </ul>
+
+      <div class="user-menu">
+        <div class="notification-icon">
+          🔔
+          <span class="notification-badge">3</span>
+        </div>
+        <div class="user-profile">
+          <div class="user-avatar">JD</div>
+          <div class="user-info">
+            <div class="user-name">John Doe</div>
+            <div class="user-tier">⭐ Gold Hub</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="flex-between">
+          <div>
+            <h1 class="page-title">Package Management</h1>
+            <p class="page-subtitle">Manage your package inventory and scan new batches</p>
+          </div>
+          <button class="btn btn-primary btn-lg" onclick="document.getElementById('scanBatchModal').style.display='block'">
+            📥 Scan New Batch
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Total Packages</div>
+              <div class="stat-value">47</div>
+            </div>
+            <div class="stat-icon primary">📦</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Ready to Deliver</div>
+              <div class="stat-value">32</div>
+            </div>
+            <div class="stat-icon success">✅</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Out for Delivery</div>
+              <div class="stat-value">5</div>
+            </div>
+            <div class="stat-icon warning">🚚</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Issues / Pending</div>
+              <div class="stat-value">10</div>
+            </div>
+            <div class="stat-icon danger">⚠️</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters and Actions -->
+      <div class="card">
+        <div class="card-body">
+          <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
+              <input type="text" class="form-input" placeholder="🔍 Search by package ID, recipient, or address...">
+            </div>
+
+            <select class="form-select" style="width: 150px;">
+              <option>All Status</option>
+              <option>Ready</option>
+              <option>Out for Delivery</option>
+              <option>Pending</option>
+              <option>Issues</option>
+            </select>
+
+            <select class="form-select" style="width: 150px;">
+              <option>All Priorities</option>
+              <option>High</option>
+              <option>Medium</option>
+              <option>Normal</option>
+            </select>
+
+            <button class="btn btn-outline">
+              🔄 Refresh
+            </button>
+
+            <button class="btn btn-outline" id="bulkActionsBtn" disabled>
+              ⚡ Bulk Actions (0)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Package List -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Package Inventory (47)</h2>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-sm btn-outline">Export CSV</button>
+            <button class="btn btn-sm btn-outline">Print Labels</button>
+          </div>
+        </div>
+        <div class="card-body" style="padding: 0;">
+          <!-- Package Items -->
+          <div style="padding: 1.5rem;">
+            <!-- Package Item 1 -->
+            <div class="package-item">
+              <input type="checkbox" class="package-checkbox">
+              <div class="package-icon">📦</div>
+              <div class="package-info">
+                <div class="package-id">#PKG-7834</div>
+                <div class="package-address">Sarah Johnson • 1234 Oak Street, Apt 5B</div>
+                <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+                  <span class="badge badge-warning">Out for Delivery</span>
+                  <span class="badge badge-danger">High Priority</span>
+                  <span style="font-size: 0.75rem; color: var(--neutral-500);">Scanned 2 hours ago</span>
+                </div>
+              </div>
+              <div class="package-actions">
+                <button class="btn btn-sm btn-primary">📍 Navigate</button>
+                <button class="btn btn-sm btn-outline">📝 Details</button>
+              </div>
+            </div>
+
+            <!-- Package Item 2 -->
+            <div class="package-item">
+              <input type="checkbox" class="package-checkbox">
+              <div class="package-icon">📦</div>
+              <div class="package-info">
+                <div class="package-id">#PKG-7835</div>
+                <div class="package-address">Michael Chen • 567 Maple Ave</div>
+                <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+                  <span class="badge badge-primary">Ready</span>
+                  <span class="badge badge-warning">Medium Priority</span>
+                  <span style="font-size: 0.75rem; color: var(--neutral-500);">Scanned 3 hours ago</span>
+                </div>
+              </div>
+              <div class="package-actions">
+                <button class="btn btn-sm btn-primary">🚚 Start Delivery</button>
+                <button class="btn btn-sm btn-outline">📝 Details</button>
+              </div>
+            </div>
+
+            <!-- Package Item 3 -->
+            <div class="package-item">
+              <input type="checkbox" class="package-checkbox">
+              <div class="package-icon">📦</div>
+              <div class="package-info">
+                <div class="package-id">#PKG-7836</div>
+                <div class="package-address">Emma Davis • 890 Pine Road</div>
+                <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+                  <span class="badge badge-primary">Ready</span>
+                  <span class="badge badge-warning">Medium Priority</span>
+                  <span style="font-size: 0.75rem; color: var(--neutral-500);">Scanned 4 hours ago</span>
+                </div>
+              </div>
+              <div class="package-actions">
+                <button class="btn btn-sm btn-primary">🚚 Start Delivery</button>
+                <button class="btn btn-sm btn-outline">📝 Details</button>
+              </div>
+            </div>
+
+            <!-- Package Item 4 -->
+            <div class="package-item">
+              <input type="checkbox" class="package-checkbox">
+              <div class="package-icon">📦</div>
+              <div class="package-info">
+                <div class="package-id">#PKG-7837</div>
+                <div class="package-address">James Wilson • 234 Elm Street, Unit 12</div>
+                <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+                  <span class="badge badge-primary">Ready</span>
+                  <span class="badge badge-success">Normal Priority</span>
+                  <span style="font-size: 0.75rem; color: var(--neutral-500);">Scanned 5 hours ago</span>
+                </div>
+              </div>
+              <div class="package-actions">
+                <button class="btn btn-sm btn-primary">🚚 Start Delivery</button>
+                <button class="btn btn-sm btn-outline">📝 Details</button>
+              </div>
+            </div>
+
+            <!-- Package Item 5 - With Issue -->
+            <div class="package-item" style="border-color: var(--danger-red);">
+              <input type="checkbox" class="package-checkbox">
+              <div class="package-icon" style="background-color: rgba(239, 68, 68, 0.1); color: var(--danger-red);">
+                ⚠️
+              </div>
+              <div class="package-info">
+                <div class="package-id">#PKG-7838</div>
+                <div class="package-address">Lisa Martinez • 456 Birch Lane</div>
+                <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+                  <span class="badge badge-danger">Address Issue</span>
+                  <span class="badge badge-success">Normal Priority</span>
+                  <span style="font-size: 0.75rem; color: var(--danger-red);">⚠️ Requires attention</span>
+                </div>
+              </div>
+              <div class="package-actions">
+                <button class="btn btn-sm btn-outline" style="border-color: var(--danger-red); color: var(--danger-red);">🔧 Resolve</button>
+                <button class="btn btn-sm btn-outline">📝 Details</button>
+              </div>
+            </div>
+
+            <!-- Package Item 6 -->
+            <div class="package-item">
+              <input type="checkbox" class="package-checkbox">
+              <div class="package-icon">📦</div>
+              <div class="package-info">
+                <div class="package-id">#PKG-7839</div>
+                <div class="package-address">David Lee • 789 Cedar Court</div>
+                <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+                  <span class="badge badge-primary">Ready</span>
+                  <span class="badge badge-success">Normal Priority</span>
+                  <span style="font-size: 0.75rem; color: var(--neutral-500);">Scanned 6 hours ago</span>
+                </div>
+              </div>
+              <div class="package-actions">
+                <button class="btn btn-sm btn-primary">🚚 Start Delivery</button>
+                <button class="btn btn-sm btn-outline">📝 Details</button>
+              </div>
+            </div>
+
+            <!-- Package Item 7 -->
+            <div class="package-item">
+              <input type="checkbox" class="package-checkbox">
+              <div class="package-icon">📦</div>
+              <div class="package-info">
+                <div class="package-id">#PKG-7840</div>
+                <div class="package-address">Amanda White • 321 Willow Way</div>
+                <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; align-items: center;">
+                  <span class="badge badge-primary">Ready</span>
+                  <span class="badge badge-success">Normal Priority</span>
+                  <span style="font-size: 0.75rem; color: var(--neutral-500);">Scanned 7 hours ago</span>
+                </div>
+              </div>
+              <div class="package-actions">
+                <button class="btn btn-sm btn-primary">🚚 Start Delivery</button>
+                <button class="btn btn-sm btn-outline">📝 Details</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div style="padding: 1.5rem; border-top: 1px solid var(--neutral-200); display: flex; justify-content: space-between; align-items: center;">
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">
+              Showing 1-7 of 47 packages
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-sm btn-outline" disabled>Previous</button>
+              <button class="btn btn-sm btn-primary">1</button>
+              <button class="btn btn-sm btn-outline">2</button>
+              <button class="btn btn-sm btn-outline">3</button>
+              <button class="btn btn-sm btn-outline">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Scan Batch Modal -->
+  <div id="scanBatchModal" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+    <div style="background-color: white; margin: 5% auto; padding: 0; border-radius: 12px; width: 90%; max-width: 600px; box-shadow: var(--shadow-xl);">
+      <!-- Modal Header -->
+      <div style="padding: 1.5rem; border-bottom: 1px solid var(--neutral-200); display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--neutral-900);">📥 Scan New Batch</h2>
+        <button onclick="document.getElementById('scanBatchModal').style.display='none'" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--neutral-500);">×</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div style="padding: 2rem;">
+        <!-- Camera Preview -->
+        <div style="width: 100%; height: 300px; background-color: var(--neutral-900); border-radius: 12px; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+          <div style="text-align: center; color: white;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">📷</div>
+            <div style="font-size: 1.1rem; font-weight: 500;">Camera Preview</div>
+            <div style="font-size: 0.9rem; color: var(--neutral-400); margin-top: 0.5rem;">Position QR code or barcode in frame</div>
+          </div>
+          <!-- Scanning Frame -->
+          <div style="position: absolute; width: 200px; height: 200px; border: 3px solid var(--success-green); border-radius: 12px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);"></div>
+        </div>
+
+        <!-- Batch Info Form -->
+        <div class="form-group">
+          <label class="form-label">Batch ID</label>
+          <input type="text" class="form-input" placeholder="Scan batch QR code or enter manually" value="BATCH-2024-NOV-19-001">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Expected Package Count</label>
+          <input type="number" class="form-input" placeholder="Number of packages in batch" value="15">
+        </div>
+
+        <!-- Scanned Packages -->
+        <div style="margin-top: 1.5rem;">
+          <div style="font-weight: 600; margin-bottom: 0.75rem; color: var(--neutral-700);">
+            Scanned Packages (3 of 15)
+          </div>
+          <div class="progress-bar" style="height: 12px; margin-bottom: 1rem;">
+            <div class="progress-fill success" style="width: 20%;"></div>
+          </div>
+          <div style="background-color: var(--neutral-50); border-radius: 8px; padding: 1rem; max-height: 150px; overflow-y: auto;">
+            <div style="font-size: 0.9rem; color: var(--neutral-700); display: flex; flex-direction: column; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: var(--success-green);">✓</span>
+                <span>#PKG-7841</span>
+                <span class="badge badge-success" style="margin-left: auto;">Scanned</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: var(--success-green);">✓</span>
+                <span>#PKG-7842</span>
+                <span class="badge badge-success" style="margin-left: auto;">Scanned</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="color: var(--success-green);">✓</span>
+                <span>#PKG-7843</span>
+                <span class="badge badge-success" style="margin-left: auto;">Scanned</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding: 1.5rem; border-top: 1px solid var(--neutral-200); display: flex; gap: 1rem; justify-content: flex-end;">
+        <button onclick="document.getElementById('scanBatchModal').style.display='none'" class="btn btn-outline">Cancel</button>
+        <button class="btn btn-primary">Continue Scanning</button>
+        <button class="btn btn-success">Complete Batch</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simple checkbox counter
+    document.querySelectorAll('.package-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const checkedCount = document.querySelectorAll('.package-checkbox:checked').length;
+        const bulkBtn = document.getElementById('bulkActionsBtn');
+        bulkBtn.textContent = `⚡ Bulk Actions (${checkedCount})`;
+        bulkBtn.disabled = checkedCount === 0;
+      });
+    });
+  </script>
+</body>
+</html>
