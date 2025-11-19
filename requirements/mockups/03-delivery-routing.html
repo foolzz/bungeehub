@@ -188,75 +188,9 @@
             </div>
           </div>
           <div class="card-body" style="padding: 0;">
-            <div class="map-container" style="height: 600px; background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%); position: relative;">
-              <!-- Map Grid Pattern -->
-              <svg style="position: absolute; width: 100%; height: 100%; opacity: 0.1;">
-                <defs>
-                  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="gray" stroke-width="1"/>
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#grid)" />
-              </svg>
-
-              <!-- Streets (mock) -->
-              <div style="position: absolute; top: 20%; left: 10%; right: 10%; height: 3px; background-color: rgba(0,0,0,0.1);"></div>
-              <div style="position: absolute; top: 45%; left: 10%; right: 10%; height: 3px; background-color: rgba(0,0,0,0.1);"></div>
-              <div style="position: absolute; top: 70%; left: 10%; right: 10%; height: 3px; background-color: rgba(0,0,0,0.1);"></div>
-              <div style="position: absolute; left: 30%; top: 10%; bottom: 10%; width: 3px; background-color: rgba(0,0,0,0.1);"></div>
-              <div style="position: absolute; left: 60%; top: 10%; bottom: 10%; width: 3px; background-color: rgba(0,0,0,0.1);"></div>
-
-              <!-- Hub Marker (Starting Point) -->
-              <div class="map-marker hub" style="top: 45%; left: 25%;" title="Your Hub">
-                🏠
-              </div>
-
-              <!-- Delivery Markers -->
-              <div class="map-marker" style="top: 25%; left: 35%; background: var(--success-green);" title="Stop 1 - Completed">✓</div>
-              <div class="map-marker" style="top: 30%; left: 55%;" title="Stop 2 - Next">2</div>
-              <div class="map-marker" style="top: 50%; left: 65%;" title="Stop 3">3</div>
-              <div class="map-marker" style="top: 70%; left: 70%;" title="Stop 4">4</div>
-              <div class="map-marker" style="top: 75%; left: 45%;" title="Stop 5">5</div>
-
-              <!-- Route Lines -->
-              <svg style="position: absolute; width: 100%; height: 100%; pointer-events: none;">
-                <!-- Hub to Stop 1 -->
-                <line x1="25%" y1="45%" x2="35%" y2="25%" stroke="#10b981" stroke-width="3" stroke-dasharray="5,5" opacity="0.6"/>
-                <!-- Stop 1 to Stop 2 -->
-                <line x1="35%" y1="25%" x2="55%" y2="30%" stroke="#2563eb" stroke-width="3" opacity="0.7"/>
-                <!-- Stop 2 to Stop 3 -->
-                <line x1="55%" y1="30%" x2="65%" y2="50%" stroke="#2563eb" stroke-width="3" stroke-dasharray="5,5" opacity="0.5"/>
-                <!-- Stop 3 to Stop 4 -->
-                <line x1="65%" y1="50%" x2="70%" y2="70%" stroke="#2563eb" stroke-width="3" stroke-dasharray="5,5" opacity="0.5"/>
-                <!-- Stop 4 to Stop 5 -->
-                <line x1="70%" y1="70%" x2="45%" y2="75%" stroke="#2563eb" stroke-width="3" stroke-dasharray="5,5" opacity="0.5"/>
-              </svg>
-
-              <!-- Map Controls -->
-              <div style="position: absolute; top: 1rem; right: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                <button class="btn btn-sm" style="background: white; color: var(--neutral-700); box-shadow: var(--shadow);">+</button>
-                <button class="btn btn-sm" style="background: white; color: var(--neutral-700); box-shadow: var(--shadow);">−</button>
-                <button class="btn btn-sm" style="background: white; color: var(--neutral-700); box-shadow: var(--shadow);">📍</button>
-              </div>
-
-              <!-- Legend -->
-              <div style="position: absolute; bottom: 1rem; left: 1rem; background: white; padding: 1rem; border-radius: 8px; box-shadow: var(--shadow);">
-                <div style="font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem;">Legend</div>
-                <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem;">
-                  <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <div style="width: 20px; height: 20px; background: var(--success-green); border-radius: 50%;"></div>
-                    <span>Hub/Completed</span>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <div style="width: 20px; height: 20px; background: var(--primary-blue); border-radius: 50%;"></div>
-                    <span>Pending Stop</span>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <div style="width: 20px; height: 3px; background: var(--primary-blue);"></div>
-                    <span>Route</span>
-                  </div>
-                </div>
-              </div>
+            <div class="map-container" style="height: 600px; position: relative; overflow: hidden;">
+              <!-- Interactive Route Map -->
+              <img src="assets/images/route-map.svg" alt="Delivery route map showing optimized path from hub to all delivery stops" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
           </div>
         </div>

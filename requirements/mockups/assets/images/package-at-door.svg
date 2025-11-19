@@ -1,0 +1,62 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background - Door and Doorstep -->
+  <rect width="800" height="600" fill="#e5e7eb"/>
+
+  <!-- Wooden Door -->
+  <rect x="200" y="50" width="400" height="500" fill="#8b4513" rx="10"/>
+  <rect x="210" y="60" width="180" height="230" fill="#a0522d" rx="5"/>
+  <rect x="410" y="60" width="180" height="230" fill="#a0522d" rx="5"/>
+  <rect x="210" y="310" width="180" height="230" fill="#a0522d" rx="5"/>
+  <rect x="410" y="310" width="180" height="230" fill="#a0522d" rx="5"/>
+
+  <!-- Door Knob -->
+  <circle cx="530" cy="300" r="15" fill="#ffd700"/>
+  <circle cx="530" cy="300" r="10" fill="#daa520"/>
+
+  <!-- Doorstep -->
+  <rect x="150" y="550" width="500" height="50" fill="#6b7280"/>
+  <rect x="150" y="580" width="500" height="20" fill="#4b5563"/>
+
+  <!-- Package Box -->
+  <g>
+    <!-- Box body -->
+    <rect x="300" y="420" width="200" height="150" fill="#f59e0b"/>
+    <!-- Box top -->
+    <polygon points="300,420 400,380 600,380 500,420" fill="#fbbf24"/>
+    <!-- Box side -->
+    <polygon points="500,420 600,380 600,530 500,570" fill="#d97706"/>
+    <!-- Tape -->
+    <rect x="380" y="420" width="40" height="150" fill="#fef3c7" opacity="0.7"/>
+    <rect x="300" y="470" width="200" height="30" fill="#fef3c7" opacity="0.7"/>
+  </g>
+
+  <!-- Address Number on Door -->
+  <rect x="360" y="100" width="80" height="60" fill="#1f2937" rx="5"/>
+  <text x="400" y="145" font-family="Arial" font-size="48" fill="#10b981" text-anchor="middle" font-weight="bold">567</text>
+
+  <!-- Delivery Label on Package -->
+  <rect x="320" y="450" width="160" height="80" fill="white" rx="3"/>
+  <rect x="325" y="455" width="150" height="35" fill="#2563eb"/>
+  <text x="400" y="478" font-family="Arial" font-size="14" fill="white" text-anchor="middle" font-weight="bold">BUNGEE HUB</text>
+  <text x="330" y="505" font-family="Arial" font-size="10" fill="#1f2937">To: Michael Chen</text>
+  <text x="330" y="520" font-family="Arial" font-size="10" fill="#6b7280">567 Maple Ave</text>
+
+  <!-- Barcode on Label -->
+  <g transform="translate(325, 505)">
+    <rect x="0" y="20" width="2" height="15" fill="#000"/>
+    <rect x="4" y="20" width="1" height="15" fill="#000"/>
+    <rect x="7" y="20" width="3" height="15" fill="#000"/>
+    <rect x="12" y="20" width="2" height="15" fill="#000"/>
+    <rect x="16" y="20" width="1" height="15" fill="#000"/>
+    <rect x="19" y="20" width="2" height="15" fill="#000"/>
+    <rect x="23" y="20" width="3" height="15" fill="#000"/>
+    <rect x="28" y="20" width="1" height="15" fill="#000"/>
+  </g>
+
+  <!-- Shadow -->
+  <ellipse cx="400" cy="565" rx="120" ry="15" fill="#000" opacity="0.2"/>
+
+  <!-- Timestamp Overlay (camera-style) -->
+  <rect x="10" y="560" width="200" height="30" fill="#000" opacity="0.7" rx="5"/>
+  <text x="20" y="582" font-family="monospace" font-size="14" fill="#fff">2024-11-19 14:45:32</text>
+</svg>
