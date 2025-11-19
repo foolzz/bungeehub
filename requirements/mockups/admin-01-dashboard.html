@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - BungeeHub</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <div class="logo-icon" style="background: linear-gradient(135deg, #9333ea, #c084fc);">🔧</div>
+        <span>BungeeHub Admin</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="admin-01-dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="admin-02-hub-management.html">Hubs</a></li>
+        <li><a href="admin-03-analytics.html">Analytics</a></li>
+        <li><a href="01-hub-dashboard.html" style="color: var(--neutral-400);">← Hub View</a></li>
+      </ul>
+
+      <div class="user-menu">
+        <div class="notification-icon">
+          🔔
+          <span class="notification-badge">7</span>
+        </div>
+        <div class="user-profile">
+          <div class="user-avatar" style="background: linear-gradient(135deg, #9333ea, #c084fc);">AD</div>
+          <div class="user-info">
+            <div class="user-name">Admin User</div>
+            <div class="user-tier" style="color: #9333ea;">👑 Platform Admin</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">Platform Dashboard</h1>
+        <p class="page-subtitle">System-wide overview and metrics for BungeeHub network</p>
+      </div>
+
+      <!-- System-Wide Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Total Hubs</div>
+              <div class="stat-value">247</div>
+              <div class="stat-change positive">
+                ↑ 12 new this week
+              </div>
+            </div>
+            <div class="stat-icon primary">🏠</div>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--neutral-500); margin-top: 0.5rem;">
+            198 active • 42 pending approval • 7 suspended
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Active Packages</div>
+              <div class="stat-value">8,432</div>
+              <div class="stat-change positive">
+                ↑ 524 from yesterday
+              </div>
+            </div>
+            <div class="stat-icon success">📦</div>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--neutral-500); margin-top: 0.5rem;">
+            3,247 in transit • 5,185 at hubs
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Deliveries Today</div>
+              <div class="stat-value">4,287</div>
+              <div class="stat-change positive">
+                ↑ 8% from yesterday
+              </div>
+            </div>
+            <div class="stat-icon warning">🚚</div>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--neutral-500); margin-top: 0.5rem;">
+            3,842 completed • 445 in progress
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Network Health</div>
+              <div class="stat-value">98.5%</div>
+              <div class="stat-change positive">
+                ↑ 0.3% this week
+              </div>
+            </div>
+            <div class="stat-icon success">✅</div>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--neutral-500); margin-top: 0.5rem;">
+            Average success rate
+          </div>
+        </div>
+      </div>
+
+      <!-- Revenue Stats -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">💰 Platform Revenue - November 2024</h2>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-sm btn-primary">This Month</button>
+            <button class="btn btn-sm btn-outline">Last Month</button>
+            <button class="btn btn-sm btn-outline">This Year</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+            <!-- Revenue Summary -->
+            <div>
+              <div style="padding: 1.5rem; background: linear-gradient(135deg, #10b981, #34d399); border-radius: 12px; color: white; margin-bottom: 1.5rem;">
+                <div style="font-size: 0.9rem; opacity: 0.9; margin-bottom: 0.5rem;">Total Revenue</div>
+                <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">$147,328</div>
+                <div style="font-size: 0.9rem; opacity: 0.9;">+18.5% from last month</div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="padding: 1rem; background: var(--neutral-50); border-radius: 8px;">
+                  <div style="font-size: 0.85rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Platform Fees (15%)</div>
+                  <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-blue);">$22,099</div>
+                </div>
+
+                <div style="padding: 1rem; background: var(--neutral-50); border-radius: 8px;">
+                  <div style="font-size: 0.85rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Hub Payouts (85%)</div>
+                  <div style="font-size: 1.5rem; font-weight: 700; color: var(--success-green);">$125,229</div>
+                </div>
+
+                <div style="padding: 1rem; background: var(--neutral-50); border-radius: 8px;">
+                  <div style="font-size: 0.85rem; color: var(--neutral-500); margin-bottom: 0.25rem;">Avg per Delivery</div>
+                  <div style="font-size: 1.5rem; font-weight: 700; color: var(--neutral-900);">$34.37</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Revenue Chart -->
+            <div>
+              <div style="background: var(--neutral-50); border-radius: 12px; padding: 2rem; height: 400px; display: flex; align-items: flex-end; gap: 0.25rem;">
+                <!-- 30-day bar chart -->
+                <div style="flex: 1; height: 65%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.6;"></div>
+                <div style="flex: 1; height: 72%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.6;"></div>
+                <div style="flex: 1; height: 68%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.6;"></div>
+                <div style="flex: 1; height: 75%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.6;"></div>
+                <div style="flex: 1; height: 80%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.6;"></div>
+                <div style="flex: 1; height: 70%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.6;"></div>
+                <div style="flex: 1; height: 45%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.4;"></div>
+                <div style="flex: 1; height: 50%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.4;"></div>
+                <div style="flex: 1; height: 78%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.6;"></div>
+                <div style="flex: 1; height: 82%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.6;"></div>
+                <div style="flex: 1; height: 85%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
+                <div style="flex: 1; height: 88%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
+                <div style="flex: 1; height: 90%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
+                <div style="flex: 1; height: 55%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.4;"></div>
+                <div style="flex: 1; height: 92%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
+                <div style="flex: 1; height: 87%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
+                <div style="flex: 1; height: 95%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.8;"></div>
+                <div style="flex: 1; height: 93%; background: var(--primary-blue); border-radius: 4px 4px 0 0; opacity: 0.8;"></div>
+                <div style="flex: 1; height: 96%; background: var(--success-green); border-radius: 4px 4px 0 0;"></div>
+                <div style="flex: 1; height: 98%; background: var(--success-green); border-radius: 4px 4px 0 0;"></div>
+                <div style="flex: 1; height: 100%; background: var(--success-green); border-radius: 4px 4px 0 0;"></div>
+                <div style="flex: 1; height: 97%; background: var(--success-green); border-radius: 4px 4px 0 0;"></div>
+                <div style="flex: 1; height: 94%; background: var(--success-green); border-radius: 4px 4px 0 0;"></div>
+                <div style="flex: 1; height: 92%; background: var(--success-green); border-radius: 4px 4px 0 0;"></div>
+                <div style="flex: 1; height: 96%; background: var(--success-green); border-radius: 4px 4px 0 0;"></div>
+                <div style="flex: 1; height: 95%; background: var(--success-green); border-radius: 4px 4px 0 0;"></div>
+                <div style="flex: 1; height: 98%; background: var(--success-green); border-radius: 4px 4px 0 0;"></div>
+                <div style="flex: 1; height: 93%; background: var(--success-green); border-radius: 4px 4px 0 0;"></div>
+                <div style="flex: 1; height: 91%; background: var(--success-green); border-radius: 4px 4px 0 0;"></div>
+                <div style="flex: 1; height: 89%; background: var(--success-green); border-radius: 4px 4px 0 0;"></div>
+              </div>
+              <div style="margin-top: 0.75rem; text-align: center; font-size: 0.85rem; color: var(--neutral-500);">
+                Daily Revenue - Last 30 Days
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Column Layout -->
+      <div class="grid-2">
+        <!-- Top Performing Hubs -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">🏆 Top Performing Hubs</h2>
+            <a href="admin-02-hub-management.html" class="btn btn-sm btn-outline">View All</a>
+          </div>
+          <div class="card-body">
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Hub</th>
+                    <th>Tier</th>
+                    <th>Deliveries</th>
+                    <th>Rating</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div style="font-weight: 600;">#1234 - Sarah Williams</div>
+                      <div style="font-size: 0.85rem; color: var(--neutral-500);">San Francisco, CA</div>
+                    </td>
+                    <td><span class="tier-badge super">👑 Super Hub</span></td>
+                    <td style="font-weight: 600;">847</td>
+                    <td>
+                      <div class="rating-stars">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span style="margin-left: 0.25rem;">5.0</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div style="font-weight: 600;">#5678 - Michael Chen</div>
+                      <div style="font-size: 0.85rem; color: var(--neutral-500);">Los Angeles, CA</div>
+                    </td>
+                    <td><span class="tier-badge gold">⭐ Gold Hub</span></td>
+                    <td style="font-weight: 600;">623</td>
+                    <td>
+                      <div class="rating-stars">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span style="margin-left: 0.25rem;">4.9</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div style="font-weight: 600;">#2468 - Jennifer Davis</div>
+                      <div style="font-size: 0.85rem; color: var(--neutral-500);">Seattle, WA</div>
+                    </td>
+                    <td><span class="tier-badge gold">⭐ Gold Hub</span></td>
+                    <td style="font-weight: 600;">589</td>
+                    <td>
+                      <div class="rating-stars">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span style="margin-left: 0.25rem;">4.8</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div style="font-weight: 600;">#1357 - Robert Johnson</div>
+                      <div style="font-size: 0.85rem; color: var(--neutral-500);">Portland, OR</div>
+                    </td>
+                    <td><span class="tier-badge silver">🥈 Silver Hub</span></td>
+                    <td style="font-weight: 600;">412</td>
+                    <td>
+                      <div class="rating-stars">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span style="margin-left: 0.25rem;">4.7</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">📊 Recent System Activity</h2>
+          </div>
+          <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 1rem; max-height: 400px; overflow-y: auto;">
+              <!-- Activity Item -->
+              <div style="display: flex; gap: 1rem; padding: 0.75rem; background: var(--neutral-50); border-radius: 8px;">
+                <div style="flex-shrink: 0; width: 40px; height: 40px; background: var(--success-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                  ✓
+                </div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; color: var(--neutral-800); margin-bottom: 0.25rem;">
+                    New Hub Approved
+                  </div>
+                  <div style="font-size: 0.875rem; color: var(--neutral-600);">
+                    Hub #2479 (Jessica Martinez, Austin TX) approved and activated
+                  </div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-top: 0.25rem;">
+                    2 minutes ago
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activity Item -->
+              <div style="display: flex; gap: 1rem; padding: 0.75rem; background: var(--neutral-50); border-radius: 8px;">
+                <div style="flex-shrink: 0; width: 40px; height: 40px; background: var(--warning-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                  ⚠️
+                </div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; color: var(--neutral-800); margin-bottom: 0.25rem;">
+                    Hub Rating Alert
+                  </div>
+                  <div style="font-size: 0.875rem; color: var(--neutral-600);">
+                    Hub #1892 dropped below 4.0 rating - requires review
+                  </div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-top: 0.25rem;">
+                    15 minutes ago
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activity Item -->
+              <div style="display: flex; gap: 1rem; padding: 0.75rem; background: var(--neutral-50); border-radius: 8px;">
+                <div style="flex-shrink: 0; width: 40px; height: 40px; background: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                  📦
+                </div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; color: var(--neutral-800); margin-bottom: 0.25rem;">
+                    Large Batch Delivered
+                  </div>
+                  <div style="font-size: 0.875rem; color: var(--neutral-600);">
+                    500 packages delivered to Hub #1234 for distribution
+                  </div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-top: 0.25rem;">
+                    1 hour ago
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activity Item -->
+              <div style="display: flex; gap: 1rem; padding: 0.75rem; background: var(--neutral-50); border-radius: 8px;">
+                <div style="flex-shrink: 0; width: 40px; height: 40px; background: var(--danger-red); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                  🚫
+                </div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; color: var(--neutral-800); margin-bottom: 0.25rem;">
+                    Hub Suspended
+                  </div>
+                  <div style="font-size: 0.875rem; color: var(--neutral-600);">
+                    Hub #3456 suspended due to repeated policy violations
+                  </div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-top: 0.25rem;">
+                    3 hours ago
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activity Item -->
+              <div style="display: flex; gap: 1rem; padding: 0.75rem; background: var(--neutral-50); border-radius: 8px;">
+                <div style="flex-shrink: 0; width: 40px; height: 40px; background: var(--success-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                  🎯
+                </div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; color: var(--neutral-800); margin-bottom: 0.25rem;">
+                    Milestone Reached
+                  </div>
+                  <div style="font-size: 0.875rem; color: var(--neutral-600);">
+                    Network completed 1,000,000th delivery!
+                  </div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-top: 0.25rem;">
+                    5 hours ago
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Actions -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">⚡ Pending Admin Actions (42)</h2>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            <!-- Pending Hub Approvals -->
+            <div style="padding: 1.5rem; background: rgba(37, 99, 235, 0.1); border-radius: 12px; border-left: 4px solid var(--primary-blue);">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                  <div style="font-size: 2rem; font-weight: 700; color: var(--primary-blue);">42</div>
+                  <div style="font-weight: 600; color: var(--neutral-800);">Hub Approvals Pending</div>
+                </div>
+                <div style="font-size: 2rem;">📝</div>
+              </div>
+              <button class="btn btn-primary btn-sm" style="width: 100%;">Review Applications</button>
+            </div>
+
+            <!-- Disputes -->
+            <div style="padding: 1.5rem; background: rgba(245, 158, 11, 0.1); border-radius: 12px; border-left: 4px solid var(--warning-orange);">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                  <div style="font-size: 2rem; font-weight: 700; color: var(--warning-orange);">8</div>
+                  <div style="font-weight: 600; color: var(--neutral-800);">Delivery Disputes</div>
+                </div>
+                <div style="font-size: 2rem;">⚖️</div>
+              </div>
+              <button class="btn btn-outline btn-sm" style="width: 100%; border-color: var(--warning-orange); color: var(--warning-orange);">Review Disputes</button>
+            </div>
+
+            <!-- Payouts -->
+            <div style="padding: 1.5rem; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border-left: 4px solid var(--success-green);">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                <div>
+                  <div style="font-size: 2rem; font-weight: 700; color: var(--success-green);">$125,229</div>
+                  <div style="font-weight: 600; color: var(--neutral-800);">Pending Payouts</div>
+                </div>
+                <div style="font-size: 2rem;">💰</div>
+              </div>
+              <button class="btn btn-outline btn-sm" style="width: 100%; border-color: var(--success-green); color: var(--success-green);">Process Payouts</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
