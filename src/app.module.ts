@@ -19,6 +19,10 @@ import { AdminModule } from './modules/admin/admin.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { WebhooksModule } from './modules/webhooks/webhooks.module';
 import { RouteOptimizationModule } from './modules/route-optimization/route-optimization.module';
+import { EarningsModule } from './modules/earnings/earnings.module';
+import { ReviewsModule } from './modules/reviews/reviews.module';
+import { RealtimeModule } from './modules/realtime/realtime.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 
 // Conditionally include ServeStaticModule based on environment
 const getImports = (): any[] => {
@@ -58,6 +62,10 @@ const getImports = (): any[] => {
     NotificationsModule,
     WebhooksModule,
     RouteOptimizationModule,
+    EarningsModule,
+    ReviewsModule,
+    RealtimeModule,
+    AnalyticsModule,
   ];
 };
 
