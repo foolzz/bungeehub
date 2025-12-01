@@ -1,17 +1,26 @@
 'use client';
 
-import { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import 'leaflet/dist/leaflet.css';
-import { Icon } from 'leaflet';
 
-// Fix for default marker icons in react-leaflet
-const defaultIcon = new Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
+// Dynamically import map components with SSR disabled
+const MapContainer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import('react-leaflet').then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+const Marker = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Marker),
+  { ssr: false }
+);
+const Popup = dynamic(
+  () => import('react-leaflet').then((mod) => mod.Popup),
+  { ssr: false }
+);
 
 interface PackageInfo {
   id: string;
@@ -58,6 +67,22 @@ export default function TrackPackagePage() {
   const [packageInfo, setPackageInfo] = useState<PackageInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [defaultIcon, setDefaultIcon] = useState<any>(null);
+
+  // Initialize leaflet icon only on client side
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const { Icon } = require('leaflet');
+      setDefaultIcon(
+        new Icon({
+          iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+          shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+        })
+      );
+    }
+  }, []);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
@@ -272,8 +297,9 @@ export default function TrackPackagePage() {
             </div>
 
             {/* Map */}
-            {(packageInfo.deliveryLatitude && packageInfo.deliveryLongitude) ||
-            (packageInfo.batch?.hub.latitude && packageInfo.batch?.hub.longitude) ? (
+            {defaultIcon &&
+            ((packageInfo.deliveryLatitude && packageInfo.deliveryLongitude) ||
+              (packageInfo.batch?.hub.latitude && packageInfo.batch?.hub.longitude)) ? (
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Location</h2>
                 <div className="h-96 rounded-lg overflow-hidden">

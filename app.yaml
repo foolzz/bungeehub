@@ -1,0 +1,77 @@
+# App Engine Flexible Environment Configuration
+runtime: custom
+env: flex
+
+# Service configuration
+service: default
+
+# Scaling configuration
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 10
+  cool_down_period_sec: 120
+  cpu_utilization:
+    target_utilization: 0.6
+
+# Resource allocation
+resources:
+  cpu: 1
+  memory_gb: 2
+  disk_size_gb: 10
+
+# Health check configuration
+liveness_check:
+  path: "/api/v1/health"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+
+readiness_check:
+  path: "/api/v1/health"
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 2
+  app_start_timeout_sec: 300
+
+# Environment variables
+env_variables:
+  NODE_ENV: "production"
+  SERVE_STATIC: "true"
+
+  # Database - Neon PostgreSQL (same as dev)
+  DATABASE_URL: "postgresql://neondb_owner:npg_R2xz9UfWPLQF@ep-fragrant-forest-afgn14ks-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+
+  # JWT Authentication
+  JWT_SECRET: "594cfec8324f8839f137cbe20cb4e125eb8407a0e5e03b818799cf43a4b51d84faac383c43f396ae739b18ec2e05a9b2d92983af08cb9174131a20cbe4a3e810"
+  JWT_EXPIRY: "24h"
+  JWT_REFRESH_SECRET: "ec8b51047c5930e966a0e5a6edcb80e3cf2752f7c5209789cd4ad277358f9ff1d2421c9f3a19a131b1b41f6e79b90826184bb7df9a063bc76653793c3ef40680"
+  JWT_REFRESH_EXPIRY: "7d"
+
+  # API Configuration
+  API_VERSION: "v1"
+  API_BASE_URL: "https://deliveryhub-479919.appspot.com/api"
+
+  # Rate Limiting
+  RATE_LIMIT_WINDOW_MS: "900000"
+  RATE_LIMIT_MAX_REQUESTS: "100"
+
+  # CORS - Update with your production domain
+  CORS_ORIGIN: "https://deliveryhub-479919.appspot.com"
+  CORS_CREDENTIALS: "true"
+
+  # File Upload
+  MAX_FILE_SIZE: "10485760"
+  ALLOWED_FILE_TYPES: "image/jpeg,image/png,image/webp"
+
+  # Logging
+  LOG_LEVEL: "info"
+  LOG_FORMAT: "json"
+
+  # Feature Flags
+  ENABLE_WEBHOOKS: "true"
+  ENABLE_EMAIL_NOTIFICATIONS: "false"
+  ENABLE_SMS_NOTIFICATIONS: "false"
+  ENABLE_ANALYTICS: "true"
+  ENABLE_API_DOCS: "true"
