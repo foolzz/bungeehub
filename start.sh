@@ -25,4 +25,11 @@ echo "   - API: http://localhost:8080/api/v1/*"
 echo "   - API Docs: http://localhost:8080/api-docs"
 echo ""
 
+# Load environment variables from .env file
+if [ -f .env ]; then
+    set -a
+    source .env
+    set +a
+fi
+
 npm run start:prod

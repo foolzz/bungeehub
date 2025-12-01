@@ -397,17 +397,19 @@ export class EarningsService {
     earnings += distanceBonus;
 
     // Add tier bonus based on hub rank
-    const hub = delivery.package.batch.hub;
-    switch (hub.rank) {
-      case 'SUPER':
-        earnings += 100; // $1.00 bonus for SUPER hubs
-        break;
-      case 'TOP':
-        earnings += 50; // $0.50 bonus for TOP hubs
-        break;
-      case 'ACTIVE':
-        earnings += 25; // $0.25 bonus for ACTIVE hubs
-        break;
+    if (delivery.package.batch) {
+      const hub = delivery.package.batch.hub;
+      switch (hub.tier) {
+        case 'SUPER_HUB':
+          earnings += 100; // $1.00 bonus for SUPER hubs
+          break;
+        case 'TOP_HUB':
+          earnings += 50; // $0.50 bonus for TOP hubs
+          break;
+        case 'ACTIVE_HUB':
+          earnings += 25; // $0.25 bonus for ACTIVE hubs
+          break;
+      }
     }
 
     return earnings;
@@ -435,6 +437,10 @@ export class EarningsService {
     }
 
     const earnings = await this.calculateDeliveryEarnings(deliveryId);
+
+    if (!delivery.package.batch) {
+      throw new Error(`Delivery ${deliveryId} has no associated batch`);
+    }
 
     await this.createEarning({
       hubId: delivery.package.batch.hubId,

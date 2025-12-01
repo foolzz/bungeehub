@@ -22,7 +22,7 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
-import { Role } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 
 @ApiTags('reviews')
 @Controller('reviews')
@@ -36,7 +36,7 @@ export class ReviewsController {
   @ApiResponse({ status: 201, type: ReviewResponseDto, description: 'Review created successfully' })
   @ApiResponse({ status: 400, description: 'Bad request - already reviewed' })
   @ApiResponse({ status: 404, description: 'Hub or delivery not found' })
-  async createReview(@Body() dto: CreateReviewDto, @Request() req) {
+  async createReview(@Body() dto: CreateReviewDto, @Request() req: any) {
     return this.reviewsService.createReview(dto, req.user.id);
   }
 
@@ -53,7 +53,7 @@ export class ReviewsController {
   @ApiResponse({ status: 200, type: ReviewResponseDto, description: 'Review updated successfully' })
   @ApiResponse({ status: 403, description: 'Forbidden - not your review' })
   @ApiResponse({ status: 404, description: 'Review not found' })
-  async updateReview(@Param('id') id: string, @Body() dto: UpdateReviewDto, @Request() req) {
+  async updateReview(@Param('id') id: string, @Body() dto: UpdateReviewDto, @Request() req: any) {
     return this.reviewsService.updateReview(id, dto, req.user.id);
   }
 
@@ -62,8 +62,8 @@ export class ReviewsController {
   @ApiResponse({ status: 200, description: 'Review deleted successfully' })
   @ApiResponse({ status: 403, description: 'Forbidden - not your review' })
   @ApiResponse({ status: 404, description: 'Review not found' })
-  async deleteReview(@Param('id') id: string, @Request() req) {
-    const isAdmin = req.user.role === Role.ADMIN;
+  async deleteReview(@Param('id') id: string, @Request() req: any) {
+    const isAdmin = req.user.role === UserRole.ADMIN;
     await this.reviewsService.deleteReview(id, req.user.id, isAdmin);
     return { message: 'Review deleted successfully' };
   }
@@ -95,7 +95,7 @@ export class ReviewsController {
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiResponse({ status: 200, description: 'List of customer reviews' })
   async getMyReviews(
-    @Request() req,
+    @Request() req: any,
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ) {
@@ -103,7 +103,7 @@ export class ReviewsController {
   }
 
   @Get('customer/:customerId')
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Get reviews by customer (Admin only)' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })

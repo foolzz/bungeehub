@@ -255,7 +255,7 @@ export class AnalyticsService {
     const distribution = new Map<string, GeographicDistributionDto>();
 
     hubs.forEach((hub) => {
-      const location = hub.city || 'Unknown';
+      const location = hub.address || 'Unknown';
       if (!distribution.has(location)) {
         distribution.set(location, {
           location,

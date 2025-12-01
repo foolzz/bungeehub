@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./start.sh:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx prisma migrate deploy:*)",
+      "Bash(DATABASE_URL='postgresql://neondb_owner:npg_R2xz9UfWPLQF@ep-fragrant-forest-afgn14ks-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require' npx prisma migrate:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma db pull:*)",
+      "Bash(source .env)",
+      "Bash(echo:*)",
+      "Bash(npm install:*)",
+      "Bash(pkill:*)",
+      "Bash(DATABASE_URL=\"postgresql://neondb_owner:npg_R2xz9UfWPLQF@ep-fragrant-forest-afgn14ks-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require\" npx prisma generate:*)",
+      "Bash(export DATABASE_URL=\"postgresql://neondb_owner:npg_R2xz9UfWPLQF@ep-fragrant-forest-afgn14ks-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require\")",
+      "Bash(npm run start:prod:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

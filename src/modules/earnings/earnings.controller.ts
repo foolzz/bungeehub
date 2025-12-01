@@ -22,7 +22,7 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
-import { Role } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 
 @ApiTags('earnings')
 @Controller('earnings')
@@ -32,7 +32,7 @@ export class EarningsController {
   constructor(private readonly earningsService: EarningsService) {}
 
   @Post()
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Create a new earning record (Admin only)' })
   @ApiResponse({ status: 201, description: 'Earning created successfully' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
@@ -43,9 +43,9 @@ export class EarningsController {
   @Get('summary/:hubId')
   @ApiOperation({ summary: 'Get earnings summary for a hub' })
   @ApiResponse({ status: 200, type: EarningsSummaryDto })
-  async getEarningsSummary(@Param('hubId') hubId: string, @Request() req) {
+  async getEarningsSummary(@Param('hubId') hubId: string, @Request() req: any) {
     // Users can only view their own hub's earnings (unless admin)
-    if (req.user.role !== Role.ADMIN) {
+    if (req.user.role !== UserRole.ADMIN) {
       const userHubs = await this.getUserHubs(req.user.id);
       if (!userHubs.includes(hubId)) {
         throw new ForbiddenException('You can only view earnings for your own hubs');
@@ -58,9 +58,9 @@ export class EarningsController {
   @Get('breakdown/:hubId')
   @ApiOperation({ summary: 'Get earnings breakdown by type for a hub' })
   @ApiResponse({ status: 200, type: EarningsBreakdownDto })
-  async getEarningsBreakdown(@Param('hubId') hubId: string, @Request() req) {
+  async getEarningsBreakdown(@Param('hubId') hubId: string, @Request() req: any) {
     // Users can only view their own hub's earnings (unless admin)
-    if (req.user.role !== Role.ADMIN) {
+    if (req.user.role !== UserRole.ADMIN) {
       const userHubs = await this.getUserHubs(req.user.id);
       if (!userHubs.includes(hubId)) {
         throw new ForbiddenException('You can only view earnings for your own hubs');
@@ -73,9 +73,9 @@ export class EarningsController {
   @Get('list')
   @ApiOperation({ summary: 'Get earnings list with filters' })
   @ApiResponse({ status: 200, description: 'Earnings list' })
-  async getEarnings(@Query() filter: EarningsFilterDto, @Request() req) {
+  async getEarnings(@Query() filter: EarningsFilterDto, @Request() req: any) {
     // If not admin, filter to only user's hubs
-    if (req.user.role !== Role.ADMIN) {
+    if (req.user.role !== UserRole.ADMIN) {
       const userHubs = await this.getUserHubs(req.user.id);
       if (filter.hubId && !userHubs.includes(filter.hubId)) {
         throw new ForbiddenException('You can only view earnings for your own hubs');
@@ -93,9 +93,9 @@ export class EarningsController {
   @Post('payout')
   @ApiOperation({ summary: 'Request a payout' })
   @ApiResponse({ status: 201, description: 'Payout requested successfully' })
-  async createPayout(@Body() dto: CreatePayoutDto, @Request() req) {
+  async createPayout(@Body() dto: CreatePayoutDto, @Request() req: any) {
     // Users can only request payouts for their own hubs (unless admin)
-    if (req.user.role !== Role.ADMIN) {
+    if (req.user.role !== UserRole.ADMIN) {
       const userHubs = await this.getUserHubs(req.user.id);
       if (!userHubs.includes(dto.hubId)) {
         throw new ForbiddenException('You can only request payouts for your own hubs');
@@ -111,10 +111,10 @@ export class EarningsController {
   async getPayoutHistory(
     @Param('hubId') hubId: string,
     @Query('limit') limit: number = 20,
-    @Request() req,
+    @Request() req: any,
   ) {
     // Users can only view their own hub's payout history (unless admin)
-    if (req.user.role !== Role.ADMIN) {
+    if (req.user.role !== UserRole.ADMIN) {
       const userHubs = await this.getUserHubs(req.user.id);
       if (!userHubs.includes(hubId)) {
         throw new ForbiddenException('You can only view payout history for your own hubs');
@@ -125,7 +125,7 @@ export class EarningsController {
   }
 
   @Post('delivery/:deliveryId/process')
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Process delivery completion and create earning (Admin only)' })
   @ApiResponse({ status: 201, description: 'Delivery earning processed' })
   async processDeliveryCompletion(@Param('deliveryId') deliveryId: string) {

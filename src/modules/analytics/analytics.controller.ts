@@ -13,7 +13,7 @@ import {
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
-import { Role } from '@prisma/client';
+import { UserRole } from '@prisma/client';
 
 @ApiTags('analytics')
 @Controller('analytics')
@@ -44,7 +44,7 @@ export class AnalyticsController {
   }
 
   @Get('geographic-distribution')
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Get geographic distribution of hubs and deliveries (Admin only)' })
   @ApiResponse({ status: 200, type: [GeographicDistributionDto] })
   async getGeographicDistribution() {
@@ -59,7 +59,7 @@ export class AnalyticsController {
   }
 
   @Get('revenue')
-  @Roles(Role.ADMIN, Role.HUB_HOST)
+  @Roles(UserRole.ADMIN, UserRole.HUB_HOST)
   @ApiOperation({ summary: 'Get revenue analytics' })
   @ApiResponse({ status: 200, type: RevenueAnalyticsDto })
   async getRevenueAnalytics(@Query() query: AnalyticsQueryDto) {
