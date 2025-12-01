@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub Management - BungeeHub Admin</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <div class="logo-icon" style="background: linear-gradient(135deg, #9333ea, #c084fc);">🔧</div>
+        <span>BungeeHub Admin</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="admin-01-dashboard.html">Dashboard</a></li>
+        <li><a href="admin-02-hub-management.html" class="active">Hubs</a></li>
+        <li><a href="admin-03-analytics.html">Analytics</a></li>
+        <li><a href="01-hub-dashboard.html" style="color: var(--neutral-400);">← Hub View</a></li>
+      </ul>
+
+      <div class="user-menu">
+        <div class="notification-icon">
+          🔔
+          <span class="notification-badge">7</span>
+        </div>
+        <div class="user-profile">
+          <div class="user-avatar" style="background: linear-gradient(135deg, #9333ea, #c084fc);">AD</div>
+          <div class="user-info">
+            <div class="user-name">Admin User</div>
+            <div class="user-tier" style="color: #9333ea;">👑 Platform Admin</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="flex-between">
+          <div>
+            <h1 class="page-title">Hub Management</h1>
+            <p class="page-subtitle">Manage delivery hubs across the network</p>
+          </div>
+          <button class="btn btn-primary">📥 Export Hub List</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Active Hubs</div>
+              <div class="stat-value">198</div>
+            </div>
+            <div class="stat-icon success">✅</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Pending Approval</div>
+              <div class="stat-value">42</div>
+            </div>
+            <div class="stat-icon warning">⏳</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Suspended</div>
+              <div class="stat-value">7</div>
+            </div>
+            <div class="stat-icon danger">🚫</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Super Hubs</div>
+              <div class="stat-value">23</div>
+            </div>
+            <div class="stat-icon primary">👑</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="card">
+        <div class="card-body">
+          <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
+              <input type="text" class="form-input" placeholder="🔍 Search by hub ID, owner name, or location...">
+            </div>
+
+            <select class="form-select" style="width: 150px;">
+              <option>All Status</option>
+              <option>Active</option>
+              <option>Pending</option>
+              <option>Suspended</option>
+            </select>
+
+            <select class="form-select" style="width: 150px;">
+              <option>All Tiers</option>
+              <option>Super Hub</option>
+              <option>Gold Hub</option>
+              <option>Silver Hub</option>
+              <option>Bronze Hub</option>
+            </select>
+
+            <select class="form-select" style="width: 150px;">
+              <option>All Locations</option>
+              <option>California</option>
+              <option>Washington</option>
+              <option>Oregon</option>
+              <option>Texas</option>
+            </select>
+
+            <button class="btn btn-outline">🔄 Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hub List -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">All Hubs (247)</h2>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-sm btn-primary">Approve Selected</button>
+            <button class="btn btn-sm btn-outline">Bulk Actions</button>
+          </div>
+        </div>
+        <div class="card-body" style="padding: 0;">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 40px;"><input type="checkbox"></th>
+                  <th>Hub ID</th>
+                  <th>Owner</th>
+                  <th>Location</th>
+                  <th>Tier</th>
+                  <th>Deliveries</th>
+                  <th>Rating</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Active Hub -->
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td style="font-weight: 600;">#1234</td>
+                  <td>
+                    <div style="font-weight: 600;">Sarah Williams</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">sarah.w@email.com</div>
+                  </td>
+                  <td>
+                    <div>San Francisco, CA</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">1234 Main St</div>
+                  </td>
+                  <td><span class="tier-badge super">👑 Super Hub</span></td>
+                  <td style="font-weight: 600;">847</td>
+                  <td>
+                    <div class="rating-stars">
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span style="margin-left: 0.25rem;">5.0</span>
+                    </div>
+                  </td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                      <button class="btn btn-sm btn-outline">View</button>
+                      <button class="btn btn-sm btn-outline">Edit</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Pending Approval -->
+                <tr style="background: rgba(245, 158, 11, 0.05);">
+                  <td><input type="checkbox"></td>
+                  <td style="font-weight: 600;">#2479</td>
+                  <td>
+                    <div style="font-weight: 600;">Jessica Martinez</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">jessica.m@email.com</div>
+                  </td>
+                  <td>
+                    <div>Austin, TX</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">5678 Oak Ave</div>
+                  </td>
+                  <td><span class="badge badge-neutral">New Application</span></td>
+                  <td>-</td>
+                  <td>-</td>
+                  <td><span class="badge badge-warning">Pending Approval</span></td>
+                  <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                      <button class="btn btn-sm btn-success">Approve</button>
+                      <button class="btn btn-sm btn-outline" style="color: var(--danger-red); border-color: var(--danger-red);">Reject</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Active Hub -->
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td style="font-weight: 600;">#5678</td>
+                  <td>
+                    <div style="font-weight: 600;">Michael Chen</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">michael.c@email.com</div>
+                  </td>
+                  <td>
+                    <div>Los Angeles, CA</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">9012 Pine Blvd</div>
+                  </td>
+                  <td><span class="tier-badge gold">⭐ Gold Hub</span></td>
+                  <td style="font-weight: 600;">623</td>
+                  <td>
+                    <div class="rating-stars">
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span style="margin-left: 0.25rem;">4.9</span>
+                    </div>
+                  </td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                      <button class="btn btn-sm btn-outline">View</button>
+                      <button class="btn btn-sm btn-outline">Edit</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Warning - Low Rating -->
+                <tr style="background: rgba(245, 158, 11, 0.05);">
+                  <td><input type="checkbox"></td>
+                  <td style="font-weight: 600;">#1892</td>
+                  <td>
+                    <div style="font-weight: 600;">David Brown</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">david.b@email.com</div>
+                  </td>
+                  <td>
+                    <div>Seattle, WA</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">3456 Elm St</div>
+                  </td>
+                  <td><span class="tier-badge bronze">🥉 Bronze Hub</span></td>
+                  <td style="font-weight: 600;">47</td>
+                  <td>
+                    <div class="rating-stars">
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star empty">★</span>
+                      <span style="margin-left: 0.25rem; color: var(--danger-red);">3.8</span>
+                    </div>
+                  </td>
+                  <td><span class="badge badge-warning">Warning ⚠️</span></td>
+                  <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                      <button class="btn btn-sm btn-outline">View</button>
+                      <button class="btn btn-sm btn-outline">Review</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- Suspended Hub -->
+                <tr style="background: rgba(239, 68, 68, 0.05); opacity: 0.7;">
+                  <td><input type="checkbox"></td>
+                  <td style="font-weight: 600;">#3456</td>
+                  <td>
+                    <div style="font-weight: 600;">Thomas Wilson</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">thomas.w@email.com</div>
+                  </td>
+                  <td>
+                    <div>Portland, OR</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">7890 Maple Dr</div>
+                  </td>
+                  <td><span class="tier-badge bronze">🥉 Bronze Hub</span></td>
+                  <td style="font-weight: 600;">89</td>
+                  <td>
+                    <div class="rating-stars">
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star empty">★</span>
+                      <span class="star empty">★</span>
+                      <span style="margin-left: 0.25rem; color: var(--danger-red);">2.8</span>
+                    </div>
+                  </td>
+                  <td><span class="badge badge-danger">Suspended</span></td>
+                  <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                      <button class="btn btn-sm btn-outline">View</button>
+                      <button class="btn btn-sm btn-success">Reactivate</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- More active hubs -->
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td style="font-weight: 600;">#2468</td>
+                  <td>
+                    <div style="font-weight: 600;">Jennifer Davis</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">jennifer.d@email.com</div>
+                  </td>
+                  <td>
+                    <div>Seattle, WA</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">2345 Cedar Ln</div>
+                  </td>
+                  <td><span class="tier-badge gold">⭐ Gold Hub</span></td>
+                  <td style="font-weight: 600;">589</td>
+                  <td>
+                    <div class="rating-stars">
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span style="margin-left: 0.25rem;">4.8</span>
+                    </div>
+                  </td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                      <button class="btn btn-sm btn-outline">View</button>
+                      <button class="btn btn-sm btn-outline">Edit</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><input type="checkbox"></td>
+                  <td style="font-weight: 600;">#1357</td>
+                  <td>
+                    <div style="font-weight: 600;">Robert Johnson</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">robert.j@email.com</div>
+                  </td>
+                  <td>
+                    <div>Portland, OR</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">6789 Birch Ave</div>
+                  </td>
+                  <td><span class="tier-badge silver">🥈 Silver Hub</span></td>
+                  <td style="font-weight: 600;">412</td>
+                  <td>
+                    <div class="rating-stars">
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span class="star">★</span>
+                      <span style="margin-left: 0.25rem;">4.7</span>
+                    </div>
+                  </td>
+                  <td><span class="badge badge-success">Active</span></td>
+                  <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                      <button class="btn btn-sm btn-outline">View</button>
+                      <button class="btn btn-sm btn-outline">Edit</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div style="padding: 1.5rem; border-top: 1px solid var(--neutral-200); display: flex; justify-content: space-between; align-items: center;">
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">
+              Showing 1-7 of 247 hubs
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-sm btn-outline" disabled>Previous</button>
+              <button class="btn btn-sm btn-primary">1</button>
+              <button class="btn btn-sm btn-outline">2</button>
+              <button class="btn btn-sm btn-outline">3</button>
+              <button class="btn btn-sm btn-outline">...</button>
+              <button class="btn btn-sm btn-outline">35</button>
+              <button class="btn btn-sm btn-outline">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

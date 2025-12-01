@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing & Earnings - BungeeHub</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <div class="logo-icon">📦</div>
+        <span>BungeeHub</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="01-hub-dashboard.html">Dashboard</a></li>
+        <li><a href="02-package-management.html">Packages</a></li>
+        <li><a href="03-delivery-routing.html">Deliveries</a></li>
+        <li><a href="05-performance-ranking.html">Performance</a></li>
+        <li><a href="06-billing-earnings.html" class="active">Billing</a></li>
+      </ul>
+
+      <div class="user-menu">
+        <div class="notification-icon">
+          🔔
+          <span class="notification-badge">3</span>
+        </div>
+        <div class="user-profile">
+          <div class="user-avatar">JD</div>
+          <div class="user-info">
+            <div class="user-name">John Doe</div>
+            <div class="user-tier">⭐ Gold Hub</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">Billing & Earnings</h1>
+        <p class="page-subtitle">Manage your payments, view earnings history, and track payouts</p>
+      </div>
+
+      <!-- Earnings Summary Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Available Balance</div>
+              <div class="stat-value">$2,847</div>
+              <div style="margin-top: 0.5rem;">
+                <button class="btn btn-sm btn-success">💸 Request Payout</button>
+              </div>
+            </div>
+            <div class="stat-icon success">💰</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">This Month</div>
+              <div class="stat-value">$3,428</div>
+              <div class="stat-change positive">
+                ↑ 18% from last month
+              </div>
+            </div>
+            <div class="stat-icon primary">📊</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Next Payout</div>
+              <div class="stat-value">Friday</div>
+              <div style="font-size: 0.85rem; color: var(--neutral-500); margin-top: 0.25rem;">
+                Nov 22, 2024
+              </div>
+            </div>
+            <div class="stat-icon warning">📅</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Total Earned</div>
+              <div class="stat-value">$18,642</div>
+              <div style="font-size: 0.85rem; color: var(--neutral-500); margin-top: 0.25rem;">
+                Since Jan 2024
+              </div>
+            </div>
+            <div class="stat-icon success">💎</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Earnings Breakdown -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">📈 Earnings Breakdown - November 2024</h2>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-sm btn-primary">This Month</button>
+            <button class="btn btn-sm btn-outline">Last Month</button>
+            <button class="btn btn-sm btn-outline">This Year</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <!-- Chart Area -->
+            <div>
+              <div style="background: var(--neutral-50); border-radius: 12px; padding: 2rem; height: 300px; display: flex; align-items: flex-end; gap: 0.5rem;">
+                <!-- Mock Bar Chart -->
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                  <div style="width: 100%; height: 180px; background: linear-gradient(to top, var(--primary-blue), var(--primary-blue-light)); border-radius: 6px;"></div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-600);">Week 1</div>
+                  <div style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-900);">$742</div>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                  <div style="width: 100%; height: 220px; background: linear-gradient(to top, var(--primary-blue), var(--primary-blue-light)); border-radius: 6px;"></div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-600);">Week 2</div>
+                  <div style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-900);">$924</div>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                  <div style="width: 100%; height: 200px; background: linear-gradient(to top, var(--primary-blue), var(--primary-blue-light)); border-radius: 6px;"></div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-600);">Week 3</div>
+                  <div style="font-size: 0.85rem; font-weight: 600; color: var(--neutral-900);">$847</div>
+                </div>
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                  <div style="width: 100%; height: 240px; background: linear-gradient(to top, var(--success-green), var(--success-green-light)); border-radius: 6px;"></div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-600);">Week 4</div>
+                  <div style="font-size: 0.85rem; font-weight: 600; color: var(--success-green);">$915</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Breakdown Details -->
+            <div>
+              <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <span style="color: var(--neutral-600);">Base Deliveries</span>
+                    <span style="font-weight: 600; color: var(--neutral-900);">$2,742</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width: 80%;"></div>
+                  </div>
+                  <div style="margin-top: 0.25rem; font-size: 0.85rem; color: var(--neutral-500);">
+                    103 deliveries × $26.62 avg
+                  </div>
+                </div>
+
+                <div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <span style="color: var(--neutral-600);">Gold Tier Bonus (+25%)</span>
+                    <span style="font-weight: 600; color: var(--warning-orange);">$686</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill warning" style="width: 20%;"></div>
+                  </div>
+                  <div style="margin-top: 0.25rem; font-size: 0.85rem; color: var(--neutral-500);">
+                    Performance bonus
+                  </div>
+                </div>
+
+                <div style="padding: 1rem; background: var(--neutral-50); border-radius: 8px; border-left: 4px solid var(--success-green);">
+                  <div style="font-size: 0.85rem; color: var(--neutral-600); margin-bottom: 0.5rem;">Total Earnings</div>
+                  <div style="font-size: 2rem; font-weight: 700; color: var(--success-green);">$3,428</div>
+                </div>
+
+                <div style="font-size: 0.85rem; color: var(--neutral-600);">
+                  💡 <strong>Tip:</strong> Reach Super Hub tier for +50% earnings bonus!
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Column Layout -->
+      <div class="grid-2">
+        <!-- Payment History -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">💳 Payment History</h2>
+            <button class="btn btn-sm btn-outline">Export CSV</button>
+          </div>
+          <div class="card-body">
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight: 600;">Nov 15, 2024</td>
+                    <td>Weekly Payout</td>
+                    <td style="font-weight: 600; color: var(--success-green);">+$847</td>
+                    <td><span class="badge badge-success">Paid</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Nov 8, 2024</td>
+                    <td>Weekly Payout</td>
+                    <td style="font-weight: 600; color: var(--success-green);">+$924</td>
+                    <td><span class="badge badge-success">Paid</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Nov 1, 2024</td>
+                    <td>Weekly Payout</td>
+                    <td style="font-weight: 600; color: var(--success-green);">+$742</td>
+                    <td><span class="badge badge-success">Paid</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Nov 22, 2024</td>
+                    <td>Upcoming Payout</td>
+                    <td style="font-weight: 600; color: var(--neutral-700);">$915</td>
+                    <td><span class="badge badge-warning">Pending</span></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Oct 25, 2024</td>
+                    <td>Weekly Payout</td>
+                    <td style="font-weight: 600; color: var(--success-green);">+$891</td>
+                    <td><span class="badge badge-success">Paid</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Method & Settings -->
+        <div>
+          <!-- Payment Method -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">🏦 Payment Method</h2>
+              <button class="btn btn-sm btn-outline">Update</button>
+            </div>
+            <div class="card-body">
+              <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--neutral-50); border-radius: 8px; border: 1px solid var(--neutral-200);">
+                <div style="width: 48px; height: 48px; background: var(--primary-blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                  🏦
+                </div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600; color: var(--neutral-900); margin-bottom: 0.25rem;">Bank Account</div>
+                  <div style="font-size: 0.85rem; color: var(--neutral-600);">Chase ****4532</div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); margin-top: 0.25rem;">Verified ✓</div>
+                </div>
+              </div>
+
+              <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(37, 99, 235, 0.1); border-radius: 8px; border-left: 4px solid var(--primary-blue);">
+                <div style="font-size: 0.85rem; color: var(--neutral-700);">
+                  <strong>Payout Schedule:</strong> Weekly (every Friday)
+                </div>
+                <div style="font-size: 0.85rem; color: var(--neutral-600); margin-top: 0.5rem;">
+                  Payouts are processed automatically and typically arrive within 1-2 business days.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tax Information -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">📄 Tax Documents</h2>
+            </div>
+            <div class="card-body">
+              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--neutral-50); border-radius: 6px;">
+                  <div>
+                    <div style="font-weight: 600; color: var(--neutral-900);">2024 1099-K</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">Year-to-date earnings</div>
+                  </div>
+                  <button class="btn btn-sm btn-outline">Download PDF</button>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--neutral-50); border-radius: 6px;">
+                  <div>
+                    <div style="font-weight: 600; color: var(--neutral-900);">2023 1099-K</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">Previous year</div>
+                  </div>
+                  <button class="btn btn-sm btn-outline">Download PDF</button>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--neutral-50); border-radius: 6px;">
+                  <div>
+                    <div style="font-weight: 600; color: var(--neutral-900);">W-9 Form</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">Tax information</div>
+                  </div>
+                  <button class="btn btn-sm btn-outline">Update</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoices/Statements -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">📋 Invoices & Statements</h2>
+          <div style="display: flex; gap: 0.5rem;">
+            <select class="form-select" style="width: 150px;">
+              <option>November 2024</option>
+              <option>October 2024</option>
+              <option>September 2024</option>
+              <option>August 2024</option>
+            </select>
+            <button class="btn btn-sm btn-outline">Download All</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Invoice #</th>
+                  <th>Period</th>
+                  <th>Deliveries</th>
+                  <th>Base Amount</th>
+                  <th>Bonus</th>
+                  <th>Total</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight: 600;">#INV-2024-1115</td>
+                  <td>Nov 8 - Nov 15, 2024</td>
+                  <td>23</td>
+                  <td>$678</td>
+                  <td style="color: var(--warning-orange);">+$169</td>
+                  <td style="font-weight: 600; color: var(--success-green);">$847</td>
+                  <td><button class="btn btn-sm btn-outline">Download</button></td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">#INV-2024-1108</td>
+                  <td>Nov 1 - Nov 8, 2024</td>
+                  <td>28</td>
+                  <td>$739</td>
+                  <td style="color: var(--warning-orange);">+$185</td>
+                  <td style="font-weight: 600; color: var(--success-green);">$924</td>
+                  <td><button class="btn btn-sm btn-outline">Download</button></td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">#INV-2024-1101</td>
+                  <td>Oct 25 - Nov 1, 2024</td>
+                  <td>21</td>
+                  <td>$594</td>
+                  <td style="color: var(--warning-orange);">+$148</td>
+                  <td style="font-weight: 600; color: var(--success-green);">$742</td>
+                  <td><button class="btn btn-sm btn-outline">Download</button></td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">#INV-2024-1025</td>
+                  <td>Oct 18 - Oct 25, 2024</td>
+                  <td>27</td>
+                  <td>$713</td>
+                  <td style="color: var(--warning-orange);">+$178</td>
+                  <td style="font-weight: 600; color: var(--success-green);">$891</td>
+                  <td><button class="btn btn-sm btn-outline">Download</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Earnings Tips -->
+      <div class="card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));">
+        <div class="card-body">
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; color: var(--neutral-900);">💡 Maximize Your Earnings</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <div>
+              <div style="font-weight: 600; color: var(--neutral-800); margin-bottom: 0.5rem;">⭐ Upgrade Your Tier</div>
+              <div style="font-size: 0.9rem; color: var(--neutral-600);">
+                Reach Super Hub tier for +50% earnings bonus on all deliveries
+              </div>
+            </div>
+            <div>
+              <div style="font-weight: 600; color: var(--neutral-800); margin-bottom: 0.5rem;">📊 Maintain High Rating</div>
+              <div style="font-size: 0.9rem; color: var(--neutral-600);">
+                Keep your rating above 4.8 stars to qualify for premium batches
+              </div>
+            </div>
+            <div>
+              <div style="font-weight: 600; color: var(--neutral-800); margin-bottom: 0.5rem;">🚀 Complete More Deliveries</div>
+              <div style="font-size: 0.9rem; color: var(--neutral-600);">
+                High performers receive priority access to larger batch assignments
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

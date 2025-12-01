@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BungeeHub UI Mockups - Interactive Prototypes</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .hero {
+      background: linear-gradient(135deg, #2563eb 0%, #10b981 100%);
+      padding: 4rem 2rem;
+      text-align: center;
+      color: white;
+    }
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .hero-subtitle {
+      font-size: 1.25rem;
+      opacity: 0.9;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+    }
+    .mockup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin: 3rem auto;
+      max-width: 1400px;
+      padding: 0 2rem;
+    }
+    .mockup-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .mockup-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-xl);
+    }
+    .mockup-preview {
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+      background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    }
+    .mockup-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .mockup-number {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--primary-blue);
+      box-shadow: var(--shadow);
+    }
+    .mockup-body {
+      padding: 1.5rem;
+    }
+    .mockup-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--neutral-900);
+    }
+    .mockup-description {
+      color: var(--neutral-600);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .mockup-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .feature-tag {
+      background: var(--neutral-100);
+      color: var(--neutral-700);
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    .view-mockup-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--primary-blue);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body style="background-color: var(--neutral-50);">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="logo" style="justify-content: center; margin-bottom: 2rem; font-size: 2rem;">
+      <div class="logo-icon" style="width: 60px; height: 60px; font-size: 2rem;">📦</div>
+      <span>BungeeHub</span>
+    </div>
+    <h1 class="hero-title">UI Mockups & Prototypes</h1>
+    <p class="hero-subtitle">
+      Interactive HTML mockups for the BungeeHub delivery hub management system.
+      Combining Airbnb's host model with Uber's delivery network for community-driven last-mile delivery.
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <span class="badge" style="background: rgba(255,255,255,0.2); color: white; font-size: 1rem; padding: 0.5rem 1rem;">🏠 Airbnb-Style Hosting</span>
+      <span class="badge" style="background: rgba(255,255,255,0.2); color: white; font-size: 1rem; padding: 0.5rem 1rem;">🚚 Uber-Style Delivery</span>
+      <span class="badge" style="background: rgba(255,255,255,0.2); color: white; font-size: 1rem; padding: 0.5rem 1rem;">⭐ Gamification System</span>
+    </div>
+  </section>
+
+  <!-- Hub Showcase -->
+  <section style="max-width: 1200px; margin: -3rem auto 3rem; padding: 0 2rem; position: relative; z-index: 10;">
+    <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-xl);">
+      <img src="assets/images/hub-garage.svg" alt="BungeeHub authorized delivery hub with packages" style="width: 100%; height: auto;">
+    </div>
+  </section>
+
+  <!-- Mockup Grid -->
+  <section class="mockup-grid">
+    <!-- Mockup 1: Dashboard -->
+    <a href="01-hub-dashboard.html" class="mockup-card">
+      <div class="mockup-preview">
+        <div class="mockup-number">1</div>
+        <div style="padding: 2rem; text-align: center;">
+          <div style="font-size: 4rem; margin-bottom: 0.5rem;">📊</div>
+          <div style="font-size: 1.25rem; font-weight: 600; color: var(--neutral-700);">Dashboard Overview</div>
+        </div>
+      </div>
+      <div class="mockup-body">
+        <h3 class="mockup-title">Hub Dashboard</h3>
+        <p class="mockup-description">
+          Main overview screen with stats, quick actions, pending deliveries, and activity feed. Hub hosts see their performance metrics and capacity at a glance.
+        </p>
+        <div class="mockup-features">
+          <span class="feature-tag">Stats Cards</span>
+          <span class="feature-tag">Quick Actions</span>
+          <span class="feature-tag">Activity Feed</span>
+          <span class="feature-tag">Tier Status</span>
+        </div>
+        <div class="view-mockup-btn">
+          View Mockup →
+        </div>
+      </div>
+    </a>
+
+    <!-- Mockup 2: Package Management -->
+    <a href="02-package-management.html" class="mockup-card">
+      <div class="mockup-preview">
+        <div class="mockup-number">2</div>
+        <div style="padding: 2rem; text-align: center;">
+          <div style="font-size: 4rem; margin-bottom: 0.5rem;">📦</div>
+          <div style="font-size: 1.25rem; font-weight: 600; color: var(--neutral-700);">Package Inventory</div>
+        </div>
+      </div>
+      <div class="mockup-body">
+        <h3 class="mockup-title">Package Management</h3>
+        <p class="mockup-description">
+          Complete inventory system with batch scanning modal for receiving 50-100 packages. Filter by status, priority, and recipient with bulk action support.
+        </p>
+        <div class="mockup-features">
+          <span class="feature-tag">Batch Scanning</span>
+          <span class="feature-tag">QR/Barcode</span>
+          <span class="feature-tag">Filtering</span>
+          <span class="feature-tag">Bulk Actions</span>
+        </div>
+        <div class="view-mockup-btn">
+          View Mockup →
+        </div>
+      </div>
+    </a>
+
+    <!-- Mockup 3: Delivery Routing -->
+    <a href="03-delivery-routing.html" class="mockup-card">
+      <div class="mockup-preview">
+        <div class="mockup-number">3</div>
+        <div style="padding: 2rem; text-align: center;">
+          <div style="font-size: 4rem; margin-bottom: 0.5rem;">🗺️</div>
+          <div style="font-size: 1.25rem; font-weight: 600; color: var(--neutral-700);">Route Navigation</div>
+        </div>
+      </div>
+      <div class="mockup-body">
+        <h3 class="mockup-title">Delivery Routing</h3>
+        <p class="mockup-description">
+          Interactive map with optimized routes, turn-by-turn navigation, and real-time progress tracking. Shows distance and estimated time for each stop.
+        </p>
+        <div class="mockup-features">
+          <span class="feature-tag">Route Optimization</span>
+          <span class="feature-tag">Map View</span>
+          <span class="feature-tag">Navigation</span>
+          <span class="feature-tag">ETA Tracking</span>
+        </div>
+        <div class="view-mockup-btn">
+          View Mockup →
+        </div>
+      </div>
+    </a>
+
+    <!-- Mockup 4: Proof of Delivery -->
+    <a href="04-proof-of-delivery.html" class="mockup-card">
+      <div class="mockup-preview">
+        <div class="mockup-number">4</div>
+        <div style="padding: 2rem; text-align: center;">
+          <div style="font-size: 4rem; margin-bottom: 0.5rem;">📸</div>
+          <div style="font-size: 1.25rem; font-weight: 600; color: var(--neutral-700);">Proof of Delivery</div>
+        </div>
+      </div>
+      <div class="mockup-body">
+        <h3 class="mockup-title">Proof of Delivery</h3>
+        <p class="mockup-description">
+          Complete delivery verification with photo capture, GPS coordinates, timestamps, optional signature, and delivery notes. Real-time backend sync.
+        </p>
+        <div class="mockup-features">
+          <span class="feature-tag">Photo Capture</span>
+          <span class="feature-tag">GPS Verification</span>
+          <span class="feature-tag">Signature</span>
+          <span class="feature-tag">Checklist</span>
+        </div>
+        <div class="view-mockup-btn">
+          View Mockup →
+        </div>
+      </div>
+    </a>
+
+    <!-- Mockup 5: Performance & Ranking -->
+    <a href="05-performance-ranking.html" class="mockup-card">
+      <div class="mockup-preview">
+        <div class="mockup-number">5</div>
+        <div style="padding: 2rem; text-align: center;">
+          <div style="font-size: 4rem; margin-bottom: 0.5rem;">⭐</div>
+          <div style="font-size: 1.25rem; font-weight: 600; color: var(--neutral-700);">Ranking System</div>
+        </div>
+      </div>
+      <div class="mockup-body">
+        <h3 class="mockup-title">Performance & Ranking</h3>
+        <p class="mockup-description">
+          Airbnb "Super Host" style gamification with tier system (Bronze/Silver/Gold/Super Hub), leaderboards, achievements, and earnings bonuses.
+        </p>
+        <div class="mockup-features">
+          <span class="feature-tag">Tier System</span>
+          <span class="feature-tag">Leaderboard</span>
+          <span class="feature-tag">Achievements</span>
+          <span class="feature-tag">Bonuses</span>
+        </div>
+        <div class="view-mockup-btn">
+          View Mockup →
+        </div>
+      </div>
+    </a>
+
+    <!-- Mockup 6: Billing & Earnings -->
+    <a href="06-billing-earnings.html" class="mockup-card">
+      <div class="mockup-preview">
+        <div class="mockup-number">6</div>
+        <div style="padding: 2rem; text-align: center;">
+          <div style="font-size: 4rem; margin-bottom: 0.5rem;">💰</div>
+          <div style="font-size: 1.25rem; font-weight: 600; color: var(--neutral-700);">Billing & Payments</div>
+        </div>
+      </div>
+      <div class="mockup-body">
+        <h3 class="mockup-title">Billing & Earnings</h3>
+        <p class="mockup-description">
+          Complete financial management for hub owners including earnings breakdown, payment history, payout schedules, tax documents (1099-K), and payment method settings.
+        </p>
+        <div class="mockup-features">
+          <span class="feature-tag">Earnings Tracking</span>
+          <span class="feature-tag">Payment History</span>
+          <span class="feature-tag">Tax Documents</span>
+          <span class="feature-tag">Invoices</span>
+        </div>
+        <div class="view-mockup-btn">
+          View Mockup →
+        </div>
+      </div>
+    </a>
+
+    <!-- Admin Mockup 1: Admin Dashboard -->
+    <a href="admin-01-dashboard.html" class="mockup-card" style="border: 2px solid #9333ea;">
+      <div class="mockup-preview" style="background: linear-gradient(135deg, #9333ea, #c084fc);">
+        <div class="mockup-number" style="background: white; color: #9333ea;">A1</div>
+        <div style="padding: 2rem; text-align: center; color: white;">
+          <div style="font-size: 4rem; margin-bottom: 0.5rem;">🔧</div>
+          <div style="font-size: 1.25rem; font-weight: 600;">Admin Dashboard</div>
+        </div>
+      </div>
+      <div class="mockup-body">
+        <h3 class="mockup-title">👑 Admin Dashboard</h3>
+        <p class="mockup-description">
+          Platform-wide admin dashboard with system metrics, revenue analytics, top performing hubs, activity feed, and pending admin actions (approvals, disputes, payouts).
+        </p>
+        <div class="mockup-features">
+          <span class="feature-tag" style="background: rgba(147,51,234,0.1); color: #9333ea;">System Metrics</span>
+          <span class="feature-tag" style="background: rgba(147,51,234,0.1); color: #9333ea;">Revenue Analytics</span>
+          <span class="feature-tag" style="background: rgba(147,51,234,0.1); color: #9333ea;">Admin Actions</span>
+        </div>
+        <div class="view-mockup-btn" style="color: #9333ea;">
+          View Admin Dashboard →
+        </div>
+      </div>
+    </a>
+
+    <!-- Admin Mockup 2: Hub Management -->
+    <a href="admin-02-hub-management.html" class="mockup-card" style="border: 2px solid #9333ea;">
+      <div class="mockup-preview" style="background: linear-gradient(135deg, #9333ea, #c084fc);">
+        <div class="mockup-number" style="background: white; color: #9333ea;">A2</div>
+        <div style="padding: 2rem; text-align: center; color: white;">
+          <div style="font-size: 4rem; margin-bottom: 0.5rem;">🏠</div>
+          <div style="font-size: 1.25rem; font-weight: 600;">Hub Management</div>
+        </div>
+      </div>
+      <div class="mockup-body">
+        <h3 class="mockup-title">👑 Hub Management</h3>
+        <p class="mockup-description">
+          Admin interface for managing all delivery hubs across the network. Approve new hubs, monitor ratings, handle suspensions, and perform bulk actions on hub listings.
+        </p>
+        <div class="mockup-features">
+          <span class="feature-tag" style="background: rgba(147,51,234,0.1); color: #9333ea;">Hub Approvals</span>
+          <span class="feature-tag" style="background: rgba(147,51,234,0.1); color: #9333ea;">Status Management</span>
+          <span class="feature-tag" style="background: rgba(147,51,234,0.1); color: #9333ea;">Bulk Actions</span>
+        </div>
+        <div class="view-mockup-btn" style="color: #9333ea;">
+          View Hub Management →
+        </div>
+      </div>
+    </a>
+
+    <!-- Documentation Card -->
+    <div class="mockup-card" style="cursor: default; background: linear-gradient(135deg, #fef3c7, #fde68a);">
+      <div class="mockup-preview" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); height: 120px;">
+        <div style="padding: 1.5rem; text-align: center; color: white;">
+          <div style="font-size: 3rem;">📘</div>
+        </div>
+      </div>
+      <div class="mockup-body">
+        <h3 class="mockup-title">Documentation</h3>
+        <p class="mockup-description">
+          Complete documentation including feature specifications, user workflows, design system, technical integration points, and implementation phases.
+        </p>
+        <a href="README.md" class="btn btn-outline" style="margin-top: 1rem; width: 100%; text-align: center; text-decoration: none;">
+          📖 Read Documentation
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Info -->
+  <section style="max-width: 1200px; margin: 3rem auto; padding: 2rem;">
+    <div class="card">
+      <div class="card-body">
+        <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; color: var(--neutral-900);">🛠️ Technical Stack</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+          <div>
+            <div style="font-weight: 600; color: var(--neutral-700); margin-bottom: 0.5rem;">Frontend</div>
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">React Native / Flutter</div>
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">React.js (Web Dashboard)</div>
+          </div>
+          <div>
+            <div style="font-weight: 600; color: var(--neutral-700); margin-bottom: 0.5rem;">Backend</div>
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">Node.js (Express/NestJS)</div>
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">WebSocket (Real-time)</div>
+          </div>
+          <div>
+            <div style="font-weight: 600; color: var(--neutral-700); margin-bottom: 0.5rem;">Database</div>
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">Neon (PostgreSQL)</div>
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">Redis (Cache)</div>
+          </div>
+          <div>
+            <div style="font-weight: 600; color: var(--neutral-700); margin-bottom: 0.5rem;">Storage</div>
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">Google Cloud Storage</div>
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">Photo/Media Assets</div>
+          </div>
+          <div>
+            <div style="font-weight: 600; color: var(--neutral-700); margin-bottom: 0.5rem;">Platform</div>
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">Google Cloud Platform</div>
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">Cloud Run, Functions</div>
+          </div>
+          <div>
+            <div style="font-weight: 600; color: var(--neutral-700); margin-bottom: 0.5rem;">Features</div>
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">Camera & GPS</div>
+            <div style="color: var(--neutral-600); font-size: 0.9rem;">Push Notifications</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="background: var(--neutral-900); color: white; padding: 3rem 2rem; text-align: center; margin-top: 4rem;">
+    <div class="logo" style="justify-content: center; margin-bottom: 1rem; font-size: 1.5rem;">
+      <div class="logo-icon" style="width: 48px; height: 48px; font-size: 1.5rem;">📦</div>
+      <span>BungeeHub</span>
+    </div>
+    <p style="opacity: 0.8; margin-bottom: 0.5rem;">Airbnb + Uber for Deliveries</p>
+    <p style="opacity: 0.6; font-size: 0.9rem;">Interactive UI Mockups • Version 1.0 • 2024-11-19</p>
+  </footer>
+</body>
+</html>

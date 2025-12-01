@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hub Dashboard - BungeeHub</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <div class="logo-icon">📦</div>
+        <span>BungeeHub</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="01-hub-dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="02-package-management.html">Packages</a></li>
+        <li><a href="03-delivery-routing.html">Deliveries</a></li>
+        <li><a href="05-performance-ranking.html">Performance</a></li>
+      </ul>
+
+      <div class="user-menu">
+        <div class="notification-icon">
+          🔔
+          <span class="notification-badge">3</span>
+        </div>
+        <div class="user-profile">
+          <div class="user-avatar">JD</div>
+          <div class="user-info">
+            <div class="user-name">John Doe</div>
+            <div class="user-tier">⭐ Gold Hub</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">Hub Dashboard</h1>
+        <p class="page-subtitle">Welcome back! Here's what's happening with your deliveries today.</p>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Active Packages</div>
+              <div class="stat-value">47</div>
+              <div class="stat-change positive">
+                ↑ 12 from yesterday
+              </div>
+            </div>
+            <div class="stat-icon primary">📦</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 62%;"></div>
+          </div>
+          <div class="mt-1" style="font-size: 0.85rem; color: var(--neutral-500);">
+            62 of 100 capacity
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Deliveries Today</div>
+              <div class="stat-value">23</div>
+              <div class="stat-change positive">
+                ↑ 8 from yesterday
+              </div>
+            </div>
+            <div class="stat-icon success">🚚</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill success" style="width: 78%;"></div>
+          </div>
+          <div class="mt-1" style="font-size: 0.85rem; color: var(--neutral-500);">
+            18 completed, 5 in progress
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Success Rate</div>
+              <div class="stat-value">97.5%</div>
+              <div class="stat-change positive">
+                ↑ 0.5% this week
+              </div>
+            </div>
+            <div class="stat-icon success">✅</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill success" style="width: 97.5%;"></div>
+          </div>
+          <div class="mt-1" style="font-size: 0.85rem; color: var(--neutral-500);">
+            234 of 240 successful
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Total Earnings</div>
+              <div class="stat-value">$847</div>
+              <div class="stat-change positive">
+                ↑ $124 this week
+              </div>
+            </div>
+            <div class="stat-icon warning">💰</div>
+          </div>
+          <div class="mt-1" style="font-size: 0.85rem; color: var(--neutral-500);">
+            Next payout: Friday, Nov 22
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Column Layout -->
+      <div class="grid-2">
+        <!-- Quick Actions -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Quick Actions</h2>
+          </div>
+          <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              <button class="btn btn-primary btn-lg">
+                📥 Scan New Batch
+              </button>
+              <button class="btn btn-success btn-lg">
+                🚚 Start Deliveries
+              </button>
+              <button class="btn btn-outline btn-lg">
+                📸 Upload Proof of Delivery
+              </button>
+              <button class="btn btn-outline btn-lg">
+                📊 View Full Report
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hub Status -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Hub Status</h2>
+          </div>
+          <div class="card-body">
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+              <!-- Hub Info -->
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <span style="font-weight: 600; color: var(--neutral-700);">Hub Capacity</span>
+                  <span style="font-weight: 600; color: var(--primary-blue);">62%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 62%;"></div>
+                </div>
+                <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--neutral-500);">
+                  47 of 100 packages
+                </div>
+              </div>
+
+              <!-- Current Tier -->
+              <div>
+                <div style="font-weight: 600; color: var(--neutral-700); margin-bottom: 0.5rem;">Current Tier</div>
+                <div class="tier-badge gold">
+                  ⭐ Gold Hub
+                </div>
+                <div style="margin-top: 0.75rem; font-size: 0.85rem; color: var(--neutral-500);">
+                  387 successful deliveries
+                </div>
+              </div>
+
+              <!-- Next Milestone -->
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                  <span style="font-weight: 600; color: var(--neutral-700);">Next: Super Hub</span>
+                  <span style="font-weight: 600; color: var(--neutral-700);">77%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill warning" style="width: 77%;"></div>
+                </div>
+                <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--neutral-500);">
+                  113 more deliveries needed
+                </div>
+              </div>
+
+              <!-- Rating -->
+              <div>
+                <div style="font-weight: 600; color: var(--neutral-700); margin-bottom: 0.5rem;">Average Rating</div>
+                <div class="rating-stars">
+                  <span class="star">★</span>
+                  <span class="star">★</span>
+                  <span class="star">★</span>
+                  <span class="star">★</span>
+                  <span class="star">★</span>
+                  <span style="margin-left: 0.5rem; font-weight: 600; color: var(--neutral-700);">5.0</span>
+                </div>
+                <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--neutral-500);">
+                  Based on 127 customer reviews
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Deliveries -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Pending Deliveries (5)</h2>
+          <a href="03-delivery-routing.html" class="btn btn-primary btn-sm">View All</a>
+        </div>
+        <div class="card-body">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Package ID</th>
+                  <th>Recipient</th>
+                  <th>Address</th>
+                  <th>Status</th>
+                  <th>Priority</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight: 600;">#PKG-7834</td>
+                  <td>Sarah Johnson</td>
+                  <td>1234 Oak Street, Apt 5B</td>
+                  <td><span class="badge badge-warning">Out for Delivery</span></td>
+                  <td><span class="badge badge-danger">High</span></td>
+                  <td><button class="btn btn-sm btn-primary">Deliver</button></td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">#PKG-7835</td>
+                  <td>Michael Chen</td>
+                  <td>567 Maple Ave</td>
+                  <td><span class="badge badge-primary">Ready</span></td>
+                  <td><span class="badge badge-warning">Medium</span></td>
+                  <td><button class="btn btn-sm btn-primary">Deliver</button></td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">#PKG-7836</td>
+                  <td>Emma Davis</td>
+                  <td>890 Pine Road</td>
+                  <td><span class="badge badge-primary">Ready</span></td>
+                  <td><span class="badge badge-warning">Medium</span></td>
+                  <td><button class="btn btn-sm btn-primary">Deliver</button></td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">#PKG-7837</td>
+                  <td>James Wilson</td>
+                  <td>234 Elm Street, Unit 12</td>
+                  <td><span class="badge badge-primary">Ready</span></td>
+                  <td><span class="badge badge-success">Normal</span></td>
+                  <td><button class="btn btn-sm btn-primary">Deliver</button></td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">#PKG-7838</td>
+                  <td>Lisa Martinez</td>
+                  <td>456 Birch Lane</td>
+                  <td><span class="badge badge-primary">Ready</span></td>
+                  <td><span class="badge badge-success">Normal</span></td>
+                  <td><button class="btn btn-sm btn-primary">Deliver</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Recent Activity</h2>
+        </div>
+        <div class="card-body">
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <!-- Activity Item -->
+            <div style="display: flex; gap: 1rem; padding: 0.75rem; background-color: var(--neutral-50); border-radius: 8px;">
+              <div style="flex-shrink: 0; width: 40px; height: 40px; background-color: var(--success-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                ✓
+              </div>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; color: var(--neutral-800); margin-bottom: 0.25rem;">
+                  Delivery Completed
+                </div>
+                <div style="font-size: 0.875rem; color: var(--neutral-600);">
+                  Package #PKG-7822 delivered to Robert Brown at 345 Cedar Drive
+                </div>
+                <div style="font-size: 0.75rem; color: var(--neutral-500); margin-top: 0.25rem;">
+                  2 minutes ago
+                </div>
+              </div>
+            </div>
+
+            <!-- Activity Item -->
+            <div style="display: flex; gap: 1rem; padding: 0.75rem; background-color: var(--neutral-50); border-radius: 8px;">
+              <div style="flex-shrink: 0; width: 40px; height: 40px; background-color: var(--primary-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                📦
+              </div>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; color: var(--neutral-800); margin-bottom: 0.25rem;">
+                  Batch Received
+                </div>
+                <div style="font-size: 0.875rem; color: var(--neutral-600);">
+                  New batch of 15 packages scanned and added to inventory
+                </div>
+                <div style="font-size: 0.75rem; color: var(--neutral-500); margin-top: 0.25rem;">
+                  1 hour ago
+                </div>
+              </div>
+            </div>
+
+            <!-- Activity Item -->
+            <div style="display: flex; gap: 1rem; padding: 0.75rem; background-color: var(--neutral-50); border-radius: 8px;">
+              <div style="flex-shrink: 0; width: 40px; height: 40px; background-color: var(--success-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                ⭐
+              </div>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; color: var(--neutral-800); margin-bottom: 0.25rem;">
+                  5-Star Rating Received
+                </div>
+                <div style="font-size: 0.875rem; color: var(--neutral-600);">
+                  Customer rated your delivery service: "Fast and professional!"
+                </div>
+                <div style="font-size: 0.75rem; color: var(--neutral-500); margin-top: 0.25rem;">
+                  3 hours ago
+                </div>
+              </div>
+            </div>
+
+            <!-- Activity Item -->
+            <div style="display: flex; gap: 1rem; padding: 0.75rem; background-color: var(--neutral-50); border-radius: 8px;">
+              <div style="flex-shrink: 0; width: 40px; height: 40px; background-color: var(--warning-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                💰
+              </div>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; color: var(--neutral-800); margin-bottom: 0.25rem;">
+                  Earnings Update
+                </div>
+                <div style="font-size: 0.875rem; color: var(--neutral-600);">
+                  You earned $47 from 12 deliveries today
+                </div>
+                <div style="font-size: 0.75rem; color: var(--neutral-500); margin-top: 0.25rem;">
+                  5 hours ago
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

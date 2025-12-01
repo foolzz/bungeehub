@@ -1,0 +1,111 @@
+<svg width="1000" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Base Map Background -->
+  <rect width="1000" height="600" fill="#f0f9ff"/>
+
+  <!-- Grid Pattern for Streets -->
+  <defs>
+    <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+      <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#d1d5db" stroke-width="1.5"/>
+    </pattern>
+  </defs>
+  <rect width="1000" height="600" fill="url(#grid)"/>
+
+  <!-- Major Roads -->
+  <rect x="0" y="200" width="1000" height="15" fill="#9ca3af"/>
+  <rect x="0" y="400" width="1000" height="15" fill="#9ca3af"/>
+  <rect x="300" y="0" width="15" height="600" fill="#9ca3af"/>
+  <rect x="600" y="0" width="15" height="600" fill="#9ca3af"/>
+
+  <!-- Road Lines (Center Dividers) -->
+  <line x1="0" y1="207.5" x2="1000" y2="207.5" stroke="#fbbf24" stroke-width="2" stroke-dasharray="20,10"/>
+  <line x1="0" y1="407.5" x2="1000" y2="407.5" stroke="#fbbf24" stroke-width="2" stroke-dasharray="20,10"/>
+  <line x1="307.5" y1="0" x2="307.5" y2="600" stroke="#fbbf24" stroke-width="2" stroke-dasharray="20,10"/>
+  <line x1="607.5" y1="0" x2="607.5" y2="600" stroke="#fbbf24" stroke-width="2" stroke-dasharray="20,10"/>
+
+  <!-- Route Path -->
+  <path d="M 250 400 L 350 300 L 550 280 L 650 450 L 700 520 L 450 530"
+        fill="none" stroke="#2563eb" stroke-width="6" stroke-opacity="0.6"
+        stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10,5"/>
+
+  <!-- Hub Marker (Home Base) -->
+  <g id="hub">
+    <circle cx="250" cy="400" r="30" fill="#10b981" stroke="#fff" stroke-width="4"/>
+    <text x="250" y="410" font-family="Arial, sans-serif" font-size="24" fill="#fff" text-anchor="middle" font-weight="bold">🏠</text>
+  </g>
+
+  <!-- Delivery Stop 1 (Completed) -->
+  <g id="stop1">
+    <circle cx="350" cy="300" r="25" fill="#10b981" stroke="#fff" stroke-width="3"/>
+    <text x="350" y="310" font-family="Arial, sans-serif" font-size="18" fill="#fff" text-anchor="middle" font-weight="bold">✓</text>
+  </g>
+
+  <!-- Delivery Stop 2 (Next/Current) -->
+  <g id="stop2">
+    <circle cx="550" cy="280" r="28" fill="#2563eb" stroke="#fff" stroke-width="4"/>
+    <circle cx="550" cy="280" r="35" fill="none" stroke="#2563eb" stroke-width="3" opacity="0.4">
+      <animate attributeName="r" values="35;45;35" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.4;0;0.4" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="550" y="290" font-family="Arial, sans-serif" font-size="20" fill="#fff" text-anchor="middle" font-weight="bold">2</text>
+  </g>
+
+  <!-- Delivery Stop 3 -->
+  <g id="stop3">
+    <circle cx="650" cy="450" r="25" fill="#6b7280" stroke="#fff" stroke-width="3"/>
+    <text x="650" cy="460" font-family="Arial, sans-serif" font-size="18" fill="#fff" text-anchor="middle" font-weight="bold">3</text>
+  </g>
+
+  <!-- Delivery Stop 4 -->
+  <g id="stop4">
+    <circle cx="700" cy="520" r="25" fill="#6b7280" stroke="#fff" stroke-width="3"/>
+    <text x="700" cy="530" font-family="Arial, sans-serif" font-size="18" fill="#fff" text-anchor="middle" font-weight="bold">4</text>
+  </g>
+
+  <!-- Delivery Stop 5 -->
+  <g id="stop5">
+    <circle cx="450" cy="530" r="25" fill="#6b7280" stroke="#fff" stroke-width="3"/>
+    <text x="450" cy="540" font-family="Arial, sans-serif" font-size="18" fill="#fff" text-anchor="middle" font-weight="bold">5</text>
+  </g>
+
+  <!-- Parks/Green Spaces -->
+  <rect x="100" y="50" width="120" height="120" fill="#86efac" opacity="0.5" rx="10"/>
+  <circle cx="160" cy="110" r="15" fill="#22c55e" opacity="0.6"/>
+  <circle cx="140" cy="90" r="12" fill="#22c55e" opacity="0.6"/>
+  <circle cx="180" cy="100" r="10" fill="#22c55e" opacity="0.6"/>
+
+  <!-- Buildings -->
+  <rect x="400" y="80" width="60" height="80" fill="#d1d5db" opacity="0.6"/>
+  <rect x="480" y="100" width="50" height="60" fill="#d1d5db" opacity="0.6"/>
+  <rect x="750" y="250" width="70" height="90" fill="#d1d5db" opacity="0.6"/>
+  <rect x="100" y="450" width="80" height="100" fill="#d1d5db" opacity="0.6"/>
+
+  <!-- Distance/Time Info Box for Current Route Segment -->
+  <g id="routeInfo">
+    <rect x="480" y="370" width="140" height="60" fill="#fff" stroke="#2563eb" stroke-width="2" rx="8"/>
+    <text x="550" y="395" font-family="Arial, sans-serif" font-size="14" fill="#2563eb" text-anchor="middle" font-weight="bold">Next Stop</text>
+    <text x="550" y="413" font-family="Arial, sans-serif" font-size="12" fill="#6b7280" text-anchor="middle">1.2 mi • 8 min</text>
+  </g>
+
+  <!-- Legend -->
+  <g id="legend">
+    <rect x="20" y="500" width="180" height="80" fill="#fff" opacity="0.95" stroke="#d1d5db" stroke-width="1" rx="8"/>
+    <circle cx="40" cy="520" r="8" fill="#10b981"/>
+    <text x="60" y="525" font-family="Arial, sans-serif" font-size="12" fill="#1f2937">Hub/Completed</text>
+
+    <circle cx="40" cy="545" r="8" fill="#2563eb"/>
+    <text x="60" y="550" font-family="Arial, sans-serif" font-size="12" fill="#1f2937">Current Stop</text>
+
+    <circle cx="40" cy="570" r="8" fill="#6b7280"/>
+    <text x="60" y="575" font-family="Arial, sans-serif" font-size="12" fill="#1f2937">Pending</text>
+  </g>
+
+  <!-- Map Controls (Zoom) -->
+  <g id="controls">
+    <rect x="940" y="20" width="40" height="100" fill="#fff" opacity="0.95" stroke="#d1d5db" stroke-width="1" rx="6"/>
+    <rect x="945" y="30" width="30" height="30" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="4"/>
+    <text x="960" y="52" font-family="Arial, sans-serif" font-size="20" fill="#374151" text-anchor="middle" font-weight="bold">+</text>
+
+    <rect x="945" y="80" width="30" height="30" fill="#fff" stroke="#d1d5db" stroke-width="1" rx="4"/>
+    <text x="960" y="102" font-family="Arial, sans-serif" font-size="20" fill="#374151" text-anchor="middle" font-weight="bold">−</text>
+  </g>
+</svg>

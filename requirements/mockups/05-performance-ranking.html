@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Performance & Ranking - BungeeHub</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .achievement-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      transition: transform 0.2s;
+      border: 2px solid var(--neutral-200);
+    }
+    .achievement-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    .achievement-card.locked {
+      opacity: 0.5;
+      filter: grayscale(100%);
+    }
+    .achievement-icon {
+      font-size: 3rem;
+      margin-bottom: 0.75rem;
+    }
+    .leaderboard-rank {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .rank-1 { background: linear-gradient(135deg, #ffd700, #ffed4e); color: #7c6200; }
+    .rank-2 { background: linear-gradient(135deg, #c0c0c0, #e0e0e0); color: #404040; }
+    .rank-3 { background: linear-gradient(135deg, #cd7f32, #e9a86f); color: #4a2800; }
+    .rank-other { background: var(--neutral-200); color: var(--neutral-700); }
+    .metric-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin: 0 auto;
+    }
+    .metric-circle::before {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      padding: 5px;
+      background: linear-gradient(135deg, var(--primary-blue), var(--success-green));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <div class="logo-icon">📦</div>
+        <span>BungeeHub</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="01-hub-dashboard.html">Dashboard</a></li>
+        <li><a href="02-package-management.html">Packages</a></li>
+        <li><a href="03-delivery-routing.html">Deliveries</a></li>
+        <li><a href="05-performance-ranking.html" class="active">Performance</a></li>
+      </ul>
+
+      <div class="user-menu">
+        <div class="notification-icon">
+          🔔
+          <span class="notification-badge">3</span>
+        </div>
+        <div class="user-profile">
+          <div class="user-avatar">JD</div>
+          <div class="user-info">
+            <div class="user-name">John Doe</div>
+            <div class="user-tier">⭐ Gold Hub</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">Performance & Ranking</h1>
+        <p class="page-subtitle">Track your progress and climb the leaderboard</p>
+      </div>
+
+      <!-- Current Tier Status -->
+      <div class="card" style="background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); border: none; color: #4a2800; margin-bottom: 2rem;">
+        <div class="card-body">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 2rem;">
+            <div style="display: flex; align-items: center; gap: 2rem;">
+              <div style="font-size: 5rem;">⭐</div>
+              <div>
+                <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.25rem;">Current Tier</div>
+                <div style="font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">Gold Hub</div>
+                <div style="font-size: 1rem; opacity: 0.9;">387 successful deliveries • 4.9★ average rating</div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem;">Next Tier: Super Hub</div>
+              <div style="background: rgba(74, 40, 0, 0.2); padding: 1rem 1.5rem; border-radius: 8px;">
+                <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem;">113</div>
+                <div style="font-size: 0.9rem;">deliveries remaining</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress to Next Tier -->
+          <div style="margin-top: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; opacity: 0.8;">
+              <span>Progress to Super Hub</span>
+              <span>77% (387/500)</span>
+            </div>
+            <div style="background: rgba(74, 40, 0, 0.2); height: 12px; border-radius: 6px; overflow: hidden;">
+              <div style="background: rgba(74, 40, 0, 0.6); height: 100%; width: 77%; border-radius: 6px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Metrics -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">📊 Performance Metrics</h2>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-sm btn-primary">This Week</button>
+            <button class="btn btn-sm btn-outline">This Month</button>
+            <button class="btn btn-sm btn-outline">All Time</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+            <!-- Delivery Accuracy -->
+            <div style="text-align: center;">
+              <div class="metric-circle" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--success-green);">97.5%</div>
+                <div style="font-size: 0.75rem; color: var(--neutral-600);">Success Rate</div>
+              </div>
+              <div style="margin-top: 1rem; font-weight: 600; color: var(--neutral-900);">Delivery Accuracy</div>
+              <div style="font-size: 0.85rem; color: var(--neutral-500); margin-top: 0.25rem;">234 of 240 successful</div>
+            </div>
+
+            <!-- Average Rating -->
+            <div style="text-align: center;">
+              <div class="metric-circle" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--warning-orange);">4.9</div>
+                <div style="font-size: 0.75rem; color: var(--neutral-600);">out of 5</div>
+              </div>
+              <div style="margin-top: 1rem; font-weight: 600; color: var(--neutral-900);">Customer Rating</div>
+              <div style="font-size: 0.85rem; color: var(--neutral-500); margin-top: 0.25rem;">Based on 127 reviews</div>
+            </div>
+
+            <!-- Average Speed -->
+            <div style="text-align: center;">
+              <div class="metric-circle" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.05));">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-blue);">23</div>
+                <div style="font-size: 0.75rem; color: var(--neutral-600);">minutes</div>
+              </div>
+              <div style="margin-top: 1rem; font-weight: 600; color: var(--neutral-900);">Avg. Delivery Time</div>
+              <div style="font-size: 0.85rem; color: var(--neutral-500); margin-top: 0.25rem;">Hub to customer</div>
+            </div>
+
+            <!-- Response Time -->
+            <div style="text-align: center;">
+              <div class="metric-circle" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));">
+                <div style="font-size: 2rem; font-weight: 700; color: #8b5cf6;">5</div>
+                <div style="font-size: 0.75rem; color: var(--neutral-600);">minutes</div>
+              </div>
+              <div style="margin-top: 1rem; font-weight: 600; color: var(--neutral-900);">Response Time</div>
+              <div style="font-size: 0.85rem; color: var(--neutral-500); margin-top: 0.25rem;">To accept tasks</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tier System & Benefits -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🏆 Tier System & Benefits</h2>
+        </div>
+        <div class="card-body">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <!-- Bronze Tier -->
+            <div style="background: linear-gradient(135deg, rgba(205, 127, 50, 0.1), rgba(233, 168, 111, 0.05)); padding: 1.5rem; border-radius: 12px; border: 2px solid #cd7f32;">
+              <div style="text-align: center; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🥉</div>
+                <div class="tier-badge bronze" style="margin: 0 auto;">Bronze Hub</div>
+              </div>
+              <div style="font-size: 0.85rem; color: var(--neutral-700); margin-bottom: 1rem;">
+                <strong>Requirements:</strong><br>
+                0-50 successful deliveries<br>
+                3.0+ star rating
+              </div>
+              <div style="font-size: 0.85rem; color: var(--neutral-700);">
+                <strong>Benefits:</strong>
+                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+                  <li>Basic batch assignments</li>
+                  <li>Standard earnings rate</li>
+                  <li>Access to support</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Silver Tier -->
+            <div style="background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(224, 224, 224, 0.05)); padding: 1.5rem; border-radius: 12px; border: 2px solid #c0c0c0;">
+              <div style="text-align: center; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🥈</div>
+                <div class="tier-badge silver" style="margin: 0 auto;">Silver Hub</div>
+              </div>
+              <div style="font-size: 0.85rem; color: var(--neutral-700); margin-bottom: 1rem;">
+                <strong>Requirements:</strong><br>
+                51-200 successful deliveries<br>
+                4.0+ star rating
+              </div>
+              <div style="font-size: 0.85rem; color: var(--neutral-700);">
+                <strong>Benefits:</strong>
+                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+                  <li>Priority batch assignments</li>
+                  <li>+10% earnings bonus</li>
+                  <li>Priority support</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Gold Tier (Current) -->
+            <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 237, 78, 0.1)); padding: 1.5rem; border-radius: 12px; border: 3px solid #ffd700; box-shadow: var(--shadow-md);">
+              <div style="text-align: center; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🥇</div>
+                <div class="tier-badge gold" style="margin: 0 auto;">Gold Hub ⭐ YOU</div>
+              </div>
+              <div style="font-size: 0.85rem; color: var(--neutral-700); margin-bottom: 1rem;">
+                <strong>Requirements:</strong><br>
+                201-500 successful deliveries<br>
+                4.5+ star rating
+              </div>
+              <div style="font-size: 0.85rem; color: var(--neutral-700);">
+                <strong>Benefits:</strong>
+                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+                  <li>First choice on batches</li>
+                  <li>+25% earnings bonus</li>
+                  <li>Dedicated support line</li>
+                  <li>Featured in network</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Super Hub Tier -->
+            <div style="background: linear-gradient(135deg, rgba(147, 51, 234, 0.15), rgba(192, 132, 252, 0.1)); padding: 1.5rem; border-radius: 12px; border: 2px dashed #9333ea;">
+              <div style="text-align: center; margin-bottom: 1rem;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👑</div>
+                <div class="tier-badge super" style="margin: 0 auto;">Super Hub</div>
+              </div>
+              <div style="font-size: 0.85rem; color: var(--neutral-700); margin-bottom: 1rem;">
+                <strong>Requirements:</strong><br>
+                500+ successful deliveries<br>
+                4.8+ star rating<br>
+                95%+ accuracy
+              </div>
+              <div style="font-size: 0.85rem; color: var(--neutral-700);">
+                <strong>Benefits:</strong>
+                <ul style="margin: 0.5rem 0 0 1.25rem; padding: 0;">
+                  <li>Exclusive VIP batches</li>
+                  <li>+50% earnings bonus</li>
+                  <li>24/7 dedicated support</li>
+                  <li>Premium network status</li>
+                  <li>Special recognition badge</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two Column Layout -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+        <!-- Leaderboard -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">🏅 Weekly Leaderboard</h2>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-sm btn-primary">This Week</button>
+              <button class="btn btn-sm btn-outline">This Month</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 80px;">Rank</th>
+                    <th>Hub Owner</th>
+                    <th>Tier</th>
+                    <th>Deliveries</th>
+                    <th>Rating</th>
+                    <th>Accuracy</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr style="background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);">
+                    <td>
+                      <div class="leaderboard-rank rank-1">🥇</div>
+                    </td>
+                    <td style="font-weight: 600;">Sarah Williams</td>
+                    <td><span class="tier-badge super" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">👑 Super Hub</span></td>
+                    <td style="font-weight: 600;">142</td>
+                    <td>
+                      <div class="rating-stars" style="font-size: 0.9rem;">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span style="margin-left: 0.25rem; color: var(--neutral-700);">5.0</span>
+                      </div>
+                    </td>
+                    <td><span style="color: var(--success-green); font-weight: 600;">99.2%</span></td>
+                  </tr>
+                  <tr style="background: linear-gradient(90deg, rgba(192, 192, 192, 0.1), transparent);">
+                    <td>
+                      <div class="leaderboard-rank rank-2">🥈</div>
+                    </td>
+                    <td style="font-weight: 600;">Michael Brown</td>
+                    <td><span class="tier-badge gold" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">⭐ Gold Hub</span></td>
+                    <td style="font-weight: 600;">128</td>
+                    <td>
+                      <div class="rating-stars" style="font-size: 0.9rem;">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span style="margin-left: 0.25rem; color: var(--neutral-700);">4.9</span>
+                      </div>
+                    </td>
+                    <td><span style="color: var(--success-green); font-weight: 600;">98.1%</span></td>
+                  </tr>
+                  <tr style="background: linear-gradient(90deg, rgba(205, 127, 50, 0.1), transparent);">
+                    <td>
+                      <div class="leaderboard-rank rank-3">🥉</div>
+                    </td>
+                    <td style="font-weight: 600;">Jennifer Davis</td>
+                    <td><span class="tier-badge gold" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">⭐ Gold Hub</span></td>
+                    <td style="font-weight: 600;">115</td>
+                    <td>
+                      <div class="rating-stars" style="font-size: 0.9rem;">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span style="margin-left: 0.25rem; color: var(--neutral-700);">4.9</span>
+                      </div>
+                    </td>
+                    <td><span style="color: var(--success-green); font-weight: 600;">97.8%</span></td>
+                  </tr>
+                  <tr style="background: linear-gradient(90deg, rgba(37, 99, 235, 0.1), transparent); border: 2px solid var(--primary-blue);">
+                    <td>
+                      <div class="leaderboard-rank rank-other">4</div>
+                    </td>
+                    <td style="font-weight: 600;">John Doe (You) ⭐</td>
+                    <td><span class="tier-badge gold" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">⭐ Gold Hub</span></td>
+                    <td style="font-weight: 600;">103</td>
+                    <td>
+                      <div class="rating-stars" style="font-size: 0.9rem;">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span style="margin-left: 0.25rem; color: var(--neutral-700);">4.9</span>
+                      </div>
+                    </td>
+                    <td><span style="color: var(--success-green); font-weight: 600;">97.5%</span></td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="leaderboard-rank rank-other">5</div>
+                    </td>
+                    <td>Robert Johnson</td>
+                    <td><span class="tier-badge gold" style="font-size: 0.7rem; padding: 0.25rem 0.5rem;">⭐ Gold Hub</span></td>
+                    <td>98</td>
+                    <td>
+                      <div class="rating-stars" style="font-size: 0.9rem;">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star empty">★</span>
+                        <span style="margin-left: 0.25rem; color: var(--neutral-700);">4.7</span>
+                      </div>
+                    </td>
+                    <td><span style="color: var(--success-green); font-weight: 600;">96.8%</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Achievements & Earnings -->
+        <div>
+          <!-- Recent Achievements -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">🎖️ Achievements</h2>
+            </div>
+            <div class="card-body">
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                <div class="achievement-card">
+                  <div class="achievement-icon">🚀</div>
+                  <div style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.25rem;">Speed Demon</div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500);">100 deliveries in one week</div>
+                </div>
+
+                <div class="achievement-card">
+                  <div class="achievement-icon">⭐</div>
+                  <div style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.25rem;">5-Star Streak</div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500);">20 perfect ratings</div>
+                </div>
+
+                <div class="achievement-card">
+                  <div class="achievement-icon">🎯</div>
+                  <div style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.25rem;">Accuracy Pro</div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500);">95%+ for 30 days</div>
+                </div>
+
+                <div class="achievement-card locked">
+                  <div class="achievement-icon">👑</div>
+                  <div style="font-weight: 600; font-size: 0.85rem; margin-bottom: 0.25rem;">Super Status</div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500);">Reach Super Hub tier</div>
+                  <div style="margin-top: 0.5rem;">
+                    <span class="badge badge-neutral" style="font-size: 0.65rem;">Locked</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Earnings Summary -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">💰 Earnings</h2>
+            </div>
+            <div class="card-body">
+              <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div style="font-size: 0.85rem; color: var(--neutral-500); margin-bottom: 0.25rem;">This Week</div>
+                <div style="font-size: 2.5rem; font-weight: 700; color: var(--neutral-900);">$847</div>
+                <div style="font-size: 0.85rem; color: var(--success-green); margin-top: 0.5rem;">
+                  ↑ $124 from last week
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--neutral-50); border-radius: 8px;">
+                  <span style="color: var(--neutral-700);">Base Earnings</span>
+                  <span style="font-weight: 600;">$678</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--neutral-50); border-radius: 8px;">
+                  <span style="color: var(--neutral-700);">Gold Tier Bonus (+25%)</span>
+                  <span style="font-weight: 600; color: var(--warning-orange);">$169</span>
+                </div>
+                <div style="padding-top: 1rem; border-top: 2px solid var(--neutral-200);">
+                  <div style="font-size: 0.85rem; color: var(--neutral-600); margin-bottom: 0.5rem;">Next Payout</div>
+                  <div style="font-weight: 600; color: var(--neutral-900);">Friday, Nov 22</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

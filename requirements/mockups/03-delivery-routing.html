@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery Routing - BungeeHub</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .route-item {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      border-left: 4px solid var(--primary-blue);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .route-item:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateX(4px);
+    }
+    .route-item.completed {
+      border-left-color: var(--success-green);
+      opacity: 0.7;
+    }
+    .route-number {
+      width: 32px;
+      height: 32px;
+      background: var(--primary-blue);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .map-marker {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: var(--primary-blue);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      border: 3px solid white;
+      box-shadow: var(--shadow-md);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .map-marker:hover {
+      transform: scale(1.2);
+      z-index: 10;
+    }
+    .map-marker.hub {
+      background: var(--success-green);
+      width: 40px;
+      height: 40px;
+      font-size: 1.5rem;
+    }
+    .route-line {
+      position: absolute;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-blue), var(--primary-blue-light));
+      transform-origin: left center;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <div class="logo-icon">📦</div>
+        <span>BungeeHub</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="01-hub-dashboard.html">Dashboard</a></li>
+        <li><a href="02-package-management.html">Packages</a></li>
+        <li><a href="03-delivery-routing.html" class="active">Deliveries</a></li>
+        <li><a href="05-performance-ranking.html">Performance</a></li>
+      </ul>
+
+      <div class="user-menu">
+        <div class="notification-icon">
+          🔔
+          <span class="notification-badge">3</span>
+        </div>
+        <div class="user-profile">
+          <div class="user-avatar">JD</div>
+          <div class="user-info">
+            <div class="user-name">John Doe</div>
+            <div class="user-tier">⭐ Gold Hub</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="flex-between">
+          <div>
+            <h1 class="page-title">Delivery Routing</h1>
+            <p class="page-subtitle">Optimized routes for efficient deliveries</p>
+          </div>
+          <div style="display: flex; gap: 1rem;">
+            <button class="btn btn-outline">🔄 Recalculate Route</button>
+            <button class="btn btn-success btn-lg">🚚 Start Route</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Route Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Total Stops</div>
+              <div class="stat-value">8</div>
+            </div>
+            <div class="stat-icon primary">📍</div>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--neutral-500);">
+            5 pending • 3 completed
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Total Distance</div>
+              <div class="stat-value">8.4 mi</div>
+            </div>
+            <div class="stat-icon success">🗺️</div>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--neutral-500);">
+            Optimized route
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Est. Time</div>
+              <div class="stat-value">47 min</div>
+            </div>
+            <div class="stat-icon warning">⏱️</div>
+          </div>
+          <div style="font-size: 0.85rem; color: var(--neutral-500);">
+            Including stops
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Route Progress</div>
+              <div class="stat-value">37%</div>
+            </div>
+            <div class="stat-icon primary">📊</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 37%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Layout: Map + Route Details -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+        <!-- Map View -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Route Map</h2>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-sm btn-outline">🛰️ Satellite</button>
+              <button class="btn btn-sm btn-primary">🗺️ Map</button>
+              <button class="btn btn-sm btn-outline">🚦 Traffic</button>
+            </div>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <div class="map-container" style="height: 600px; position: relative; overflow: hidden;">
+              <!-- Interactive Route Map -->
+              <img src="assets/images/route-map.svg" alt="Delivery route map showing optimized path from hub to all delivery stops" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Route Details Sidebar -->
+        <div>
+          <!-- Current Location -->
+          <div class="card" style="margin-bottom: 1rem;">
+            <div class="card-body">
+              <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                <div style="width: 48px; height: 48px; background: var(--success-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">
+                  📍
+                </div>
+                <div>
+                  <div style="font-size: 0.75rem; color: var(--neutral-500); text-transform: uppercase; letter-spacing: 0.5px;">Current Location</div>
+                  <div style="font-weight: 600; color: var(--neutral-900);">Your Hub</div>
+                  <div style="font-size: 0.85rem; color: var(--neutral-600);">1234 Main Street</div>
+                </div>
+              </div>
+              <button class="btn btn-primary" style="width: 100%;">📍 Update Location</button>
+            </div>
+          </div>
+
+          <!-- Route Steps -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Route Steps</h2>
+            </div>
+            <div class="card-body" style="max-height: 500px; overflow-y: auto; padding: 1rem;">
+              <!-- Completed Stop -->
+              <div class="route-item completed">
+                <div style="display: flex; gap: 0.75rem;">
+                  <div class="route-number" style="background: var(--success-green);">✓</div>
+                  <div style="flex: 1;">
+                    <div style="font-weight: 600; color: var(--neutral-900); margin-bottom: 0.25rem;">#PKG-7834</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-600); margin-bottom: 0.5rem;">Sarah Johnson</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">1234 Oak Street, Apt 5B</div>
+                    <div style="margin-top: 0.5rem;">
+                      <span class="badge badge-success">Delivered</span>
+                      <span style="font-size: 0.75rem; color: var(--neutral-500); margin-left: 0.5rem;">0.8 mi • 12:45 PM</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Current/Next Stop -->
+              <div class="route-item" style="border-left-color: var(--success-green); box-shadow: var(--shadow-md);">
+                <div style="display: flex; gap: 0.75rem;">
+                  <div class="route-number">2</div>
+                  <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+                      <span style="font-weight: 600; color: var(--neutral-900);">#PKG-7835</span>
+                      <span class="badge badge-primary">Next Stop</span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-600); margin-bottom: 0.5rem;">Michael Chen</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500); margin-bottom: 0.75rem;">567 Maple Ave</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-600); margin-bottom: 0.75rem;">
+                      🚗 1.2 mi • ⏱️ 8 min from current location
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                      <button class="btn btn-sm btn-success" style="flex: 1;">📍 Navigate</button>
+                      <button class="btn btn-sm btn-outline">📞 Call</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Upcoming Stops -->
+              <div class="route-item">
+                <div style="display: flex; gap: 0.75rem;">
+                  <div class="route-number">3</div>
+                  <div style="flex: 1;">
+                    <div style="font-weight: 600; color: var(--neutral-900); margin-bottom: 0.25rem;">#PKG-7836</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-600); margin-bottom: 0.5rem;">Emma Davis</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">890 Pine Road</div>
+                    <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--neutral-500);">
+                      🚗 1.8 mi from Stop 2
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="route-item">
+                <div style="display: flex; gap: 0.75rem;">
+                  <div class="route-number">4</div>
+                  <div style="flex: 1;">
+                    <div style="font-weight: 600; color: var(--neutral-900); margin-bottom: 0.25rem;">#PKG-7837</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-600); margin-bottom: 0.5rem;">James Wilson</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">234 Elm Street, Unit 12</div>
+                    <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--neutral-500);">
+                      🚗 2.1 mi from Stop 3
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="route-item">
+                <div style="display: flex; gap: 0.75rem;">
+                  <div class="route-number">5</div>
+                  <div style="flex: 1;">
+                    <div style="font-weight: 600; color: var(--neutral-900); margin-bottom: 0.25rem;">#PKG-7838</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-600); margin-bottom: 0.5rem;">Lisa Martinez</div>
+                    <div style="font-size: 0.85rem; color: var(--neutral-500);">456 Birch Lane</div>
+                    <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--neutral-500);">
+                      🚗 1.5 mi from Stop 4
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
