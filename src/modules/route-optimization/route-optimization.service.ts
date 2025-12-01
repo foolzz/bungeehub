@@ -108,7 +108,7 @@ export class RouteOptimizationService {
 
     const response = await fetch(url, {
       method: 'GET',
-      headers: { 'User-Agent': 'BungeeHub/1.0' },
+      headers: { 'User-Agent': 'DeliveryHub/1.0' },
       signal: AbortSignal.timeout(30000), // 30 second timeout
     });
 
@@ -200,7 +200,7 @@ export class RouteOptimizationService {
 
     const response = await fetch(url, {
       method: 'GET',
-      headers: { 'User-Agent': 'BungeeHub/1.0' },
+      headers: { 'User-Agent': 'DeliveryHub/1.0' },
       signal: AbortSignal.timeout(30000),
     });
 

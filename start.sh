@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# BungeeHub Start Script
+# DeliveryHub Start Script
 # Quick start with minimal setup
 
 set -e
 
-echo "🚀 Starting BungeeHub..."
+echo "🚀 Starting DeliveryHub..."
 echo ""
 
 # Check if built

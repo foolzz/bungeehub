@@ -1,8 +1,8 @@
-# BungeeHub Webhook System
+# DeliveryHub Webhook System
 
 ## Overview
 
-The BungeeHub webhook system allows external systems to receive real-time notifications when package and delivery events occur in the platform. This is essential for B2B integrations where third-party logistics systems need to stay synchronized with BungeeHub.
+The DeliveryHub webhook system allows external systems to receive real-time notifications when package and delivery events occur in the platform. This is essential for B2B integrations where third-party logistics systems need to stay synchronized with DeliveryHub.
 
 ## Features
 
@@ -87,7 +87,7 @@ curl -X POST http://localhost:3000/api/v1/webhooks \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Production Delivery Webhook",
-    "url": "https://api.example.com/webhooks/bungeehub",
+    "url": "https://api.example.com/webhooks/deliveryhub",
     "events": [
       "package.status.updated",
       "delivery.completed",
@@ -103,7 +103,7 @@ curl -X POST http://localhost:3000/api/v1/webhooks \
 {
   "id": "uuid",
   "name": "Production Delivery Webhook",
-  "url": "https://api.example.com/webhooks/bungeehub",
+  "url": "https://api.example.com/webhooks/deliveryhub",
   "events": ["package.status.updated", "delivery.completed", "delivery.failed"],
   "secret": "whsec_1234567890abcdef",
   "active": true,
@@ -172,7 +172,7 @@ All webhook events follow this standard format:
 
 ## Security - Signature Verification
 
-Webhooks include an `X-Webhook-Signature` header containing an HMAC SHA-256 signature of the payload. Verify this signature to ensure the webhook came from BungeeHub.
+Webhooks include an `X-Webhook-Signature` header containing an HMAC SHA-256 signature of the payload. Verify this signature to ensure the webhook came from DeliveryHub.
 
 ### Verification Example (Node.js)
 
@@ -188,7 +188,7 @@ function verifyWebhookSignature(payload, signature, secret) {
 }
 
 // In your webhook endpoint
-app.post('/webhooks/bungeehub', (req, res) => {
+app.post('/webhooks/deliveryhub', (req, res) => {
   const signature = req.headers['x-webhook-signature'];
   const secret = 'whsec_1234567890abcdef';
   const payload = JSON.stringify(req.body);
@@ -215,7 +215,7 @@ def verify_webhook_signature(payload: bytes, signature: str, secret: str) -> boo
     expected_signature = f"sha256={hmac.new(secret.encode(), payload, hashlib.sha256).hexdigest()}"
     return hmac.compare_digest(signature, expected_signature)
 
-@app.route('/webhooks/bungeehub', methods=['POST'])
+@app.route('/webhooks/deliveryhub', methods=['POST'])
 def handle_webhook():
     signature = request.headers.get('X-Webhook-Signature')
     secret = 'whsec_1234567890abcdef'
@@ -235,7 +235,7 @@ def handle_webhook():
 
 ### Using the Test Webhook Receiver
 
-BungeeHub includes a simple webhook receiver for testing:
+DeliveryHub includes a simple webhook receiver for testing:
 
 ```bash
 # Start the test webhook receiver
@@ -259,7 +259,7 @@ For external testing, use [webhook.site](https://webhook.site):
 
 1. Visit https://webhook.site
 2. Copy your unique URL
-3. Create a webhook in BungeeHub using that URL
+3. Create a webhook in DeliveryHub using that URL
 4. Trigger events and watch them appear on webhook.site
 
 ### Testing with ngrok
@@ -289,7 +289,7 @@ curl -X POST http://localhost:3000/api/v1/webhooks \
 Your webhook endpoint should respond with a 2xx status code within 10 seconds. Process events asynchronously:
 
 ```javascript
-app.post('/webhooks/bungeehub', async (req, res) => {
+app.post('/webhooks/deliveryhub', async (req, res) => {
   const event = req.body;
 
   // Respond immediately
@@ -307,7 +307,7 @@ Webhooks may be delivered more than once. Use the event `id` to track processed 
 ```javascript
 const processedEvents = new Set();
 
-app.post('/webhooks/bungeehub', async (req, res) => {
+app.post('/webhooks/deliveryhub', async (req, res) => {
   const event = req.body;
 
   if (processedEvents.has(event.id)) {
@@ -323,7 +323,7 @@ app.post('/webhooks/bungeehub', async (req, res) => {
 
 ### 3. Implement Retry Logic
 
-If your endpoint is down, BungeeHub will log the failure. Implement a way to replay missed events:
+If your endpoint is down, DeliveryHub will log the failure. Implement a way to replay missed events:
 
 ```javascript
 // Check your application logs for missed events
@@ -371,7 +371,7 @@ Track webhook delivery success rates and response times to detect issues early.
 ## Event Flow Example
 
 ```
-1. Package status updated in BungeeHub
+1. Package status updated in DeliveryHub
    └─> PackagesService.updatePackage()
        └─> WebhooksService.firePackageStatusUpdated()
            └─> Find all active webhooks subscribed to 'package.status.updated'
@@ -402,8 +402,8 @@ model WebhookConfig {
 ### Shopify Integration
 
 ```javascript
-// Sync BungeeHub deliveries to Shopify fulfillments
-app.post('/webhooks/bungeehub', async (req, res) => {
+// Sync DeliveryHub deliveries to Shopify fulfillments
+app.post('/webhooks/deliveryhub', async (req, res) => {
   const { event, data } = req.body;
 
   if (event === 'delivery.completed') {
@@ -411,7 +411,7 @@ app.post('/webhooks/bungeehub', async (req, res) => {
     await shopify.fulfillment.update(orderId, {
       status: 'delivered',
       tracking_number: data.trackingNumber,
-      tracking_url: `https://bungeehub.com/track/${data.trackingNumber}`
+      tracking_url: `https://deliveryhub.com/track/${data.trackingNumber}`
     });
   }
 
@@ -423,7 +423,7 @@ app.post('/webhooks/bungeehub', async (req, res) => {
 
 ```javascript
 // Send Slack notifications for failed deliveries
-app.post('/webhooks/bungeehub', async (req, res) => {
+app.post('/webhooks/deliveryhub', async (req, res) => {
   const { event, data } = req.body;
 
   if (event === 'delivery.failed') {
@@ -441,7 +441,7 @@ app.post('/webhooks/bungeehub', async (req, res) => {
 
 ```javascript
 // Track delivery metrics in real-time
-app.post('/webhooks/bungeehub', async (req, res) => {
+app.post('/webhooks/deliveryhub', async (req, res) => {
   const { event, data } = req.body;
 
   if (event === 'delivery.completed') {
@@ -462,6 +462,6 @@ app.post('/webhooks/bungeehub', async (req, res) => {
 ## Support
 
 For webhook-related issues:
-- Check the [API Documentation](https://docs.bungeehub.com/api)
+- Check the [API Documentation](https://docs.deliveryhub.com/api)
 - Review server logs for webhook delivery errors
-- Contact support at support@bungeehub.com
+- Contact support at support@deliveryhub.com

@@ -1,8 +1,8 @@
 {
-  "name": "bungeehub-api",
+  "name": "deliveryhub-api",
   "version": "0.1.0",
-  "description": "Bungie Hub - Community Delivery Network API",
-  "author": "Bungie Hub Team",
+  "description": "Delivery Hub - Community Delivery Network API",
+  "author": "Delivery Hub Team",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

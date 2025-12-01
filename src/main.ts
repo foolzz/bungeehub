@@ -49,7 +49,7 @@ async function bootstrap() {
   // Swagger documentation
   if (process.env.ENABLE_API_DOCS === 'true') {
     const config = new DocumentBuilder()
-      .setTitle('Bungie Hub API')
+      .setTitle('DeliveryHub API')
       .setDescription('Community Delivery Network API Documentation')
       .setVersion('1.0')
       .addBearerAuth()
@@ -69,7 +69,7 @@ async function bootstrap() {
   const port = process.env.PORT || 8080;
   await app.listen(port);
 
-  console.log(`🚀 Bungie Hub API running on: http://localhost:${port}`);
+  console.log(`🚀 DeliveryHub API running on: http://localhost:${port}`);
   console.log(`📚 API Documentation: http://localhost:${port}/api-docs`);
 }
 

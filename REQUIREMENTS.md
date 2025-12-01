@@ -1,8 +1,8 @@
-# Bungie Hub - System Requirements Document
+# Delivery Hub - System Requirements Document
 
 ## Executive Summary
 
-Bungie Hub is a hybrid delivery network platform that combines the Airbnb hosting model with Uber-style logistics. The system enables individual users to register their homes or garages as micro-distribution centers (hubs), receive batch deliveries of 50-100 packages, and handle last-mile delivery to their local community.
+Delivery Hub is a hybrid delivery network platform that combines the Airbnb hosting model with Uber-style logistics. The system enables individual users to register their homes or garages as micro-distribution centers (hubs), receive batch deliveries of 50-100 packages, and handle last-mile delivery to their local community.
 
 ---
 
@@ -13,7 +13,7 @@ This project represents a strategic evolution of an existing B2B delivery system
 
 ### The Vision: Airbnb Meets Uber for Deliveries
 
-The Bungie Hub concept was conceived as a hybrid platform that combines:
+The Delivery Hub concept was conceived as a hybrid platform that combines:
 
 1. **Airbnb's Host Model**: Individual users register their personal spaces (home, garage, or other locations) as package delivery sub-centers, similar to how Airbnb hosts list their properties. Each location becomes a "hub" in the delivery network.
 

@@ -5,7 +5,7 @@ import { Type } from 'class-transformer';
 export class ProofOfDeliveryDto {
   @ApiProperty({
     description: 'URL or base64 of the delivery photo (package at door, recipient signature, etc.)',
-    example: 'https://storage.googleapis.com/bungeehub/deliveries/proof-123.jpg',
+    example: 'https://storage.googleapis.com/deliveryhub/deliveries/proof-123.jpg',
   })
   @IsString()
   @IsNotEmpty()

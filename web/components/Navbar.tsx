@@ -31,7 +31,7 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <a href="/" className="text-2xl font-bold text-primary-600">
-              BungeeHub
+              DeliveryHub
             </a>
           </div>
           <div className="flex items-center space-x-4">

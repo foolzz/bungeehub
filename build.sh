@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# BungeeHub Production Build Script
+# DeliveryHub Production Build Script
 # Builds both web and backend for production/GCP deployment
 
 set -e
 
-echo "🏗️  BungeeHub Production Build"
+echo "🏗️  DeliveryHub Production Build"
 echo "=============================="
 echo ""
 

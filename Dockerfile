@@ -1,4 +1,4 @@
-# Bungie Hub - Dockerfile
+# DeliveryHub - Dockerfile
 # Multi-stage build for production (API + Web)
 
 # Stage 1: Build Backend
@@ -62,6 +62,9 @@ COPY --from=backend-builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Copy built frontend from builder to public/web (where ServeStaticModule expects it)
 COPY --from=frontend-builder /app/web/out ./public/web
+
+# Copy mockups to public/web/mockups
+COPY public/web/mockups ./public/web/mockups
 
 # Expose port
 EXPOSE 8080

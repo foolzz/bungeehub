@@ -1,6 +1,6 @@
-# BungeeHub - GCP App Engine Deployment Guide
+# DeliveryHub - GCP App Engine Deployment Guide
 
-This guide will walk you through deploying your BungeeHub application to Google Cloud Platform (GCP) App Engine.
+This guide will walk you through deploying your DeliveryHub application to Google Cloud Platform (GCP) App Engine.
 
 ## Prerequisites
 

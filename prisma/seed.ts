@@ -246,7 +246,7 @@ async function main() {
       packageId: package2.id,
       hubId: hub1.id,
       status: 'DELIVERED',
-      proofOfDeliveryUrl: 'https://storage.googleapis.com/bungeehub-media/deliveries/photo1.jpg',
+      proofOfDeliveryUrl: 'https://storage.googleapis.com/deliveryhub-media/deliveries/photo1.jpg',
       deliveredAt: new Date('2025-11-15T10:30:00Z'),
       deliveryLatitude: 37.7897,
       deliveryLongitude: -122.3972,

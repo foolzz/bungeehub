@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# BungeeHub Development Script
+# DeliveryHub Development Script
 # Serves both frontend and backend on http://localhost:8080
 # Watches for frontend changes and rebuilds automatically!
 
 set -e
 
-echo "🚀 BungeeHub Development Startup (Single Port Mode)"
+echo "🚀 DeliveryHub Development Startup (Single Port Mode)"
 echo "===================================================="
 echo ""
 

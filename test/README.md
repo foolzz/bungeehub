@@ -1,6 +1,6 @@
-# BungeeHub API E2E Tests
+# DeliveryHub API E2E Tests
 
-Comprehensive end-to-end tests covering all 6 phases of the BungeeHub API.
+Comprehensive end-to-end tests covering all 6 phases of the DeliveryHub API.
 
 ## Test Coverage
 

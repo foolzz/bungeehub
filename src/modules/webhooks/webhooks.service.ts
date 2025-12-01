@@ -164,7 +164,7 @@ export class WebhooksService {
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'User-Agent': 'BungeeHub-Webhooks/1.0',
+      'User-Agent': 'DeliveryHub-Webhooks/1.0',
     };
 
     if (signature) {

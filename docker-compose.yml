@@ -1,13 +1,13 @@
-# Bungie Hub - Local Development with Docker Compose
+# Delivery Hub - Local Development with Docker Compose
 version: '3.8'
 
 services:
   # PostgreSQL Database (for local development without Neon)
   postgres:
     image: postgres:15-alpine
-    container_name: bungeehub-postgres
+    container_name: deliveryhub-postgres
     environment:
-      POSTGRES_DB: bungeehub
+      POSTGRES_DB: deliveryhub
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
@@ -23,7 +23,7 @@ services:
   # Redis for caching
   redis:
     image: redis:7-alpine
-    container_name: bungeehub-redis
+    container_name: deliveryhub-redis
     ports:
       - '6379:6379'
     volumes:
@@ -39,11 +39,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: bungeehub-api
+    container_name: deliveryhub-api
     environment:
       NODE_ENV: development
       PORT: 8080
-      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/bungeehub?schema=public
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/deliveryhub?schema=public
       REDIS_HOST: redis
       REDIS_PORT: 6379
     ports:

@@ -1,8 +1,8 @@
-# Bungie Hub - Community Delivery Network
+# Delivery Hub - Community Delivery Network
 
 > **Airbnb meets Uber for package delivery**
 
-Bungie Hub is a hybrid delivery network platform that enables individuals to register their homes or garages as micro-fulfillment centers (hubs), receive batch deliveries of 50-100 packages, and handle last-mile delivery to their local community.
+Delivery Hub is a hybrid delivery network platform that enables individuals to register their homes or garages as micro-fulfillment centers (hubs), receive batch deliveries of 50-100 packages, and handle last-mile delivery to their local community.
 
 ---
 
@@ -24,7 +24,7 @@ Transform last-mile delivery by creating a decentralized network of community-ba
 | [TECH_STACK.md](./TECH_STACK.md) | Technical architecture, database schema, API design |
 | [PROJECT_PLAN.md](./PROJECT_PLAN.md) | 12-week phased implementation roadmap |
 | [test/README.md](./test/README.md) | E2E testing documentation |
-| [mobile/bungeehub-host/README.md](./mobile/bungeehub-host/README.md) | Mobile app documentation |
+| [mobile/deliveryhub-host/README.md](./mobile/deliveryhub-host/README.md) | Mobile app documentation |
 
 ---
 
@@ -281,8 +281,8 @@ POST   /rankings/update-all-tiers               # Update all tiers (admin)
 
 ```bash
 # Clone repository
-git clone https://github.com/foolzz/bungeehub.git
-cd bungeehub
+git clone https://github.com/foolzz/deliveryhub.git
+cd deliveryhub
 
 # Install dependencies
 npm install
@@ -321,7 +321,7 @@ npm run test:e2e -- --coverage
 
 ```bash
 # Navigate to mobile app
-cd mobile/bungeehub-host
+cd mobile/deliveryhub-host
 
 # Install dependencies
 npm install
@@ -348,7 +348,7 @@ npm run android # Android emulator
 ## 📁 Project Structure
 
 ```
-bungeehub/
+deliveryhub/
 ├── src/                          # Backend source code
 │   ├── modules/                  # Feature modules
 │   │   ├── auth/                 # Authentication
@@ -378,7 +378,7 @@ bungeehub/
 │   ├── rankings.e2e-spec.ts
 │   └── README.md                 # Test documentation
 │
-├── mobile/bungeehub-host/        # Mobile app
+├── mobile/deliveryhub-host/        # Mobile app
 │   ├── src/
 │   │   ├── screens/              # App screens
 │   │   ├── navigation/           # Navigation setup
@@ -481,7 +481,7 @@ See [test/README.md](./test/README.md) for complete testing documentation.
 - Route optimization algorithm
 - Offline-capable architecture
 
-See [mobile/bungeehub-host/README.md](./mobile/bungeehub-host/README.md) for setup instructions.
+See [mobile/deliveryhub-host/README.md](./mobile/deliveryhub-host/README.md) for setup instructions.
 
 ---
 
@@ -516,7 +516,7 @@ refactor(scope): Code refactoring
 For questions about:
 - **API Documentation**: http://localhost:3000/api (Swagger)
 - **Testing**: See [test/README.md](./test/README.md)
-- **Mobile App**: See [mobile/bungeehub-host/README.md](./mobile/bungeehub-host/README.md)
+- **Mobile App**: See [mobile/deliveryhub-host/README.md](./mobile/deliveryhub-host/README.md)
 - **Requirements**: See [REQUIREMENTS.md](./REQUIREMENTS.md)
 - **Architecture**: See [TECH_STACK.md](./TECH_STACK.md)
 

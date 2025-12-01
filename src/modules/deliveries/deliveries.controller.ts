@@ -100,7 +100,7 @@ export class DeliveriesController {
       example: {
         id: '123e4567-e89b-12d3-a456-426614174000',
         status: 'COMPLETED',
-        proofOfDeliveryUrl: 'https://storage.googleapis.com/bungeehub/deliveries/proof-123.jpg',
+        proofOfDeliveryUrl: 'https://storage.googleapis.com/deliveryhub/deliveries/proof-123.jpg',
         deliveryLatitude: 37.7749,
         deliveryLongitude: -122.4194,
         recipientName: 'John Doe',

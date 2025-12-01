@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# BungeeHub Setup Script
+# DeliveryHub Setup Script
 # First-time setup for new installations
 
 set -e
 
-echo "🎉 BungeeHub Setup"
+echo "🎉 DeliveryHub Setup"
 echo "=================="
 echo ""
 

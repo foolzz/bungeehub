@@ -1,10 +1,10 @@
-# BungeeHub Web Frontend
+# DeliveryHub Web Frontend
 
-User-facing web interface for the BungeeHub community delivery network.
+User-facing web interface for the DeliveryHub community delivery network.
 
 ## Features
 
-- **Landing Page**: Information about BungeeHub and how it works
+- **Landing Page**: Information about DeliveryHub and how it works
 - **Authentication**: Login and registration for hub hosts and customers
 - **Dashboard**: User profile and quick actions
 - **Responsive Design**: Built with Tailwind CSS for mobile and desktop
@@ -95,4 +95,4 @@ web/
 
 ## License
 
-Part of the BungeeHub project.
+Part of the DeliveryHub project.

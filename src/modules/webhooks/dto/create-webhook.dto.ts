@@ -11,7 +11,7 @@ export class CreateWebhookDto {
 
   @ApiProperty({
     description: 'URL endpoint to send webhook events to',
-    example: 'https://api.example.com/webhooks/bungeehub',
+    example: 'https://api.example.com/webhooks/deliveryhub',
   })
   @IsUrl()
   url: string;

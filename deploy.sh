@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# BungeeHub - GCP App Engine Deployment Script
+# DeliveryHub - GCP App Engine Deployment Script
 # This script deploys the application to Google Cloud Platform App Engine
 
 set -e
 
-echo "🚀 BungeeHub - GCP App Engine Deployment"
+echo "🚀 DeliveryHub - GCP App Engine Deployment"
 echo "========================================"
 echo ""
 

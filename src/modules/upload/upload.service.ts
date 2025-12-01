@@ -19,7 +19,7 @@ export class UploadService {
       keyFilename: process.env.GCP_KEY_FILE, // Path to service account key
     });
 
-    this.bucket = process.env.GCS_BUCKET_NAME || 'bungeehub-media';
+    this.bucket = process.env.GCS_BUCKET_NAME || 'deliveryhub-media';
   }
 
   /**
