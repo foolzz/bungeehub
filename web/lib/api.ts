@@ -1,10 +1,25 @@
 import axios from 'axios';
 
 // API URL configuration:
-// - Combined mode (default): http://localhost:8080/api/v1 (same server)
+// - Combined mode (default): Uses relative path /api/v1 (same server)
 // - Separated mode: Set NEXT_PUBLIC_API_URL in .env.local to point to API server
-// - Production: Set to your actual API URL (e.g., https://api.deliveryhub.com/api/v1)
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
+// - Production: Uses relative path when deployed to same domain
+const getApiUrl = () => {
+  // If explicitly set, use it (for separated mode)
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+
+  // For browser environment in production, use relative path
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    return `${window.location.origin}/api/v1`;
+  }
+
+  // For localhost development, use explicit URL
+  return 'http://localhost:8080/api/v1';
+};
+
+const API_URL = getApiUrl();
 
 export const api = axios.create({
   baseURL: API_URL,
