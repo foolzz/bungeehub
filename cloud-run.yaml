@@ -1,0 +1,109 @@
+# Cloud Run Service Configuration
+# This is the recommended deployment option for cost savings
+# Cloud Run scales to zero and only charges for actual requests
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: deliveryhub-api
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/execution-environment: gen2
+spec:
+  template:
+    metadata:
+      annotations:
+        # Auto-scaling configuration
+        autoscaling.knative.dev/minScale: "0"  # Scale to zero when idle
+        autoscaling.knative.dev/maxScale: "10"
+        # CPU allocation
+        run.googleapis.com/cpu-throttling: "true"
+        # Timeout
+        run.googleapis.com/timeout: "300s"
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      containers:
+      - image: gcr.io/PROJECT_ID/deliveryhub-api:latest
+        ports:
+        - name: http1
+          containerPort: 8080
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: PORT
+          value: "8080"
+        - name: SERVE_STATIC
+          value: "true"
+        # Database - Neon PostgreSQL
+        - name: DATABASE_URL
+          value: "postgresql://neondb_owner:npg_R2xz9UfWPLQF@ep-fragrant-forest-afgn14ks-pooler.c-2.us-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+        # JWT Authentication
+        - name: JWT_SECRET
+          value: "594cfec8324f8839f137cbe20cb4e125eb8407a0e5e03b818799cf43a4b51d84faac383c43f396ae739b18ec2e05a9b2d92983af08cb9174131a20cbe4a3e810"
+        - name: JWT_EXPIRY
+          value: "24h"
+        - name: JWT_REFRESH_SECRET
+          value: "ec8b51047c5930e966a0e5a6edcb80e3cf2752f7c5209789cd4ad277358f9ff1d2421c9f3a19a131b1b41f6e79b90826184bb7df9a063bc76653793c3ef40680"
+        - name: JWT_REFRESH_EXPIRY
+          value: "7d"
+        # API Configuration
+        - name: API_VERSION
+          value: "v1"
+        - name: API_BASE_URL
+          value: "https://deliveryhub-479919.appspot.com/api"
+        # Rate Limiting
+        - name: RATE_LIMIT_WINDOW_MS
+          value: "900000"
+        - name: RATE_LIMIT_MAX_REQUESTS
+          value: "100"
+        # CORS
+        - name: CORS_ORIGIN
+          value: "https://deliveryhub-479919.appspot.com"
+        - name: CORS_CREDENTIALS
+          value: "true"
+        # File Upload
+        - name: MAX_FILE_SIZE
+          value: "10485760"
+        - name: ALLOWED_FILE_TYPES
+          value: "image/jpeg,image/png,image/webp"
+        # Logging
+        - name: LOG_LEVEL
+          value: "info"
+        - name: LOG_FORMAT
+          value: "json"
+        # Feature Flags
+        - name: ENABLE_WEBHOOKS
+          value: "true"
+        - name: ENABLE_EMAIL_NOTIFICATIONS
+          value: "false"
+        - name: ENABLE_SMS_NOTIFICATIONS
+          value: "false"
+        - name: ENABLE_ANALYTICS
+          value: "true"
+        - name: ENABLE_API_DOCS
+          value: "true"
+        resources:
+          limits:
+            cpu: "1"  # Can be reduced to "0.5" for even lower costs
+            memory: "512Mi"  # Reduced from 2GB
+          requests:
+            cpu: "0.1"
+            memory: "256Mi"
+        startupProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 8080
+          initialDelaySeconds: 0
+          timeoutSeconds: 4
+          periodSeconds: 10
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 8080
+          initialDelaySeconds: 0
+          timeoutSeconds: 4
+          periodSeconds: 30
+          failureThreshold: 2
+

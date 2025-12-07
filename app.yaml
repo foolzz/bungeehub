@@ -13,10 +13,10 @@ automatic_scaling:
   cpu_utilization:
     target_utilization: 0.6
 
-# Resource allocation
+# Resource allocation (optimized for cost)
 resources:
-  cpu: 1
-  memory_gb: 2
+  cpu: 0.5  # Reduced from 1 to save costs
+  memory_gb: 1  # Reduced from 2 to save costs
   disk_size_gb: 10
 
 # Health check configuration
